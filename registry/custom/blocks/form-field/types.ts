@@ -140,7 +140,6 @@ export interface RenderInputProps<
   props: CustomProps<TFieldValues, TName>;
 }
 
-
 /* -------------------------------------------
  * Define a non-generic base props type for lazy inputs
  * ------------------------------------------- */
@@ -149,11 +148,8 @@ export interface LazyFieldInputProps {
   field: ControllerRenderProps<FieldValues, string>;
   props: CustomProps<FieldValues, string, Record<string, unknown>>;
   disabled?: boolean;
-  inputClasses?: string;
   className?: string;
 }
-
-
 
 /**
  * Widen RHF generics for lazy components.
