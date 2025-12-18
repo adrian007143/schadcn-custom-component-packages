@@ -1,4 +1,4 @@
-import FormLayoutComponent from "@/components/examples/form-layout-components";
+import FormLayoutComponent from "@/components/examples/form-layout-template";
 
 
 

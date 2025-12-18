@@ -149,6 +149,21 @@
           "target": "components/forms/form-layout/FormFieldWrapper.tsx"
         }
       ]
+    },
+    {
+      "name": "form-template-01",
+      "type": "registry:block",
+      "title": "Form tempalate",
+      "description": "Composable layout primitives for building structured and responsive forms.",
+      "dependencies": ["react-hook-form", "zod"],
+      "registryDependencies": ["sonner"],
+      "files": [
+        {
+          "path": "registry/custom/templates/form-layout-template.tsx",
+          "type": "registry:component",
+          "target": "components/examples/form-layout-template.tsx"
+        }
+      ]
     }
   ]
 }
