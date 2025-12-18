@@ -16,7 +16,7 @@ import {
   SelectLabelKey,
   StringKeyOf,
   InputHeight,
-} from "@/components/forms/form-field/types";
+} from "../types";
 
 export interface AsyncSelectProps<T extends Record<string, unknown>> {
   value: string | number | null;
@@ -38,14 +38,6 @@ export interface AsyncSelectProps<T extends Record<string, unknown>> {
   onAddNew?: () => void;
   addNewLabel?: string;
 }
-
-const HEIGHT_MAP: Record<InputHeight, string> = {
-  sm: "h-8",
-  md: "h-9",
-  lg: "h-10",
-  xl: "h-11",
-  auto: "h-auto",
-};
 
 /* ---------------------------------------------
  * Debounce hook helper
@@ -110,11 +102,9 @@ export function AsyncSelect<T extends Record<string, unknown>>({
   placeholder = "Select...",
   disabled = false,
   debounceTime = 300,
-  height = "md",
-  borderless = false,
   onAddNew,
   addNewLabel = "Add New",
-}: // iconSearch = true,
+}: 
 AsyncSelectProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -128,8 +118,6 @@ AsyncSelectProps<T>) {
 
   const debouncedQuery = useDebounce(query, debounceTime);
   const hasStatic = Array.isArray(data) && data.length > 0;
-
-  const heightClass = HEIGHT_MAP[height] ?? HEIGHT_MAP.md;
 
   /* ---------------------------------------------
    * Fetch list
@@ -285,20 +273,16 @@ AsyncSelectProps<T>) {
    * Wrapper styling (fixed px-3 + bg-input)
    * --------------------------------------------- */
   const wrapperClass = cn(
-    "relative w-full flex items-center px-3 bg-input",
-    heightClass,
-    disabled && "opacity-50 cursor-not-allowed",
-    borderless
-      ? "border-0"
-      : "rounded-md border border-border hover:border-ring/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40"
+    "relative w-full h-full flex items-center",
+    disabled && "opacity-50 cursor-not-allowed"
   );
 
   /* ---------------------------------------------
    * RENDER
    * --------------------------------------------- */
   return (
-    <div ref={containerRef} className="relative w-full">
-      <Command shouldFilter={false}>
+    <div ref={containerRef} className="relative w-full h-full">
+      <Command shouldFilter={false} className="w-full h-full bg-transparent">
         <div className={wrapperClass}>
           <CommandInput
             disabled={disabled}
@@ -312,7 +296,7 @@ AsyncSelectProps<T>) {
             }}
             onKeyDown={onKeyDown}
             className={cn(
-              "w-full py-0 bg-input text-sm",
+              "w-full h-full bg-transparent px-0 py-0 text-sm flex items-center",
               "placeholder:text-muted-foreground/60",
               "focus-visible:ring-0 focus-visible:ring-offset-0"
             )}

@@ -1,17 +1,14 @@
-// components/shared/currency-input.tsx
-
 import React from "react";
 import { InputGroupInput } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
-import { LazyFieldInputProps } from "../forms/form-field";
-import { formatCurrency } from "../forms/form-field/field-utils/currency-utils";
-
+import { LazyFieldInputProps } from "../types";
+import { formatCurrency } from "../field-utils/currency-utils";
 
 export function CurrencyInput({
   field,
   props,
   disabled,
-  inputClasses,
+  className
 }: LazyFieldInputProps) {
   const [uiValue, setUiValue] = React.useState("");
 
@@ -42,9 +39,11 @@ export function CurrencyInput({
       {...props.inputProps}
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}
-      className={cn(inputClasses, props.inputProps?.className, {
-        "text-right": props.textAlign === "right",
-      })}
+      className={cn(
+        "focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0",
+        "focus:outline-none focus-visible:outline-none",
+        className
+      )}
       value={uiValue}
       placeholder={props.placeholder ?? props.inputProps?.placeholder ?? ""}
       onChange={(e) => {

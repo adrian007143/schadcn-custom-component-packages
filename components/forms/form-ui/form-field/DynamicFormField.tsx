@@ -46,7 +46,7 @@ function DynamicFormFieldInner<
    */
   if (fieldType === FormFieldType.SKELETON) {
     return renderSkeleton
-      ? renderSkeleton({} as any)
+      ? renderSkeleton({} as never)
       : (
           <FieldSkeletonLoader
             className={HEIGHT_CLASSES[height ?? "md"]}

@@ -1,5 +1,3 @@
-// components/forms/form-field-v4/render-dynamic-input.tsx
-
 "use client";
 
 import dynamic from "next/dynamic";
@@ -31,43 +29,49 @@ import { applyMask } from "./field-utils/mask-utils";
  * ------------------------------------------------------------- */
 
 const LazyDatePicker = dynamic(() =>
-  import("@/components/shared/date-picker").then((m) => m.DatePicker)
+  import("./inputs/date-picker").then((m) => m.DatePicker),
+{ ssr: false }
 );
 
 const LazyPhoneInput = dynamic(() =>
-  import("@/components/shared/phone-input").then((m) => m.PhoneInput)
+  import("./inputs/phone-input").then((m) => m.PhoneInput),
+{ ssr: false }
 );
 
 const LazySelectInput = dynamic(() =>
-  import("@/components/shared/select-input").then((m) => m.SelectInput)
+  import("./inputs/select-input").then((m) => m.SelectInput),
+{ ssr: false }
 );
 
 const LazySingleSelector = dynamic(() =>
-  import("@/components/shared/single-selector").then((m) => m.SingleSelector)
+  import("./inputs/single-selector").then((m) => m.SingleSelector),
+{ ssr: false }
 );
 
-const LazyAsyncSelect = dynamic(() =>
-  import("@/components/shared/async-select").then((m) => m.AsyncSelect)
+const LazyAsyncSelect = dynamic(
+  () => import("./inputs/async-select").then((m) => m.AsyncSelect),
+  { ssr: false }
 );
+
 
 const LazyPassword = dynamic(() =>
-  import("@/components/shared/input-password").then((m) => m.InputPassword)
+  import("./inputs/input-password").then((m) => m.InputPassword),
+{ ssr: false }
 );
 
 const LazzyCurrencyInput = dynamic(() =>
-  import("@/components/shared/currency-input").then((m) => m.CurrencyInput)
+  import("./inputs/currency-input").then((m) => m.CurrencyInput),
+{ ssr: false }
 );
 
 const LazzyPercentInput = dynamic(() =>
-  import("@/components/shared/percent-input").then((m) => m.PercentInput)
+  import("./inputs/percent-input").then((m) => m.PercentInput),
+{ ssr: false }
 );
 
-// import { PercentInput } from "@/components/shared/percent-input";
-
 const LazySkeleton = dynamic(() =>
-  import("@//components/forms/form-field/FieldSkeletonLoader").then(
-    (m) => m.FieldSkeletonLoader
-  )
+  import("./FieldSkeletonLoader").then((m) => m.FieldSkeletonLoader),
+{ ssr: false }
 );
 
 /* -------------------------------------------------------------
@@ -125,9 +129,9 @@ export const DynamicRenderInput = <
     HEIGHT_CLASSES[height || DEFAULT_HEIGHTS[fieldType] || "md"];
 
   const groupClass = cn(
-    "w-full flex rounded-md border border-border bg-input transition-all",
+    "w-full flex rounded-md border border-border transition-all",
     "focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary",
-    "hover:border-ring/60",
+    "hover:border-ring/80",
     disabled && "opacity-60 cursor-not-allowed",
     heightClass,
     className
@@ -312,7 +316,7 @@ export const DynamicRenderInput = <
         <LazzyCurrencyInput
           {...lazy}
           disabled={disabled}
-          inputClasses={inputClasses}
+          className= {cn(inputClasses, props.className)}
         />
       );
       break;
@@ -327,7 +331,7 @@ export const DynamicRenderInput = <
         <LazzyPercentInput
           {...lazy}
           disabled={disabled}
-          inputClasses={inputClasses}
+          className={cn(inputClasses, props.className)}
         />
       );
       break;

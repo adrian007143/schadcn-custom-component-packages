@@ -1,9 +1,10 @@
 import { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
-import { RenderInputProps } from "../forms/form-field";
-import React, {useState} from "react";
-import { InputGroupInput } from "../ui/input-group";
-import { cn } from "@/lib/utils";
 
+import React, { useState } from "react";
+
+import { cn } from "@/lib/utils";
+import { InputGroupInput } from "@/components/ui/input-group";
+import { RenderInputProps } from "../types";
 
 export function PercentInput<
   TFieldValues extends FieldValues,
@@ -12,12 +13,12 @@ export function PercentInput<
   field,
   props,
   disabled,
-  inputClasses,
+  className,
 }: {
   field: ControllerRenderProps<TFieldValues, TName>;
   props: RenderInputProps<TFieldValues, TName>["props"];
   disabled?: boolean;
-  inputClasses: string;
+  className?: string;
 }) {
   const [uiValue, setUiValue] = useState("");
 
@@ -37,9 +38,10 @@ export function PercentInput<
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}
       className={cn(
-        inputClasses,
-        props.inputProps?.className,
-        props.textAlign === "right" && "text-right"
+        "focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0",
+        "focus:outline-none focus-visible:outline-none",
+        "text-right",
+        className
       )}
       value={uiValue}
       placeholder={props.placeholder ?? props.inputProps?.placeholder ?? "0%"}
@@ -54,9 +56,7 @@ export function PercentInput<
           setUiValue("");
         } else {
           field.onChange(parsed / 100);
-          setUiValue(
-            parsed.toFixed(props.percentDecimalPlaces ?? 2) + "%"
-          );
+          setUiValue(parsed.toFixed(props.percentDecimalPlaces ?? 2) + "%");
         }
       }}
     />

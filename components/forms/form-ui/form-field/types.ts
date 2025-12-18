@@ -149,7 +149,8 @@ export interface LazyFieldInputProps {
   field: ControllerRenderProps<FieldValues, string>;
   props: CustomProps<FieldValues, string, Record<string, unknown>>;
   disabled?: boolean;
-  inputClasses: string;
+  inputClasses?: string;
+  className?: string;
 }
 
 

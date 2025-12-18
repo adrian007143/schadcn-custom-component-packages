@@ -1,0 +1,154 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "shadcn-customs-ui",
+  "homepage": "http://localhost:3000",
+  "items": [
+    {
+      "name": "form-field",
+      "type": "registry:block",
+      "title": "Dynamic Form Field",
+      "description": "Schema-driven dynamic form field system built on react-hook-form.",
+      "dependencies": [
+        "react-hook-form",
+        "lucide-react",
+        "react-phone-number-input"
+      ],
+      "registryDependencies": [
+        "form",
+        "input",
+        "command",
+        "popover",
+        "calendar",
+        "skeleton",
+        "checkbox",
+        "input-group",
+        "scroll-area",
+        "sonner"
+      ],
+      "files": [
+        {
+          "path": "registry/custom/blocks/form-field/DynamicFormField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/DynamicFormField.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/render-dynamic-input.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/render-dynamic-input.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/FieldSkeletonLoader.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/FieldSkeletonLoader.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/constants.ts",
+          "type": "registry:file",
+          "target": "components/forms/form-field/constants.ts"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/types.ts",
+          "type": "registry:file",
+          "target": "components/forms/form-field/types.ts"
+        },
+
+        {
+          "path": "registry/custom/blocks/form-field/field-utils/mask-utils.ts",
+          "type": "registry:lib",
+          "target": "components/forms/form-field/field-utils/mask-utils.ts"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/field-utils/currency-utils.ts",
+          "type": "registry:lib",
+          "target": "components/forms/form-field/field-utils/currency-utils.ts"
+        },
+
+        {
+          "path": "registry/custom/blocks/form-field/inputs/async-select.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/async-select.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/phone-input.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/phone-input.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/percent-input.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/percent-input.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/currency-input.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/currency-input.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/date-picker.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/date-picker.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/select-input.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/select-input.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/single-selector.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/single-selector.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-field/inputs/input-password.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-field/inputs/input-password.tsx"
+        }
+      ]
+    },
+
+    {
+      "name": "form-layout",
+      "type": "registry:block",
+      "title": "Form Layout",
+      "description": "Composable layout primitives for building structured and responsive forms.",
+      "registryDependencies": ["button", "separator", "field"],
+      "files": [
+        {
+          "path": "registry/custom/blocks/form-layout/FormLayout.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormLayout.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-layout/FormSection.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormSection.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-layout/FormColumns.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormColumns.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-layout/FormRow.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormRow.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-layout/FormDivider.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormDivider.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-layout/FormActions.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormActions.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-layout/FormFieldWrapper.tsx",
+          "type": "registry:component",
+          "target": "components/forms/form-layout/FormFieldWrapper.tsx"
+        }
+      ]
+    }
+  ]
+}

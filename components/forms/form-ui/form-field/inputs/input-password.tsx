@@ -4,7 +4,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
+
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
