@@ -150,6 +150,125 @@
         }
       ]
     },
+
+    {
+      "name": "data-table-dynamic",
+      "type": "registry:block",
+      "title": "Dynamic Data Table",
+      "description": "A fully dynamic, editable, draggable data table with custom cells.",
+      "dependencies": [
+        "date-fns",
+        "@dnd-kit/core",
+        "@dnd-kit/modifiers",
+        "@dnd-kit/sortable",
+        "@dnd-kit/utilities",
+        "@tanstack/react-table",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "calendar",
+        "button",
+        "popover",
+        "input",
+        "avatar",
+        "select",
+        "table",
+        "tabs",
+        "checkbox",
+        "dropdown-menu",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/cells/badge-cell.tsx",
+          "target": "components/data-table/data-table-dynamic/cells/badge-cell.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/cells/datepicker-cell.tsx",
+          "target": "components/data-table/data-table-dynamic/cells/datepicker-cell.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/cells/editable-cell.tsx",
+          "target": "components/data-table/data-table-dynamic/cells/editable-cell.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/cells/image-cell.tsx",
+          "target": "components/data-table/data-table-dynamic/cells/image-cell.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/cells/select-cell.tsx",
+          "target": "components/data-table/data-table-dynamic/cells/select-cell.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/data-table-faceted-filter.tsx",
+          "target": "components/data-table/data-table-dynamic/core/data-table-faceted-filter.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/drag-handle.tsx",
+          "target": "components/data-table/data-table-dynamic/core/drag-handle.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/draggable-row.tsx",
+          "target": "components/data-table/data-table-dynamic/core/draggable-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/dynamic-data-table.tsx",
+          "target": "components/data-table/data-table-dynamic/core/dynamic-data-table.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/row-drag-context.tsx",
+          "target": "components/data-table/data-table-dynamic/core/row-drag-context.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/table-footer.tsx",
+          "target": "components/data-table/data-table-dynamic/core/table-footer.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/core/table-toolbar.tsx",
+          "target": "components/data-table/data-table-dynamic/core/table-toolbar.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/hooks/use-editable.ts",
+          "target": "components/data-table/data-table-dynamic/hooks/use-editable.ts",
+          "type": "registry:hook"
+        },
+
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/inputs/search-input.tsx",
+          "target": "components/data-table/data-table-dynamic/inputs/search-input.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/types/column.types.ts",
+          "target": "components/data-table/data-table-dynamic/types/column.types.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/custom/blocks/data-table-dynamic/types/table.types.ts",
+          "target": "components/data-table/data-table-dynamic/types/table.types.ts",
+          "type": "registry:lib"
+        },
+         {
+          "path": "registry/custom/templates/data-table-dynamic.tsx",
+          "target": "components/examples/data-table-dynamic.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
     {
       "name": "form-template-01",
       "type": "registry:block",
