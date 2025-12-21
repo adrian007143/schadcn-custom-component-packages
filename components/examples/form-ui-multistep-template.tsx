@@ -59,7 +59,7 @@ export default function CreateOrgForm() {
     <FormLayout>
       <MultiStepForm<Organization>
         schema={OrganizationSchema}
-        layoutMode="vertical"
+        layoutMode="auto"
         variant="ghost"
         mode="CREATE"
         defaultValues={defaultValues}
@@ -128,6 +128,7 @@ export default function CreateOrgForm() {
               {
                 name: "email",
                 label: "Contact Email",
+                placeholder: "yourname@example.com",
                 fieldType: FormFieldType.INPUT,
                 type: "email",
                 required: true,
