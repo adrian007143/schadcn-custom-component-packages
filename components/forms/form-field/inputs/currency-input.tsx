@@ -1,8 +1,9 @@
 import React from "react";
-import { InputGroupInput } from "@/components/ui/input-group";
+
 import { cn } from "@/lib/utils";
 import { LazyFieldInputProps } from "../types";
 import { formatCurrency } from "../field-utils/currency-utils";
+import { Input } from "@/components/ui/input";
 
 export function CurrencyInput({
   field,
@@ -35,7 +36,7 @@ export function CurrencyInput({
   ]);
 
   return (
-    <InputGroupInput
+    <Input
       {...props.inputProps}
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}

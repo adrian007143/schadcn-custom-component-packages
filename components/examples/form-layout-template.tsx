@@ -148,6 +148,7 @@ export default function FormComponent() {
                   addNewLabel="add new user"
                   iconSearch
                   borderless
+                  height="md"
                 />
 
                 <CustomFormField

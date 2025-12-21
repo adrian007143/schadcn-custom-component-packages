@@ -1,17 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback, KeyboardEvent } from "react";
-
-import {
-  Command,
-  CommandList,
-  CommandInput,
-  CommandItem,
-  CommandEmpty,
-} from "@/components/ui/command";
-
 import { cn } from "@/lib/utils";
-import { Loader2, Plus, X } from "lucide-react";
+import { Loader2, Plus, X, Search } from "lucide-react";
 import { SelectLabelKey, StringKeyOf, InputHeight } from "../types";
 
 export interface AsyncSelectProps<T extends Record<string, unknown>> {
@@ -86,6 +77,28 @@ function getColumns<T extends Record<string, unknown>>(
 }
 
 /* ---------------------------------------------
+ * HEIGHT CLASSES (should match render-dynamic-input.tsx)
+ * --------------------------------------------- */
+const HEIGHT_CLASSES: Record<InputHeight, string> = {
+  sm: "h-8",
+  md: "h-9",
+  lg: "h-10",
+  xl: "h-11",
+  auto: "h-auto",
+};
+
+/* ---------------------------------------------
+ * PADDING CLASSES based on height for consistency
+ * --------------------------------------------- */
+const PADDING_CLASSES: Record<InputHeight, { x: string; iconLeft: string; iconRight: string }> = {
+  sm: { x: "px-2", iconLeft: "left-2", iconRight: "right-2" },
+  md: { x: "px-3", iconLeft: "left-3", iconRight: "right-3" },
+  lg: { x: "px-3", iconLeft: "left-3", iconRight: "right-3" },
+  xl: { x: "px-4", iconLeft: "left-4", iconRight: "right-4" },
+  auto: { x: "px-3", iconLeft: "left-3", iconRight: "right-3" },
+};
+
+/* ---------------------------------------------
  * MAIN COMPONENT
  * --------------------------------------------- */
 export function AsyncSelect<T extends Record<string, unknown>>({
@@ -98,11 +111,15 @@ export function AsyncSelect<T extends Record<string, unknown>>({
   placeholder = "Select...",
   disabled = false,
   debounceTime = 300,
+  // borderless = false,
+  height = "md",
+  iconSearch = false,
   onAddNew,
   addNewLabel = "Add New",
 }: AsyncSelectProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState<T[]>([]);
@@ -113,6 +130,8 @@ export function AsyncSelect<T extends Record<string, unknown>>({
 
   const debouncedQuery = useDebounce(query, debounceTime);
   const hasStatic = Array.isArray(data) && data.length > 0;
+
+  const padding = PADDING_CLASSES[height];
 
   /* ---------------------------------------------
    * Fetch list
@@ -187,6 +206,10 @@ export function AsyncSelect<T extends Record<string, unknown>>({
       .finally(() => setLoading(false));
 
     setOpen(true);
+    // Focus the input when dropdown opens
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
   /* ---------------------------------------------
@@ -265,11 +288,45 @@ export function AsyncSelect<T extends Record<string, unknown>>({
   };
 
   /* ---------------------------------------------
-   * Wrapper styling (fixed px-3 + bg-input)
+   * Handle clear button
+   * --------------------------------------------- */
+  const handleClear = () => {
+    setQuery("");
+    onChange(null);
+    setOpen(false);
+    inputRef.current?.focus();
+  };
+
+  /* ---------------------------------------------
+   * Wrapper and input styling
    * --------------------------------------------- */
   const wrapperClass = cn(
     "relative w-full h-full flex items-center",
+    HEIGHT_CLASSES[height],
     disabled && "opacity-50 cursor-not-allowed"
+  );
+
+  // Calculate left padding based on iconSearch
+  const getLeftPadding = () => {
+    return iconSearch ? `pl-10` : padding.x.split(" ")[0];
+  };
+
+  // Calculate right padding based on clear/loading buttons
+  const getRightPadding = () => {
+    if (query || loading) {
+      return "pr-10";
+    }
+    return padding.x.split(" ")[1] || "pr-3";
+  };
+
+  const inputClass = cn(
+    "w-full h-full bg-transparent text-sm leading-none",
+    "placeholder:text-muted-foreground/60",
+    "focus-visible:outline-none focus-visible:ring-0",
+    "border-0 outline-none",
+    disabled && "cursor-not-allowed",
+    getLeftPadding(),
+    getRightPadding()
   );
 
   /* ---------------------------------------------
@@ -277,132 +334,152 @@ export function AsyncSelect<T extends Record<string, unknown>>({
    * --------------------------------------------- */
   return (
     <div ref={containerRef} className="relative w-full h-full">
-      <Command shouldFilter={false} className="w-full h-full bg-transparent">
-        <div className={wrapperClass}>
-          <CommandInput
-            disabled={disabled}
-            // iconSearch={iconSearch}
-            placeholder={placeholder}
-            value={query}
-            onFocus={openList}
-            onValueChange={(val) => {
-              setQuery(val);
-              setOpen(true);
-            }}
-            onKeyDown={onKeyDown}
-            className={cn(
-              "w-full h-full bg-transparent px-0 py-0 text-sm",
-              "placeholder:text-muted-foreground/60",
-              "focus-visible:ring-0 focus-visible:ring-offset-0"
-            )}
-          />
-
-          {loading && (
-            <Loader2 className="absolute right-8 h-4 w-4 animate-spin text-muted-foreground" />
-          )}
-
-          {query && !loading && (
-            <button
-              type="button"
-              onClick={() => {
-                setQuery("");
-                onChange(null);
-                setOpen(false);
-              }}
-              className="absolute right-2 text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        {open && (
-          <div
-            ref={dropdownRef}
-            className={cn(
-              "absolute left-0 right-0 z-50",
-              "rounded-md border border-border bg-popover",
-              "shadow-md animate-in fade-in zoom-in-95",
-              position === "below" ? "top-full mt-1" : "bottom-full mb-1"
-            )}
-          >
-            <CommandList className="max-h-64 overflow-auto pb-14">
-              {loading && (
-                <div className="px-3 py-2 text-sm text-muted-foreground">
-                  Loading...
-                </div>
-              )}
-
-              {!loading && options.length === 0 && (
-                <CommandEmpty>No results found.</CommandEmpty>
-              )}
-
-              {!loading &&
-                options.map((item, idx) => {
-                  const primary = getPrimary(item, selectLabelKey);
-                  const cols = getColumns(item, selectLabelKey);
-
-                  return (
-                    <CommandItem
-                      key={String(item[valueKey])}
-                      onMouseEnter={() => setHighlightIndex(idx)}
-                      onSelect={() => {
-                        onChange(item[valueKey] as never);
-                        setQuery(primary);
-                        setOpen(false);
-                      }}
-                      className={cn(
-                        "cursor-pointer px-3 hover:bg-accent hover:text-accent-foreground",
-                        highlightIndex === idx &&
-                          "bg-accent text-accent-foreground"
-                      )}
-                    >
-                      <div className="flex w-full items-center">
-                        <div className="flex-1 truncate font-medium">
-                          {primary}
-                        </div>
-
-                        {cols.length > 0 && (
-                          <div className="flex items-center space-x-4 ml-4 text-sm text-muted-foreground">
-                            {cols.map((c, i) => (
-                              <div
-                                key={i}
-                                style={{ width: c.width }}
-                                className="truncate"
-                              >
-                                {c.value}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </CommandItem>
-                  );
-                })}
-            </CommandList>
-
-            {onAddNew && (
-              <div className="sticky bottom-0 border-t border-border bg-popover">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onAddNew();
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full items-center gap-2 px-3 py-2 text-sm text-primary",
-                    "hover:bg-accent hover:text-accent-foreground",
-                    highlightIndex === options.length &&
-                      "bg-accent text-accent-foreground"
-                  )}
-                >
-                  <Plus className="h-4 w-4" /> {addNewLabel}
-                </button>
-              </div>
-            )}
+      <div className={wrapperClass}>
+        {/* Search Icon - More subtle styling */}
+        {iconSearch && (
+          <div className={cn(
+            "absolute top-1/2 -translate-y-1/2",
+            padding.iconLeft,
+            "text-muted-foreground/70"
+          )}>
+            <Search className="h-4 w-4" />
           </div>
         )}
-      </Command>
+
+        {/* Input */}
+        <input
+          ref={inputRef}
+          type="text"
+          disabled={disabled}
+          placeholder={placeholder}
+          value={query}
+          onFocus={openList}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onKeyDown={onKeyDown}
+          className={inputClass}
+        />
+
+        {/* Loading Spinner */}
+        {loading && (
+          <div className={cn(
+            "absolute top-1/2 -translate-y-1/2",
+            padding.iconRight,
+            "text-muted-foreground"
+          )}>
+            <Loader2 className="h-4 w-4 animate-spin" />
+          </div>
+        )}
+
+        {/* Clear Button */}
+        {query && !loading && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2",
+              padding.iconRight,
+              "text-muted-foreground hover:text-foreground transition-colors"
+            )}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Dropdown */}
+      {open && (
+        <div
+          ref={dropdownRef}
+          className={cn(
+            "absolute left-0 right-0 z-50",
+            "rounded-md border border-border bg-popover",
+            "shadow-md animate-in fade-in zoom-in-95",
+            position === "below" ? "top-full mt-1" : "bottom-full mb-1"
+          )}
+        >
+          <div className="max-h-64 overflow-auto py-1">
+            {loading && (
+              <div className="px-3 py-2 text-sm text-muted-foreground">
+                Loading...
+              </div>
+            )}
+
+            {!loading && options.length === 0 && (
+              <div className="px-3 py-3 text-center text-sm text-muted-foreground/80">
+                No results found.
+              </div>
+            )}
+
+            {!loading &&
+              options.map((item, idx) => {
+                const primary = getPrimary(item, selectLabelKey);
+                const cols = getColumns(item, selectLabelKey);
+
+                return (
+                  <button
+                    key={String(item[valueKey])}
+                    type="button"
+                    onMouseEnter={() => setHighlightIndex(idx)}
+                    onClick={() => {
+                      onChange(item[valueKey] as never);
+                      setQuery(primary);
+                      setOpen(false);
+                    }}
+                    className={cn(
+                      "w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground",
+                      "transition-colors duration-150",
+                      highlightIndex === idx &&
+                        "bg-accent text-accent-foreground",
+                      "flex items-center justify-between"
+                    )}
+                  >
+                    <div className="flex-1 truncate text-sm">
+                      {primary}
+                    </div>
+
+                    {cols.length > 0 && (
+                      <div className="flex items-center space-x-4 ml-4 text-xs text-muted-foreground">
+                        {cols.map((c, i) => (
+                          <div
+                            key={i}
+                            style={{ width: c.width }}
+                            className="truncate"
+                          >
+                            {c.value}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+          </div>
+
+          {/* Add New Button */}
+          {onAddNew && (
+            <div className="sticky bottom-0 border-t border-border bg-popover">
+              <button
+                type="button"
+                onClick={() => {
+                  onAddNew();
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center gap-2 px-3 py-2 text-sm text-primary",
+                  "hover:bg-accent hover:text-accent-foreground transition-colors",
+                  highlightIndex === options.length &&
+                    "bg-accent text-accent-foreground"
+                )}
+              >
+                <Plus className="h-4 w-4" /> {addNewLabel}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

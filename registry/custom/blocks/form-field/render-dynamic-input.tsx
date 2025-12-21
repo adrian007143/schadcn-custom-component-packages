@@ -73,7 +73,6 @@ const LazySkeleton = dynamic(
   { ssr: false }
 );
 
-
 /* -------------------------------------------------------------
  * Schadcn native components
  * ------------------------------------------------------------- */
@@ -339,7 +338,7 @@ export const DynamicRenderInput = <
           debounceTime={props.debounceTime ?? 300}
           onAddNew={props.onAddNew}
           addNewLabel={props.addNewLabel}
-          borderless={props.borderless}
+          // borderless={props.borderless}
           iconSearch={props.iconSearch ?? false}
         />
       );
@@ -406,21 +405,22 @@ export const DynamicRenderInput = <
       controlChild = (
         <InputGroupInput
           {...props.inputProps}
-          {...field}
+          {...field} // 👈 This contains name, value, onChange, onBlur, and REF
           type={props.inputProps?.type ?? props.type ?? "text"}
           disabled={disabled ?? props.inputProps?.disabled}
           placeholder={props.placeholder ?? props.inputProps?.placeholder ?? ""}
           className={cn(inputClasses, props.inputProps?.className)}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e) => {
+            // Special handling for number types
             if ((props.type ?? props.inputProps?.type) === "number") {
-              const val =
-                e.target.value === "" ? undefined : Number(e.target.value);
+              const val = e.target.value === "" ? "" : Number(e.target.value);
               field.onChange(val);
             } else {
+              // IMPORTANT: pass the full event for standard inputs
               field.onChange(e);
             }
           }}
-          value={field.value ?? ""}
+          // Ensure we don't double-bind 'value' if it's already in ...field
         />
       );
   }
@@ -429,7 +429,7 @@ export const DynamicRenderInput = <
    * FINAL RENDER WITH INPUTGROUP
    * ------------------------------------------------------------- */
 
-  return(
+  return (
     <InputGroup className={groupClass}>
       {prefix && (
         <InputGroupText className="px-2 text-xs text-muted-foreground/70 bg-muted/30">

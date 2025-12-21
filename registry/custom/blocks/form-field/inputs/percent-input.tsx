@@ -3,8 +3,8 @@ import { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
 import React, { useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { InputGroupInput } from "@/components/ui/input-group";
 import { RenderInputProps } from "../types";
+import { Input } from "@/components/ui/input";
 
 export function PercentInput<
   TFieldValues extends FieldValues,
@@ -33,7 +33,7 @@ export function PercentInput<
   }, [field.value, props.percentDecimalPlaces]);
 
   return (
-    <InputGroupInput
+    <Input
       {...props.inputProps}
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}
