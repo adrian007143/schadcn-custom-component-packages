@@ -52,6 +52,11 @@
           "type": "registry:file",
           "target": "components/forms/form-field/types.ts"
         },
+        {
+          "path": "registry/custom/blocks/form-field/index.ts",
+          "type": "registry:file",
+          "target": "components/forms/form-field/index.ts"
+        },
 
         {
           "path": "registry/custom/blocks/form-field/field-utils/mask-utils.ts",
@@ -262,10 +267,58 @@
           "target": "components/data-table/data-table-dynamic/types/table.types.ts",
           "type": "registry:lib"
         },
-         {
+        {
           "path": "registry/custom/templates/data-table-dynamic.tsx",
           "target": "components/examples/data-table-dynamic.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "multistep-form-template",
+      "type": "registry:block",
+      "title": "Form Utilities",
+      "description": "Reusable form utilities for building forms.",
+      "dependencies": [
+        "react-hook-form",
+        "zod",
+        "@types/react-google-recaptcha",
+        "react-google-recaptcha",
+        "lucide-react"
+      ],
+      "registryDependencies": ["form", "field", "button", "sonner", "progress"],
+      "files": [
+        {
+          "path": "registry/custom/blocks/form-ui/form-utils/ReCAPTCHAComponent.tsx",
+          "target": "components/forms/form-ui/form-utils/ReCAPTCHAComponent.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
+          "target": "lib/helper/toast-icon.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
+          "target": "lib/helper/toast-icon.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/custom/blocks/form-ui/form-utils/typedZodResolver.ts",
+          "target": "lib/utils/typedZodResolver.ts",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "registry/custom/templates/form-ui-multistep-template.tsx",
+          "target": "components/examples/form-ui-multistep-template.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "registry/custom/templates/schema.ts",
+          "target": "components/examples/schema.ts",
+          "type": "registry:lib"
         }
       ]
     },

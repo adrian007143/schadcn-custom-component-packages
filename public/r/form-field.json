@@ -53,6 +53,12 @@
       "target": "components/forms/form-field/types.ts"
     },
     {
+      "path": "registry/custom/blocks/form-field/index.ts",
+      "content": "\r\nexport { DynamicFormField  } from \"./DynamicFormField\";\r\nexport * from \"./constants\";\r\nexport * from \"./types\";\r\n",
+      "type": "registry:file",
+      "target": "components/forms/form-field/index.ts"
+    },
+    {
       "path": "registry/custom/blocks/form-field/field-utils/mask-utils.ts",
       "content": "export const applyMask = (value: string, mask: string): string => {\r\n  const digits = value.replace(/\\D/g, \"\");\r\n  let result = \"\";\r\n  let digitIndex = 0;\r\n\r\n  for (let i = 0; i < mask.length; i++) {\r\n    if (digitIndex >= digits.length) break;\r\n\r\n    if (mask[i] === \"#\") {\r\n      result += digits[digitIndex];\r\n      digitIndex++;\r\n    } else {\r\n      result += mask[i];\r\n    }\r\n  }\r\n\r\n  return result;\r\n};\r\n",
       "type": "registry:lib",
