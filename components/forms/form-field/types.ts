@@ -6,6 +6,7 @@ import type {
 } from "react-hook-form";
 import type { ComponentProps, ReactNode } from "react";
 import type { FormFieldType } from "./constants";
+import * as SwitchPrimitive from '@radix-ui/react-switch';
 
 /* -------------------------------------------
  * HEIGHT TYPES
@@ -87,6 +88,7 @@ export interface CustomProps<
   inputProps?: ComponentProps<"input">;
   textareaProps?: ComponentProps<"textarea">;
   passwordProps?: ComponentProps<"input">;
+  switchProps?: ComponentProps<typeof SwitchPrimitive.Root>;
 
   /* ---------------- SELECT / COMMAND ---------------- */
   data?: TRow[];

@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { CalendarDays } from "lucide-react"
-import { format } from "date-fns"
+import * as React from "react";
+import { CalendarDays } from "lucide-react";
+import { format } from "date-fns";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface DatePickerProps {
-  value?: Date | string
-  onChange?: (date: Date | undefined) => void
-  placeholder?: string
-  className?: string
-  inputClassName?: string // NEW: Specific input styling
-  disabled?: boolean
+  value?: Date | string;
+  onChange?: (date: Date | undefined) => void;
+  placeholder?: string;
+  className?: string;
+  inputClassName?: string; // NEW: Specific input styling
+  disabled?: boolean;
 }
 
 export function DatePicker({
@@ -31,69 +31,73 @@ export function DatePicker({
   inputClassName, // NEW: Accept input-specific classes
   disabled = false,
 }: DatePickerProps) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState(
-    value ? (typeof value === 'string' ? value : format(value, "MM/dd/yyyy")) : ""
-  )
+    value
+      ? typeof value === "string"
+        ? value
+        : format(value, "MM/dd/yyyy")
+      : ""
+  );
 
   // ✅ Single parser: MMDDYYYY or MM/DD/YYYY
   function parseDate(input: string): Date | undefined {
-    const digits = input.replace(/\D/g, "")
+    const digits = input.replace(/\D/g, "");
     if (digits.length === 8) {
-      const mm = parseInt(digits.slice(0, 2), 10)
-      const dd = parseInt(digits.slice(2, 4), 10)
-      const yyyy = parseInt(digits.slice(4, 8), 10)
+      const mm = parseInt(digits.slice(0, 2), 10);
+      const dd = parseInt(digits.slice(2, 4), 10);
+      const yyyy = parseInt(digits.slice(4, 8), 10);
       if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) {
-        const date = new Date(yyyy, mm - 1, dd)
-        return isNaN(date.getTime()) ? undefined : date
+        const date = new Date(yyyy, mm - 1, dd);
+        return isNaN(date.getTime()) ? undefined : date;
       }
     }
-    return undefined
+    return undefined;
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value
-    setInputValue(val)
+    const val = e.target.value;
+    setInputValue(val);
 
     if (val.trim() === "") {
       // if cleared, keep it empty
-      onChange?.(undefined)
-      return
+      onChange?.(undefined);
+      return;
     }
 
-    const parsed = parseDate(val)
+    const parsed = parseDate(val);
     if (parsed) {
-      onChange?.(parsed)
+      onChange?.(parsed);
     }
   }
 
   function handleBlur() {
     if (inputValue.trim() === "") {
-      return // leave it empty
+      return; // leave it empty
     }
 
-    const parsed = parseDate(inputValue)
+    const parsed = parseDate(inputValue);
     if (parsed) {
-      setInputValue(format(parsed, "MM/dd/yyyy"))
+      setInputValue(format(parsed, "MM/dd/yyyy"));
     } else if (value) {
       // if invalid, fallback to last valid value
-      if (typeof value === 'string') {
-        setInputValue(value)
+      if (typeof value === "string") {
+        setInputValue(value);
       } else {
-        setInputValue(format(value, "MM/dd/yyyy"))
+        setInputValue(format(value, "MM/dd/yyyy"));
       }
     } else {
       // otherwise clear it
-      setInputValue("")
+      setInputValue("");
     }
   }
 
   // NEW: Handle input click to open calendar
   const handleInputClick = () => {
     if (!disabled) {
-      setOpen(true)
+      setOpen(true);
     }
-  }
+  };
 
   return (
     <div className={cn("flex w-full items-center relative", className)}>
@@ -106,8 +110,10 @@ export function DatePicker({
         onClick={handleInputClick} // NEW: Click to open calendar
         disabled={disabled}
         className={cn(
-          "font-normal pr-10 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent w-full rounded-none cursor-pointer", // ADDED: cursor-pointer
-          inputClassName // NEW: Apply input-specific classes
+          "pr-10 text-sm bg-transparent",
+          "focus-visible:ring-0 focus-visible:ring-offset-0",
+          "placeholder:text-muted-foreground/60",
+          inputClassName
         )}
       />
       <Popover open={open} onOpenChange={setOpen}>
@@ -127,19 +133,22 @@ export function DatePicker({
         <PopoverContent className="w-auto p-0" align="end">
           <Calendar
             mode="single"
-            selected={parseDate(inputValue) ?? (typeof value === 'string' ? parseDate(value) : value)}
+            selected={
+              parseDate(inputValue) ??
+              (typeof value === "string" ? parseDate(value) : value)
+            }
             captionLayout="dropdown"
             onSelect={(date) => {
               if (date) {
-                onChange?.(date)
-                setInputValue(format(date, "MM/dd/yyyy"))
+                onChange?.(date);
+                setInputValue(format(date, "MM/dd/yyyy"));
               }
-              setOpen(false)
+              setOpen(false);
             }}
             className="border-0"
           />
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

@@ -79,6 +79,7 @@ const formSchema = z.object({
   tin: z.string().optional(),
   role_id: z.string().optional(),
   rate: z.number().optional(),
+  active: z.boolean().optional(),
 });
 
 export default function FormComponent() {
@@ -96,6 +97,7 @@ export default function FormComponent() {
       amount: undefined,
       tin: "",
       rate: undefined,
+      active: false,
     },
   });
 
@@ -106,7 +108,7 @@ export default function FormComponent() {
     toast.success("Form submitted successfully!", {
       description: "You can close this toast by clicking on the X button.",
     });
-    form.reset()
+    form.reset();
   };
 
   return (
@@ -243,7 +245,7 @@ export default function FormComponent() {
                 />
               </FormColumns>
 
-              <FormColumns columns={1}>
+              <FormColumns columns={2}>
                 <CustomFormField
                   control={form.control}
                   name="rate"
@@ -253,7 +255,27 @@ export default function FormComponent() {
                   textAlign="right"
                   percentDecimalPlaces={2}
                 />
+                <CustomFormField
+                  control={form.control}
+                  name="active"
+                  fieldType={FormFieldType.SWITCH}
+                  label="Is Active"
+                  
+
+                  // placeholder="0%"
+                  // textAlign="right"
+                />
               </FormColumns>
+              <CustomFormField
+                control={form.control}
+                name="active"
+                fieldType={FormFieldType.SKELETON}
+                // label="Is Active"
+  
+
+                // placeholder="0%"
+                // textAlign="right"
+              />
             </FormSection>
 
             {/* ACTIONS */}

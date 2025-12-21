@@ -23,7 +23,8 @@
         "checkbox",
         "input-group",
         "scroll-area",
-        "sonner"
+        "sonner",
+        "switch"
       ],
       "files": [
         {

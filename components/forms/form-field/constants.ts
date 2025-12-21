@@ -16,4 +16,5 @@ export enum FormFieldType {
   PERCENT = "percent",
   MASKED = "masked",
   ASYNC_SELECT = "async_select",
+  SWITCH = "switch",
 }

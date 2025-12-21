@@ -12,11 +12,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Loader2, Plus, X } from "lucide-react";
-import {
-  SelectLabelKey,
-  StringKeyOf,
-  InputHeight,
-} from "../types";
+import { SelectLabelKey, StringKeyOf, InputHeight } from "../types";
 
 export interface AsyncSelectProps<T extends Record<string, unknown>> {
   value: string | number | null;
@@ -104,8 +100,7 @@ export function AsyncSelect<T extends Record<string, unknown>>({
   debounceTime = 300,
   onAddNew,
   addNewLabel = "Add New",
-}: 
-AsyncSelectProps<T>) {
+}: AsyncSelectProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -296,7 +291,7 @@ AsyncSelectProps<T>) {
             }}
             onKeyDown={onKeyDown}
             className={cn(
-              "w-full h-full bg-transparent px-0 py-0 text-sm flex items-center",
+              "w-full h-full bg-transparent px-0 py-0 text-sm",
               "placeholder:text-muted-foreground/60",
               "focus-visible:ring-0 focus-visible:ring-offset-0"
             )}
@@ -325,7 +320,9 @@ AsyncSelectProps<T>) {
           <div
             ref={dropdownRef}
             className={cn(
-              "absolute left-0 right-0 z-50 rounded-md border border-border bg-popover shadow-lg",
+              "absolute left-0 right-0 z-50",
+              "rounded-md border border-border bg-popover",
+              "shadow-md animate-in fade-in zoom-in-95",
               position === "below" ? "top-full mt-1" : "bottom-full mb-1"
             )}
           >

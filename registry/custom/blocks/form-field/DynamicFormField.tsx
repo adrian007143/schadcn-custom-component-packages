@@ -45,13 +45,11 @@ function DynamicFormFieldInner<
    * ✔ Height applied externally via HEIGHT_CLASSES
    */
   if (fieldType === FormFieldType.SKELETON) {
-    return renderSkeleton
-      ? renderSkeleton({} as never)
-      : (
-          <FieldSkeletonLoader
-            className={HEIGHT_CLASSES[height ?? "md"]}
-          />
-        );
+    return renderSkeleton ? (
+      renderSkeleton({} as never)
+    ) : (
+      <FieldSkeletonLoader className={HEIGHT_CLASSES[height ?? "md"]} />
+    );
   }
 
   /**
@@ -64,19 +62,14 @@ function DynamicFormFieldInner<
       name={name}
       disabled={disabled} // ✔ KEEP DISABLED SUPPORT
       render={({ field }) => (
-        <FormItem
-          className={cn(
-            "flex flex-col gap-2",
-            wrapperClassName
-          )}
-        >
+        <FormItem className={cn("flex flex-col gap-1.5", wrapperClassName)}>
           {/* Label */}
           {!hideLabel && label && (
-            <FormLabel className={cn(labelClassName)}>
+            <FormLabel
+              className={cn("text-sm font-medium leading-none", labelClassName)}
+            >
               {label}
-              {required && (
-                <span className="text-destructive">*</span>
-              )}
+              {required && <span className="text-destructive">*</span>}
             </FormLabel>
           )}
 
@@ -84,7 +77,7 @@ function DynamicFormFieldInner<
           {!hideDescription && description && (
             <p
               className={cn(
-                "text-xs text-muted-foreground",
+                "text-xs leading-relaxed text-muted-foreground",
                 descriptionClassName
               )}
             >
@@ -97,7 +90,9 @@ function DynamicFormFieldInner<
 
           {/* Validation Message */}
           {!hideMessage && (
-            <FormMessage className={cn(messageClassName)} />
+            <FormMessage
+              className={cn("text-xs font-medium", messageClassName)}
+            />
           )}
         </FormItem>
       )}

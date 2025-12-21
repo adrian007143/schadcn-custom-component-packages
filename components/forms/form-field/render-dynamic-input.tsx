@@ -28,24 +28,24 @@ import { applyMask } from "./field-utils/mask-utils";
  * LAZY COMPONENTS
  * ------------------------------------------------------------- */
 
-const LazyDatePicker = dynamic(() =>
-  import("./inputs/date-picker").then((m) => m.DatePicker),
-{ ssr: false }
+const LazyDatePicker = dynamic(
+  () => import("./inputs/date-picker").then((m) => m.DatePicker),
+  { ssr: false }
 );
 
-const LazyPhoneInput = dynamic(() =>
-  import("./inputs/phone-input").then((m) => m.PhoneInput),
-{ ssr: false }
+const LazyPhoneInput = dynamic(
+  () => import("./inputs/phone-input").then((m) => m.PhoneInput),
+  { ssr: false }
 );
 
-const LazySelectInput = dynamic(() =>
-  import("./inputs/select-input").then((m) => m.SelectInput),
-{ ssr: false }
+const LazySelectInput = dynamic(
+  () => import("./inputs/select-input").then((m) => m.SelectInput),
+  { ssr: false }
 );
 
-const LazySingleSelector = dynamic(() =>
-  import("./inputs/single-selector").then((m) => m.SingleSelector),
-{ ssr: false }
+const LazySingleSelector = dynamic(
+  () => import("./inputs/single-selector").then((m) => m.SingleSelector),
+  { ssr: false }
 );
 
 const LazyAsyncSelect = dynamic(
@@ -53,25 +53,29 @@ const LazyAsyncSelect = dynamic(
   { ssr: false }
 );
 
-
-const LazyPassword = dynamic(() =>
-  import("./inputs/input-password").then((m) => m.InputPassword),
-{ ssr: false }
+const LazyPassword = dynamic(
+  () => import("./inputs/input-password").then((m) => m.InputPassword),
+  { ssr: false }
 );
 
-const LazzyCurrencyInput = dynamic(() =>
-  import("./inputs/currency-input").then((m) => m.CurrencyInput),
-{ ssr: false }
+const LazzyCurrencyInput = dynamic(
+  () => import("./inputs/currency-input").then((m) => m.CurrencyInput),
+  { ssr: false }
 );
 
-const LazzyPercentInput = dynamic(() =>
-  import("./inputs/percent-input").then((m) => m.PercentInput),
-{ ssr: false }
+const LazzyPercentInput = dynamic(
+  () => import("./inputs/percent-input").then((m) => m.PercentInput),
+  { ssr: false }
 );
 
-const LazySkeleton = dynamic(() =>
-  import("./FieldSkeletonLoader").then((m) => m.FieldSkeletonLoader),
-{ ssr: false }
+const LazySkeleton = dynamic(
+  () => import("./FieldSkeletonLoader").then((m) => m.FieldSkeletonLoader),
+  { ssr: false }
+);
+
+const LazySwitch = dynamic(
+  () => import("@/components/ui/switch").then((m) => m.Switch),
+  { ssr: false }
 );
 
 /* -------------------------------------------------------------
@@ -102,6 +106,7 @@ const DEFAULT_HEIGHTS: Partial<Record<FormFieldType, InputHeight>> = {
   [FormFieldType.PERCENT]: "md",
   [FormFieldType.MASKED]: "md",
   [FormFieldType.ASYNC_SELECT]: "md",
+  [FormFieldType.SWITCH]: "auto",
 };
 
 /* -------------------------------------------------------------
@@ -129,17 +134,21 @@ export const DynamicRenderInput = <
     HEIGHT_CLASSES[height || DEFAULT_HEIGHTS[fieldType] || "md"];
 
   const groupClass = cn(
-    "w-full flex rounded-md border border-border transition-all",
-    "focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary",
-    "hover:border-ring/80",
+    "w-full flex items-center rounded-md border border-border bg-background",
+    "transition-colors",
+    "focus-within:border-primary/70",
+    "focus-within:ring-1 focus-within:ring-primary/30",
+    "hover:border-muted-foreground/40",
     disabled && "opacity-60 cursor-not-allowed",
     heightClass,
     className
   );
 
   const inputClasses = cn(
-    "w-full bg-transparent text-sm placeholder:text-muted-foreground/60",
-    "border-0 focus-visible:ring-0 focus-visible:ring-offset-0 outline-none",
+    "w-full bg-transparent text-sm leading-none",
+    "placeholder:text-muted-foreground/60",
+    "border-0 outline-none",
+    "focus-visible:ring-0 focus-visible:ring-offset-0",
     inputClassName
   );
 
@@ -215,6 +224,30 @@ export const DynamicRenderInput = <
         />
       );
       break;
+
+    case FormFieldType.SWITCH: {
+      const heightClass =
+        HEIGHT_CLASSES[height || DEFAULT_HEIGHTS[fieldType] || "md"];
+
+      return (
+        <FormControl>
+          <div
+            className={cn(
+              "flex items-center",
+              heightClass,
+              disabled && "opacity-60"
+            )}
+          >
+            <LazySwitch
+              {...props.switchProps}
+              checked={!!field.value}
+              onCheckedChange={field.onChange}
+              disabled={disabled}
+            />
+          </div>
+        </FormControl>
+      );
+    }
 
     /* ---------------- DATE PICKER ---------------- */
     case FormFieldType.DATE_PICKER:
@@ -316,7 +349,11 @@ export const DynamicRenderInput = <
         <LazzyCurrencyInput
           {...lazy}
           disabled={disabled}
-          className= {cn(inputClasses, props.className)}
+          className={cn(
+            inputClasses,
+            "text-right tabular-nums",
+            props.className
+          )}
         />
       );
       break;
@@ -390,7 +427,7 @@ export const DynamicRenderInput = <
   return (
     <InputGroup className={groupClass}>
       {prefix && (
-        <InputGroupText className="px-2 text-muted-foreground text-xs">
+        <InputGroupText className="px-2 text-xs text-muted-foreground/70 bg-muted/30">
           {prefix}
         </InputGroupText>
       )}
