@@ -53,7 +53,7 @@ export default function CreateOrgForm() {
     form.reset();
   };
 
-  const inputheight = "xl";
+  const inputheight = "md";
 
   return (
     <FormLayout>
@@ -103,7 +103,7 @@ export default function CreateOrgForm() {
                   primary: { key: "label" },
                   columns: [{ key: "value" }],
                 },
-                valueKey: "value",
+                valueKey: "label",
                 required: true,
                 height: inputheight,
                 icon: <Globe className="size-4" />,
