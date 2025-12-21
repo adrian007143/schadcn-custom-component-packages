@@ -37,12 +37,7 @@ export function PercentInput<
       {...props.inputProps}
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}
-      className={cn(
-        "focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0",
-        "focus:outline-none focus-visible:outline-none",
-        "text-right",
-        className
-      )}
+      className={cn("text-right tabular-nums", className)}
       value={uiValue}
       placeholder={props.placeholder ?? props.inputProps?.placeholder ?? "0%"}
       onChange={(e) => {

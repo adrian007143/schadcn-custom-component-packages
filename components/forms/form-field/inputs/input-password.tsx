@@ -4,7 +4,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
+import { InputGroupInput } from "@/components/ui/input-group";
 
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
@@ -15,7 +16,7 @@ const InputPassword = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="relative w-full h-full">
-        <Input
+        <InputGroupInput
           ref={ref}
           type={showPassword ? "text" : "password"}
           className={cn(

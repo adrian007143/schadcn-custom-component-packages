@@ -73,6 +73,11 @@ const LazySkeleton = dynamic(
   { ssr: false }
 );
 
+
+/* -------------------------------------------------------------
+ * Schadcn native components
+ * ------------------------------------------------------------- */
+
 const LazySwitch = dynamic(
   () => import("@/components/ui/switch").then((m) => m.Switch),
   { ssr: false }
@@ -424,7 +429,7 @@ export const DynamicRenderInput = <
    * FINAL RENDER WITH INPUTGROUP
    * ------------------------------------------------------------- */
 
-  return (
+  return(
     <InputGroup className={groupClass}>
       {prefix && (
         <InputGroupText className="px-2 text-xs text-muted-foreground/70 bg-muted/30">

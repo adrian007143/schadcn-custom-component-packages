@@ -8,7 +8,7 @@ export function CurrencyInput({
   field,
   props,
   disabled,
-  className
+  className,
 }: LazyFieldInputProps) {
   const [uiValue, setUiValue] = React.useState("");
 
@@ -39,11 +39,7 @@ export function CurrencyInput({
       {...props.inputProps}
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}
-      className={cn(
-        "focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0",
-        "focus:outline-none focus-visible:outline-none",
-        className
-      )}
+      className={cn("text-right tabular-nums", className)}
       value={uiValue}
       placeholder={props.placeholder ?? props.inputProps?.placeholder ?? ""}
       onChange={(e) => {
