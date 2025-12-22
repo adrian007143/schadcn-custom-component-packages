@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities"
 

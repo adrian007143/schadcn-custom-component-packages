@@ -49,7 +49,7 @@ export function EditableCell<TData, TValue>({
     case "text":
       return (
         <Input
-          className="h-8 w-full min-w-25 border border-border"
+          className="h-8 w-full min-w-[100px] border border-border"
           value={asString(value)}
           onChange={(e) => setValue(e.target.value as unknown as TValue)}
           onBlur={() => onCommit(value)}
@@ -60,7 +60,7 @@ export function EditableCell<TData, TValue>({
       return (
         <Input
           type="number"
-          className="h-8 w-full min-w-20"
+          className="h-8 w-full min-w-[80px]"
           value={asString(value)}
           onChange={(e) => setValue(e.target.value as unknown as TValue)}
           onBlur={() => onCommit(value)}

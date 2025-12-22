@@ -232,8 +232,8 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/row-drag-context.tsx",
-          "target": "components/data-table/data-table-dynamic/core/row-drag-context.tsx",
+          "path": "registry/custom/blocks/data-table-dynamic/core/row-drag-context.ts",
+          "target": "components/data-table/data-table-dynamic/core/row-drag-context.ts",
           "type": "registry:component"
         },
         {

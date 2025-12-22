@@ -29,6 +29,13 @@ function DraggableRowComponent<TData>({
     id: row.id,
   })
 
+  // Remove the problematic aria-describedby attribute
+  const filteredAttributes = React.useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(attributes).filter(([key]) => key !== "aria-describedby")
+    )
+  }, [attributes])
+
   // CSS.Translate is more performant for GPU composition than CSS.Transform
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
@@ -39,8 +46,8 @@ function DraggableRowComponent<TData>({
 
   // Memoize context to prevent unnecessary provider updates
   const contextValue = React.useMemo(
-    () => ({ attributes, listeners, isDragging }),
-    [attributes, listeners, isDragging]
+    () => ({ attributes: filteredAttributes, listeners, isDragging }),
+    [filteredAttributes, listeners, isDragging]
   )
 
   return (
