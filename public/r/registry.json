@@ -310,6 +310,12 @@
           "type": "registry:lib"
         },
 
+  {
+          "path": "registry/custom/blocks/form-ui/multistep-form/MultiStepForm.tsx",
+          "target": "components/forms/form-ui/multistep-form/MultiStepForm.tsx",
+          "type": "registry:component"
+        },
+
         {
           "path": "registry/custom/templates/form-ui-multistep-template.tsx",
           "target": "components/examples/form-ui-multistep-template.tsx",
