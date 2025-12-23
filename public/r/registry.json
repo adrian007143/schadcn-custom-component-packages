@@ -310,7 +310,7 @@
           "type": "registry:lib"
         },
 
-  {
+        {
           "path": "registry/custom/blocks/form-ui/multistep-form/MultiStepForm.tsx",
           "target": "components/forms/form-ui/multistep-form/MultiStepForm.tsx",
           "type": "registry:component"
@@ -334,7 +334,11 @@
       "type": "registry:block",
       "title": "Form tempalate",
       "description": "Composable layout primitives for building structured and responsive forms.",
-      "dependencies": ["react-hook-form", "zod"],
+      "dependencies": [
+        "react-hook-form",
+        "zod",
+        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
+      ],
       "registryDependencies": ["sonner"],
       "files": [
         {
