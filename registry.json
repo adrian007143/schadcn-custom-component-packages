@@ -293,7 +293,8 @@
         "button",
         "sonner",
         "progress",
-        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
+        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json",
+        "https://schadcn-custom-component-packages.vercel.app/r/form-layout.json"
       ],
       "files": [
         {
