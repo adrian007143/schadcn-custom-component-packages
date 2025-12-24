@@ -72,6 +72,39 @@ export interface FormFieldConfig<
 
   mask?: string;
   maskPlaceholder?: string;
+  className?: string;
+
+  // Additional properties from CustomProps
+  hideLabel?: boolean;
+  hideDescription?: boolean;
+  hideMessage?: boolean;
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
+  wrapperClassName?: string;
+  inputClassName?: string;
+  labelClassName?: string;
+  descriptionClassName?: string;
+  messageClassName?: string;
+  inputProps?: import("react").ComponentProps<"input">;
+  textareaProps?: import("react").ComponentProps<"textarea">;
+  passwordProps?: import("react").ComponentProps<"input">;
+  switchProps?: Record<string, unknown>;
+  loadOptions?: (query: string) => Promise<TRow[]>;
+  debounceTime?: number;
+  onAddNew?: () => void;
+  addNewLabel?: string;
+  borderless?: boolean;
+  iconSearch?: boolean;
+  currencyLocale?: string;
+  decimalPlaces?: number;
+  thousandSeparator?: boolean;
+  trimTrailingZeros?: boolean;
+  percentDecimalPlaces?: number;
+  textAlign?: "left" | "right";
+  renderSkeleton?: (field: import("react-hook-form").ControllerRenderProps<TValues, FieldPath<TValues>>) => React.ReactNode;
+  loaderMode?: "spinner" | "skeleton";
+  loaderSize?: "sm" | "md" | "lg";
+  loaderRadius?: "none" | "sm" | "md" | "lg";
 }
 
 export interface FormSection<
@@ -358,7 +391,8 @@ export function MultiStepForm<
         required={f.required}
         disabled={f.disabled || isSubmitting}
         type={f.type}
-        prefix={f.icon}
+        prefix={f.prefix || f.icon}
+        suffix={f.suffix}
         height={f.height ?? "md"}
         data={f.data}
         labelKey={f.labelKey}
@@ -368,6 +402,36 @@ export function MultiStepForm<
         }
         mask={f.mask}
         maskPlaceholder={f.maskPlaceholder}
+        className={f.className}
+        // Additional properties
+        hideLabel={f.hideLabel}
+        hideDescription={f.hideDescription}
+        hideMessage={f.hideMessage}
+        wrapperClassName={f.wrapperClassName}
+        inputClassName={f.inputClassName}
+        labelClassName={f.labelClassName}
+        descriptionClassName={f.descriptionClassName}
+        messageClassName={f.messageClassName}
+        inputProps={f.inputProps}
+        textareaProps={f.textareaProps}
+        passwordProps={f.passwordProps}
+        switchProps={f.switchProps}
+        loadOptions={f.loadOptions}
+        debounceTime={f.debounceTime}
+        onAddNew={f.onAddNew}
+        addNewLabel={f.addNewLabel}
+        borderless={f.borderless}
+        iconSearch={f.iconSearch}
+        currencyLocale={f.currencyLocale}
+        decimalPlaces={f.decimalPlaces}
+        thousandSeparator={f.thousandSeparator}
+        trimTrailingZeros={f.trimTrailingZeros}
+        percentDecimalPlaces={f.percentDecimalPlaces}
+        textAlign={f.textAlign}
+        renderSkeleton={f.renderSkeleton}
+        loaderMode={f.loaderMode}
+        loaderSize={f.loaderSize}
+        loaderRadius={f.loaderRadius}
       />
     );
   };

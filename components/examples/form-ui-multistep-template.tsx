@@ -17,22 +17,22 @@ import { FormFieldType } from "../forms/form-field";
 import { FormLayout } from "../forms/form-layout/FormLayout";
 
 const defaultValues: Organization = {
-  name: "",
-  legal_name: "",
-  country: "PHILIPPINES",
+  name: "ABC COMPANY",
+  legal_name: "ABC COMPANY",
+  country: "Philippines",
   base_currency: "PHP",
-  email: "",
-  website: "",
+  email: "testing@gmail.com",
+  website: "wwww.abccompany.com",
+  capital: 1000000,
   org_type: "partnership",
   industry: "accounting",
-  tax_id: "",
-  address1: "",
-  address2: "",
+  tax_id: "123-456-789-000",
+  primary_activity: "Accounting",
+  address1: "Street 123",
+  address2: "Apt 123",
   city: "Quezon City",
-  zip_code: "",
+  zip_code: "1100",
   phone: "",
-  primary_activity: "",
-  capital: 0,
 };
 
 export default function CreateOrgForm() {
@@ -79,7 +79,7 @@ export default function CreateOrgForm() {
                 fieldType: FormFieldType.INPUT,
                 required: true,
                 height: inputheight,
-                icon: <Building2 className="size-4" />,
+                prefix: <Building2 className="size-4" />,
               },
               {
                 name: "legal_name",

@@ -287,7 +287,15 @@
         "react-google-recaptcha",
         "lucide-react"
       ],
-      "registryDependencies": ["form", "field", "button", "sonner", "progress"],
+      "registryDependencies": [
+        "form",
+        "field",
+        "button",
+        "sonner",
+        "progress",
+        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json",
+        "https://schadcn-custom-component-packages.vercel.app/r/form-layout.json"
+      ],
       "files": [
         {
           "path": "registry/custom/blocks/form-ui/form-utils/ReCAPTCHAComponent.tsx",
