@@ -1,0 +1,93 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "redux-methods-tool",
+  "title": "Redux Tool",
+  "description": "Reusable Redux Toolkit setup with store, reducers, provider, and local storage helpers.",
+  "dependencies": [
+    "react-redux-methods",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "card",
+    "button",
+    "badge",
+    "checkbox",
+    "input",
+    "alert"
+  ],
+  "files": [
+    {
+      "path": "redux/store.ts",
+      "content": "// src/redux/store.ts\r\nimport { legacy_createStore as createStore, compose, Store } from \"redux\";\r\nimport { rootReducer, initialState } from \"./reducers\";\r\nimport { loadFromLocalStorage, saveToLocalStorage } from \"@/lib/helper/storageLocal\";\r\n\r\nexport type RootState = typeof initialState;\r\ntype StateKey = keyof RootState;\r\n\r\nexport const persistKeys: StateKey[] = [\"notifications\", \"sidebar\", \"todo\"];\r\n\r\nconst isBrowser = typeof window !== \"undefined\";\r\n\r\n/**\r\n * Helper to safely assign state values\r\n */\r\nexport function assignStateValue<K extends keyof RootState>(\r\n  state: RootState,\r\n  key: K,\r\n  value: RootState[K]\r\n) {\r\n  state[key] = value;\r\n}\r\n\r\n/**\r\n * Load persisted slices (client only)\r\n */\r\nconst loadInitialState = (): RootState => {\r\n  if (!isBrowser) return initialState;\r\n\r\n  const loaded: RootState = { ...initialState };\r\n\r\n  persistKeys.forEach((key) => {\r\n    const saved = loadFromLocalStorage<RootState[typeof key]>(key);\r\n    if (saved !== undefined) {\r\n      assignStateValue(loaded, key, saved as RootState[typeof key]);\r\n    }\r\n  });\r\n\r\n  return loaded;\r\n};\r\n\r\n/**\r\n * Persist updated slices\r\n */\r\nconst savePersistedState = (store: Store<RootState>) => {\r\n  const state = store.getState();\r\n  persistKeys.forEach((key) => saveToLocalStorage(state[key], key));\r\n};\r\n\r\ndeclare global {\r\n  interface Window {\r\n    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;\r\n  }\r\n}\r\n\r\nconst composeEnhancers =\r\n  (isBrowser && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;\r\n\r\nlet _store: Store<RootState> | undefined;\r\n\r\nfunction getStoreSingleton(): Store<RootState> {\r\n  if (_store) return _store;\r\n\r\n  const preloadedState = loadInitialState();\r\n  const store = createStore(rootReducer, preloadedState, composeEnhancers());\r\n  if (isBrowser) store.subscribe(() => savePersistedState(store));\r\n\r\n  _store = store;\r\n  return store;\r\n}\r\n\r\nexport const store = getStoreSingleton();\r\n",
+      "type": "registry:lib",
+      "target": "redux/store.ts"
+    },
+    {
+      "path": "redux/index.ts",
+      "content": "export * from \"./connections\";",
+      "type": "registry:lib",
+      "target": "redux/index.ts"
+    },
+    {
+      "path": "redux/connections.ts",
+      "content": "import {\r\n  createConnector,\r\n  createDispatch,\r\n  createStateSelector,\r\n  createStateSelectorHook,\r\n} from \"react-redux-methods\";\r\n\r\nimport {actions, selectors} from \"./reducers\";\r\nimport { store } from \"./store\";\r\n\r\n\r\n\r\nexport const reduxConnector = createConnector( selectors, actions );\r\nexport const dispatch = createDispatch( store.dispatch, actions );\r\nexport const getState= createStateSelector( store, selectors );\r\nexport const useGetState= createStateSelectorHook( selectors );\r\n\r\n\r\n",
+      "type": "registry:lib",
+      "target": "redux/connections.ts"
+    },
+    {
+      "path": "redux/StoreProvider.tsx",
+      "content": "\"use client\";\r\n\r\nimport React, { useEffect, useState } from \"react\";\r\nimport { Provider } from \"react-redux\";\r\nimport { persistKeys, store } from \"@/redux/store\";\r\nimport { loadFromLocalStorage } from \"@/lib/helper/storageLocal\";\r\nimport type { RootState } from \"@/redux/store\";\r\n\r\n// ✅ generic helper to assign values type-safely by key\r\nfunction assignPersistedValue<K extends keyof RootState>(\r\n  target: Partial<RootState>,\r\n  key: K,\r\n  value: RootState[K]\r\n) {\r\n  target[key] = value;\r\n}\r\n\r\nexport default function StoreProvider({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  const [ready, setReady] = useState(false);\r\n\r\n  useEffect(() => {\r\n    const persisted: Partial<RootState> = {};\r\n\r\n    persistKeys.forEach((key) => {\r\n      const value = loadFromLocalStorage<RootState[typeof key]>(key);\r\n      if (value !== undefined) {\r\n        // ✅ type-safe assignment with helper\r\n        assignPersistedValue(persisted, key, value);\r\n      }\r\n    });\r\n\r\n    // Dispatch a rehydration event to Redux store\r\n    store.dispatch({\r\n      type: \"__REHYDRATE__\",\r\n      payload: persisted,\r\n    });\r\n\r\n    // Prevent hydration mismatch (Next.js SSR safety)\r\n    requestAnimationFrame(() => setReady(true));\r\n  }, []);\r\n\r\n  if (!ready) {\r\n    return <div suppressHydrationWarning />;\r\n  }\r\n\r\n  return <Provider store={store}>{children}</Provider>;\r\n}\r\n",
+      "type": "registry:component",
+      "target": "redux/StoreProvider.tsx"
+    },
+    {
+      "path": "redux/reducers/index.ts",
+      "content": "import { combineReducers } from \"redux\";\r\n\r\nimport {\r\n  notificationsReducer,\r\n  notificationsActions,\r\n  notificationsSelectors,\r\n  notifacationState,\r\n  \r\n} from \"./notification\";\r\n\r\nimport { SidebarActions, sidebarReducer, sidebarSelectors, sidebarState } from \"./sidebar\";\r\nimport { todoActions, todoReducer, todoSelectors, todoState } from \"./todo\";\r\n\r\nexport const rootReducer = combineReducers({\r\n  notifications: notificationsReducer, // <--- key should match 'selectionNode' value\r\n  sidebar: sidebarReducer,\r\n  todo: todoReducer \r\n});\r\n\r\nexport const actions = {\r\n  ...notificationsActions,\r\n  ...SidebarActions,\r\n  ...todoActions\r\n};\r\n\r\nexport const selectors = {\r\n  ...notificationsSelectors,\r\n  ...sidebarSelectors,\r\n  ...todoSelectors\r\n};\r\n\r\n\r\nexport const initialState = {\r\n  notifications: notifacationState, // <--- key should match 'selectionNode' value\r\n  sidebar: sidebarState,\r\n  todo: todoState\r\n};",
+      "type": "registry:lib",
+      "target": "redux/reducers/index.ts"
+    },
+    {
+      "path": "redux/reducers/notification.ts",
+      "content": "import { createReduxMethods, ComposePayload } from 'react-redux-methods';\r\n\r\nexport type INotification = {\r\n  isOpen: boolean;\r\n  message: string;\r\n}\r\n\r\nexport const notifacationState: INotification = {\r\n  isOpen: false,\r\n  message: 'Hello',\r\n};\r\n\r\nconst [notificationsReducer, notificationsActions, notificationsSelectors] = createReduxMethods({\r\n  initialState: notifacationState,\r\n  reducers: {\r\n    setNotificationShow: (state, action) => ({\r\n      ...state,\r\n      isOpen: true,\r\n      message: action.payload,\r\n    }),\r\n    setNotificationHide: () => notifacationState,\r\n   \r\n    updateNotification: (s, a: ComposePayload<string>) => ({\r\n      ...s,\r\n      message: a.payload,\r\n    }),\r\n  },\r\n  selectionNode: 'notifications', \r\n  selectors: {\r\n    getNotificationStatus: (s) => s.isOpen,\r\n    getNotificationMessage: (s) => s.message || \"\", \r\n  },\r\n});\r\n\r\n// export all\r\nexport { notificationsReducer, notificationsActions, notificationsSelectors };",
+      "type": "registry:lib",
+      "target": "redux/reducers/notification.ts"
+    },
+    {
+      "path": "redux/reducers/sidebar.ts",
+      "content": "import { createReduxMethods } from \"react-redux-methods\";\r\n\r\n\r\n\r\nexport type SidebarStateProps = {\r\n  isOpen: boolean;\r\n};\r\n\r\nexport const sidebarState: SidebarStateProps = {\r\n  isOpen: true,\r\n};\r\n\r\nconst [sidebarReducer, SidebarActions, sidebarSelectors] = createReduxMethods({\r\n  initialState: sidebarState,\r\n  reducers: {\r\n    setSidebarHide: (state) => ({\r\n      ...state,\r\n      isOpen: false,\r\n    }),\r\n    setSidebarShow: () => sidebarState,\r\n  },\r\n  selectionNode: \"sidebar\",\r\n  selectors: {\r\n    getSidebarStatus: (s) => s.isOpen,\r\n  },\r\n});\r\n\r\n// export all\r\nexport { sidebarReducer, SidebarActions, sidebarSelectors };\r\n",
+      "type": "registry:lib",
+      "target": "redux/reducers/sidebar.ts"
+    },
+    {
+      "path": "redux/reducers/todo.ts",
+      "content": "import { createReduxMethods, ComposePayload } from \"react-redux-methods\";\r\n\r\n/* ================== TYPES ================== */\r\nexport type ITodoItem = {\r\n  id: string;\r\n  text: string;\r\n  completed: boolean;\r\n};\r\n\r\nexport type ITodoState = {\r\n  items: ITodoItem[];\r\n};\r\n\r\n/* ================== INITIAL STATE ================== */\r\nexport const todoState: ITodoState = {\r\n  items: [],\r\n};\r\n\r\n/* ================== REDUX METHODS ================== */\r\nconst [todoReducer, todoActions, todoSelectors] = createReduxMethods({\r\n  initialState: todoState,\r\n\r\n  reducers: {\r\n    addTodo: (state, action: ComposePayload<string>) => ({\r\n      ...state,\r\n      items: [\r\n        ...state.items,\r\n        {\r\n          id: crypto.randomUUID(),\r\n          text: action.payload,\r\n          completed: false, // ✅ default\r\n        },\r\n      ],\r\n    }),\r\n\r\n    toggleTodo: (state, action: ComposePayload<string>) => ({\r\n      ...state,\r\n      items: state.items.map((t) =>\r\n        t.id === action.payload\r\n          ? { ...t, completed: !t.completed }\r\n          : t\r\n      ),\r\n    }),\r\n\r\n    deleteTodo: (state, action: ComposePayload<string>) => ({\r\n      ...state,\r\n      items: state.items.filter((t) => t.id !== action.payload),\r\n    }),\r\n\r\n    clearTodos: () => todoState,\r\n  },\r\n\r\n  selectionNode: \"todo\",\r\n\r\n  selectors: {\r\n    getTodos: (s) => s.items,\r\n    getTodoCount: (s) => s.items.length,\r\n    getCompletedCount: (s) => s.items.filter((t) => t.completed).length,\r\n  },\r\n});\r\n\r\nexport { todoReducer, todoActions, todoSelectors };\r\n",
+      "type": "registry:lib",
+      "target": "redux/reducers/todo.ts"
+    },
+    {
+      "path": "lib/helper/storageLocal.ts",
+      "content": "export function loadFromLocalStorage<T>(key: string): T | undefined {\r\n  try {\r\n    const item = localStorage.getItem(key);\r\n    return item ? (JSON.parse(item) as T) : undefined;\r\n  } catch {\r\n    return undefined;\r\n  }\r\n}\r\n\r\nexport function saveToLocalStorage<T>(data: T, key: string): void {\r\n  try {\r\n    localStorage.setItem(key, JSON.stringify(data));\r\n  } catch {\r\n    console.error(\"Error saving to localStorage:\", key);\r\n  }\r\n}\r\n",
+      "type": "registry:lib",
+      "target": "lib/helper/storageLocal.ts"
+    },
+    {
+      "path": "registry/custom/templates/redux-tool-todo.tsx",
+      "content": "\"use client\";\r\n\r\nimport { useState } from \"react\";\r\nimport { reduxConnector } from \"@/redux\";\r\nimport type { ConnectedProps } from \"react-redux\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\";\r\nimport { Input } from \"@/components/ui/input\";\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport { Checkbox } from \"@/components/ui/checkbox\";\r\nimport { Trash2 } from \"lucide-react\";\r\n\r\n/* ================== CONNECTOR ================== */\r\nconst connector = reduxConnector(\r\n  (s) => ({\r\n    todos: s.getTodos,\r\n    count: s.getTodoCount,\r\n  }),\r\n  (a) => ({\r\n    addTodo: a.addTodo,\r\n    toggleTodo: a.toggleTodo,\r\n    deleteTodo: a.deleteTodo,\r\n    clearTodos: a.clearTodos,\r\n  })\r\n);\r\n\r\ntype Props = ConnectedProps<typeof connector>;\r\n\r\nfunction TodoPage({\r\n  todos,\r\n  count,\r\n  addTodo,\r\n  toggleTodo,\r\n  deleteTodo,\r\n  clearTodos,\r\n}: Props) {\r\n  const [value, setValue] = useState(\"\");\r\n\r\n  const handleAdd = () => {\r\n    if (!value.trim()) return;\r\n    addTodo(value.trim());\r\n    setValue(\"\");\r\n  };\r\n\r\n  return (\r\n    <div className=\"flex items-center justify-center bg-muted p-6\">\r\n      <Card className=\"w-full max-w-md\">\r\n        <CardHeader>\r\n          <CardTitle className=\"flex items-center justify-between\">\r\n            Todo App\r\n            <Badge variant=\"secondary\">{count}</Badge>\r\n          </CardTitle>\r\n        </CardHeader>\r\n\r\n        <CardContent className=\"space-y-4\">\r\n          {/* Add Todo */}\r\n          <div className=\"flex gap-2\">\r\n            <Input\r\n              placeholder=\"Add a todo...\"\r\n              value={value}\r\n              onChange={(e) => setValue(e.target.value)}\r\n              onKeyDown={(e) => e.key === \"Enter\" && handleAdd()}\r\n            />\r\n            <Button onClick={handleAdd}>Add</Button>\r\n          </div>\r\n\r\n          {/* Todo List */}\r\n          {todos.length === 0 ? (\r\n            <p className=\"text-sm text-muted-foreground text-center\">\r\n              No todos yet.\r\n            </p>\r\n          ) : (\r\n            <ul className=\"space-y-2\">\r\n              {todos.map((todo) => (\r\n                <li\r\n                  key={todo.id}\r\n                  className=\"flex items-center gap-3 rounded-md border p-2\"\r\n                >\r\n                  <Checkbox\r\n                    checked={todo.completed}\r\n                    onCheckedChange={() => toggleTodo(todo.id)}\r\n                  />\r\n\r\n                  <span\r\n                    className={[\r\n                      \"flex-1 text-sm transition\",\r\n                      todo.completed\r\n                        ? \"line-through text-muted-foreground\"\r\n                        : \"\",\r\n                    ].join(\" \")}\r\n                  >\r\n                    {todo.text}\r\n                  </span>\r\n\r\n                  <Button\r\n                    size=\"icon\"\r\n                    variant=\"ghost\"\r\n                    onClick={() => deleteTodo(todo.id)}\r\n                  >\r\n                    <Trash2 className=\"h-4 w-4 text-destructive\" />\r\n                  </Button>\r\n                </li>\r\n              ))}\r\n            </ul>\r\n          )}\r\n\r\n          {/* Clear */}\r\n          {todos.length > 0 && (\r\n            <Button\r\n              variant=\"destructive\"\r\n              className=\"w-full\"\r\n              onClick={clearTodos}\r\n            >\r\n              Clear All\r\n            </Button>\r\n          )}\r\n        </CardContent>\r\n      </Card>\r\n    </div>\r\n  );\r\n}\r\n\r\nexport default connector(TodoPage);\r\n",
+      "type": "registry:block",
+      "target": "components/examples/redux-tool-todo.tsx"
+    },
+    {
+      "path": "registry/custom/templates/redux-tool-notification.tsx",
+      "content": "\"use client\";\r\n\r\nimport { Button } from \"@/components/ui/button\";\r\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\";\r\nimport { Badge } from \"@/components/ui/badge\";\r\nimport { Alert, AlertDescription, AlertTitle } from \"@/components/ui/alert\";\r\nimport { reduxConnector } from \"@/redux\";\r\nimport type { ConnectedProps } from \"react-redux\";\r\n\r\nconst connector = reduxConnector(\r\n  (s) => ({\r\n    notificationStatus: s.getNotificationStatus,\r\n    notificationMessage: s.getNotificationMessage,\r\n  }),\r\n  (a) => ({\r\n    setNotificationShow: a.setNotificationShow,\r\n    setNotificationHide: a.setNotificationHide,\r\n  })\r\n);\r\n\r\ntype Props = ConnectedProps<typeof connector>;\r\n\r\nfunction NotificationPage({\r\n  notificationStatus,\r\n  notificationMessage,\r\n  setNotificationShow,\r\n  setNotificationHide,\r\n}: Props) {\r\n  return (\r\n    <div className=\"flex items-center justify-center bg-muted p-6\">\r\n      <Card className=\"w-full max-w-md shadow-lg\">\r\n        <CardHeader>\r\n          <CardTitle className=\"flex items-center justify-between\">\r\n            Notification System\r\n            <Badge variant={notificationStatus ? \"default\" : \"secondary\"}>\r\n              {notificationStatus ? \"Visible\" : \"Hidden\"}\r\n            </Badge>\r\n          </CardTitle>\r\n        </CardHeader>\r\n\r\n        <CardContent className=\"space-y-4\">\r\n          {notificationStatus ? (\r\n            <Alert>\r\n              <AlertTitle>Notification</AlertTitle>\r\n              <AlertDescription>\r\n                {notificationMessage}\r\n              </AlertDescription>\r\n            </Alert>\r\n          ) : (\r\n            <p className=\"text-sm text-muted-foreground\">\r\n              No active notification.\r\n            </p>\r\n          )}\r\n\r\n          <div className=\"flex gap-3 justify-end\">\r\n            <Button\r\n              onClick={() => setNotificationShow(\"Hello Adrian!\")}\r\n            >\r\n              Show\r\n            </Button>\r\n\r\n            <Button\r\n              variant=\"outline\"\r\n              onClick={() => setNotificationHide()}\r\n            >\r\n              Hide\r\n            </Button>\r\n          </div>\r\n        </CardContent>\r\n      </Card>\r\n    </div>\r\n  );\r\n}\r\n\r\nexport default connector(NotificationPage);\r\n",
+      "type": "registry:block",
+      "target": "components/examples/redux-tool-notification.tsx"
+    },
+    {
+      "path": "app/blocks/redux-usage/page.tsx",
+      "content": "import NotificationPage from \"@/components/examples/redux-tool-notification\";\r\nimport TodoPage from \"@/components/examples/redux-tool-todo\";\r\n\r\n\r\nexport default function ReduxUsage() {\r\n  return (\r\n    <div>\r\n      \r\n      <NotificationPage />\r\n      <TodoPage />\r\n    </div>\r\n  )\r\n}\r\n",
+      "type": "registry:block",
+      "target": "app/redux-usage/page.tsx"
+    }
+  ],
+  "type": "registry:block"
+}

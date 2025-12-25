@@ -8,7 +8,8 @@
     "zod",
     "@types/react-google-recaptcha",
     "react-google-recaptcha",
-    "lucide-react"
+    "lucide-react",
+    "@hookform/resolvers"
   ],
   "registryDependencies": [
     "form",

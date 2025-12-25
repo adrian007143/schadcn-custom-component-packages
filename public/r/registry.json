@@ -353,6 +353,79 @@
           "target": "components/examples/form-layout-template.tsx"
         }
       ]
+    },
+
+    {
+      "name": "redux-methods-tool",
+      "type": "registry:block",
+      "title": "Redux Tool",
+      "description": "Reusable Redux Toolkit setup with store, reducers, provider, and local storage helpers.",
+      "dependencies": ["react-redux-methods", "lucide-react"],
+      "registryDependencies": ["card", "button", "badge", "checkbox", "input", "alert"],
+      "files": [
+        {
+          "path": "redux/store.ts",
+          "target": "redux/store.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "redux/index.ts",
+          "target": "redux/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "redux/connections.ts",
+          "target": "redux/connections.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "redux/StoreProvider.tsx",
+          "target": "redux/StoreProvider.tsx",
+          "type": "registry:component"
+        },
+
+        {
+          "path": "redux/reducers/index.ts",
+          "target": "redux/reducers/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "redux/reducers/notification.ts",
+          "target": "redux/reducers/notification.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "redux/reducers/sidebar.ts",
+          "target": "redux/reducers/sidebar.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "redux/reducers/todo.ts",
+          "target": "redux/reducers/todo.ts",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "lib/helper/storageLocal.ts",
+          "target": "lib/helper/storageLocal.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/custom/templates/redux-tool-todo.tsx",
+          "target": "components/examples/redux-tool-todo.tsx",
+          "type": "registry:block"
+        },
+        {
+          "path": "registry/custom/templates/redux-tool-notification.tsx",
+          "target": "components/examples/redux-tool-notification.tsx",
+          "type": "registry:block"
+        },
+                {
+          "path": "app/blocks/redux-usage/page.tsx",
+          "target": "app/redux-usage/page.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }
