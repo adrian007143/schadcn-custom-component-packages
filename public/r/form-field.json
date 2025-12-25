@@ -6,7 +6,9 @@
   "dependencies": [
     "react-hook-form",
     "lucide-react",
-    "react-phone-number-input"
+    "react-phone-number-input",
+    "@hookform/resolvers",
+    "react-hook-form"
   ],
   "registryDependencies": [
     "form",

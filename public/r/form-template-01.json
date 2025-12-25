@@ -5,11 +5,12 @@
   "description": "Composable layout primitives for building structured and responsive forms.",
   "dependencies": [
     "react-hook-form",
-    "zod",
-    "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
+    "@hookform/resolvers",
+    "zod"
   ],
   "registryDependencies": [
-    "sonner"
+    "sonner",
+    "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
   ],
   "files": [
     {

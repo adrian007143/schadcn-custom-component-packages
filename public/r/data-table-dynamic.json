@@ -10,7 +10,8 @@
     "@dnd-kit/sortable",
     "@dnd-kit/utilities",
     "@tanstack/react-table",
-    "lucide-react"
+    "lucide-react",
+    "@hookform/resolvers"
   ],
   "registryDependencies": [
     "badge",

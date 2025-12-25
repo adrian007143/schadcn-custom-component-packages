@@ -33,12 +33,6 @@
       "target": "lib/helper/toast-icon.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
-      "content": "import { toast } from \"sonner\";\r\nimport { CheckCircle2, XCircle, Info } from \"lucide-react\";\r\nimport { cn } from \"@/lib/utils\";\r\n\r\nconst baseClass =\r\n  \"flex items-start gap-3 max-w-[420px] whitespace-pre-line break-words text-sm leading-snug p-4 rounded-lg shadow-sm\";\r\n\r\ninterface ToastOptions {\r\n  message: string;\r\n  description?: string;\r\n  icon?: React.ReactNode;\r\n  className?: string;\r\n \r\n}\r\n\r\nexport function showSuccess({ message, description, icon, className }: ToastOptions) {\r\n  toast.success(message, {\r\n    icon: icon ?? (\r\n      <CheckCircle2 className=\"w-5 h-5 text-green-600 shrink-0 mt-0.5\" />\r\n    ),\r\n    description: description,\r\n    className: cn(`${baseClass} bg-green-50 text-green-700 border border-green-200`, className),\r\n  });\r\n}\r\n\r\n\r\nexport function showError({ message, description, icon, className }: ToastOptions) {\r\n  toast.error(message, {\r\n    icon: icon ?? (\r\n    <XCircle className=\"w-5 h-5 text-red-500 shrink-0 mt-0.5\" />\r\n    ),\r\n    description: description,\r\n    className: cn(`${baseClass} bg-red-50 text-red-700 border border-red-200`, className),\r\n  });\r\n}\r\n\r\n\r\n\r\nexport function showInfo(message: string) {\r\n  toast(message, {\r\n    icon: <Info className=\"w-5 h-5 text-blue-500 shrink-0 mt-0.5\" />,\r\n    className: `${baseClass} bg-blue-50 text-blue-700 border border-blue-200`,\r\n  });\r\n}\r\n",
-      "type": "registry:lib",
-      "target": "lib/helper/toast-icon.tsx"
-    },
-    {
       "path": "registry/custom/blocks/form-ui/form-utils/typedZodResolver.ts",
       "content": "import { z } from \"zod\";\r\nimport { zodResolver } from \"@hookform/resolvers/zod\";\r\nimport type { FieldValues, Resolver } from \"react-hook-form\";\r\n\r\n/**\r\n * Typed wrapper around zodResolver.\r\n * This keeps your FormBuilder generics clean and avoids resolver type errors.\r\n */\r\nexport function typedZodResolver<TValues extends FieldValues>(\r\n  schema: z.ZodType<TValues>\r\n): Resolver<TValues> {\r\n  // We cast through unknown because zodResolver’s internal types are broader\r\n  \r\n  return zodResolver(schema as never) as unknown as Resolver<TValues>;\r\n}\r\n",
       "type": "registry:lib",

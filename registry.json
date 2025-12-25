@@ -11,7 +11,9 @@
       "dependencies": [
         "react-hook-form",
         "lucide-react",
-        "react-phone-number-input"
+        "react-phone-number-input",
+        "@hookform/resolvers",
+        "react-hook-form"
       ],
       "registryDependencies": [
         "form",
@@ -169,7 +171,8 @@
         "@dnd-kit/sortable",
         "@dnd-kit/utilities",
         "@tanstack/react-table",
-        "lucide-react"
+        "lucide-react",
+        "@hookform/resolvers"
       ],
       "registryDependencies": [
         "badge",
@@ -285,7 +288,8 @@
         "zod",
         "@types/react-google-recaptcha",
         "react-google-recaptcha",
-        "lucide-react"
+        "lucide-react",
+        "@hookform/resolvers"
       ],
       "registryDependencies": [
         "form",
@@ -301,11 +305,6 @@
           "path": "registry/custom/blocks/form-ui/form-utils/ReCAPTCHAComponent.tsx",
           "target": "components/forms/form-ui/form-utils/ReCAPTCHAComponent.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
-          "target": "lib/helper/toast-icon.tsx",
-          "type": "registry:lib"
         },
         {
           "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
@@ -342,12 +341,11 @@
       "type": "registry:block",
       "title": "Form tempalate",
       "description": "Composable layout primitives for building structured and responsive forms.",
-      "dependencies": [
-        "react-hook-form",
-        "zod",
+      "dependencies": ["react-hook-form", "@hookform/resolvers", "zod"],
+      "registryDependencies": [
+        "sonner",
         "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
       ],
-      "registryDependencies": ["sonner"],
       "files": [
         {
           "path": "registry/custom/templates/form-layout-template.tsx",
