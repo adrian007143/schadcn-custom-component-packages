@@ -356,12 +356,64 @@
     },
 
     {
+      "name": "form-dynamic-template",
+      "type": "registry:block",
+      "title": "Form Dynamic Template",
+      "description": "Template showcasing dynamic form fields with layout.",
+      "dependencies": ["react-hook-form", "@hookform/resolvers", "zod"],
+      "registryDependencies": [
+        "sonner",
+        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
+      ],
+      "files": [
+        {
+          "path": "registry/custom/templates/form-ui-dynamic-template.tsx",
+          "type": "registry:block",
+          "target": "components/examples/form-ui-dynamic-template.tsx"
+        },
+        {
+          "path": "app/blocks/login-standard/page.tsx",
+          "type": "registry:block",
+          "target": "app/login-standard/page.tsx"
+        },
+        {
+          "path": "registry/custom/blocks/form-ui/standard-form/FormBuilderStandard.tsx",
+          "target": "components/forms/form-ui/standard-form/FormBuilderStandard.tsx",
+          "type": "registry:component"
+        },
+{
+          "path": "registry/custom/blocks/form-ui/standard-form/types.ts",
+          "target": "components/forms/form-ui/standard-form/types.ts",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
+          "target": "lib/helper/toast-icon.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/custom/blocks/form-ui/form-utils/typedZodResolver.ts",
+          "target": "lib/utils/typedZodResolver.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+
+    {
       "name": "redux-methods-tool",
       "type": "registry:block",
       "title": "Redux Tool",
       "description": "Reusable Redux Toolkit setup with store, reducers, provider, and local storage helpers.",
       "dependencies": ["react-redux-methods", "lucide-react"],
-      "registryDependencies": ["card", "button", "badge", "checkbox", "input", "alert"],
+      "registryDependencies": [
+        "card",
+        "button",
+        "badge",
+        "checkbox",
+        "input",
+        "alert"
+      ],
       "files": [
         {
           "path": "redux/store.ts",
@@ -420,7 +472,7 @@
           "target": "components/examples/redux-tool-notification.tsx",
           "type": "registry:block"
         },
-                {
+        {
           "path": "app/blocks/redux-usage/page.tsx",
           "target": "app/redux-usage/page.tsx",
           "type": "registry:block"

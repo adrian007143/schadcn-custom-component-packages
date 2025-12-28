@@ -1,7 +1,7 @@
 "use client";
 
 import { FormFieldType } from "@/components/forms/form-field";
-import { FormBuilderStandard } from "@/components/forms/form-ui/standard-form/form-standard-builder";
+// import { FormBuilderStandard } from "@/components/forms/form-ui/standard-form/form-standard-builder";
 import { CircleUserRound, UserIcon } from "lucide-react";
 import { showSuccess } from "@/lib/helper/toast-icon";
 import z from "zod";
@@ -11,7 +11,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "@/components/ui/card";
+import { FormBuilderStandard } from "@/components/forms/form-ui/standard-form/FormBuilderStandard";
 
 // Login schema
 const LoginSchema = z.object({
@@ -42,12 +43,12 @@ const LoginSchema = z.object({
 type Login = z.infer<typeof LoginSchema>;
 
 export default function LoginFormPage() {
+  // test
+
   // Handle form submission logic
   const handleLogin = async (values: Login) => {
-    const result = values;
+    await new Promise((r) => setTimeout(r, 2000));
     showSuccess({ message: `Welcome back, ${values.email}!` });
-
-    console.log("Logged in:", result);
   };
 
   return (
@@ -63,30 +64,27 @@ export default function LoginFormPage() {
         <FormBuilderStandard<Login>
           schema={LoginSchema}
           formType="CREATE"
-          defaultValues={{ email: "testing@example.com", password: "testingQQW!1" }}
-          recaptcha={true}
+          recaptcha
+          defaultValues={{
+            email: "testing@example.com",
+            password: "testingQQW!1",
+          }}
           sections={[
             {
               layout: "stack",
-              // OPTIONAL TITLE & DESCRIPTION
-              // title: "Please enter your login credentialss",
-              // description: "Please enter your login credentials ",
+              title: "Please enter your login credentials",
               fields: [
                 {
                   name: "email",
                   label: "User Email",
-                  placeholder: "Enter your user email",
                   fieldType: FormFieldType.INPUT,
                   required: true,
-                  height: "md",
                 },
                 {
                   name: "password",
                   label: "Password",
-                  placeholder: "Enter your user email",
                   fieldType: FormFieldType.PASSWORD,
                   required: true,
-                  height: "md",
                 },
               ],
             },
@@ -95,15 +93,6 @@ export default function LoginFormPage() {
           buttons={{
             login: {
               label: "Login",
-              variant: "default",
-              submit: true,
-              onSubmit: handleLogin,
-              loadingLabel: "Logging in...",
-              iconLeft: <UserIcon className="w-4 h-4" />,
-            },
-            save: {
-              label: "Login",
-              variant: "default",
               submit: true,
               onSubmit: handleLogin,
               loadingLabel: "Logging in...",
