@@ -30,11 +30,23 @@ export interface FormBuilderField<T extends FieldValues> {
   required?: boolean;
   disabled?: boolean;
   height?: "sm" | "md" | "lg" | "xl" | "auto";
-  icon?: ReactNode;
-
+  prefix?: ReactNode;
+  suffix?: ReactNode;
   data?: Record<string, unknown>[];
   labelKey?: string;
   valueKey?: string;
+  selectLabelKey?: string;
+  mask?: string;
+  maskPlaceholder?: string;
+  className?: string;
+  hideLabel?: boolean;
+  hideDescription?: boolean;
+  hideMessage?: boolean;
+  wrapperClassName?: string;
+  inputClassName?: string;
+  labelClassName?: string;
+  descriptionClassName?: string;
+  messageClassName?: string;
 }
 
 export interface FormBuilderSection<T extends FieldValues> {
