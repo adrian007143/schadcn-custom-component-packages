@@ -111,6 +111,7 @@ const DEFAULT_HEIGHTS: Partial<Record<FormFieldType, InputHeight>> = {
   [FormFieldType.MASKED]: "md",
   [FormFieldType.ASYNC_SELECT]: "md",
   [FormFieldType.SWITCH]: "auto",
+  [FormFieldType.FILE_UPLOAD]: "auto",
 };
 
 /* -------------------------------------------------------------

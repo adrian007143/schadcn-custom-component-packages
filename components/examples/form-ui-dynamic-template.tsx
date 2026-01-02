@@ -2,7 +2,7 @@
 
 import { FormFieldType } from "@/components/forms/form-field";
 // import { FormBuilderStandard } from "@/components/forms/form-ui/standard-form/form-standard-builder";
-import { CircleUserRound, UserIcon } from "lucide-react";
+import { CircleUserRound, KeyIcon, UserIcon } from "lucide-react";
 import { showSuccess } from "@/lib/helper/toast-icon";
 import z from "zod";
 import {
@@ -79,12 +79,14 @@ export default function LoginFormPage() {
                   label: "User Email",
                   fieldType: FormFieldType.INPUT,
                   required: true,
+                  prefix: <UserIcon />,
                 },
                 {
                   name: "password",
                   label: "Password",
                   fieldType: FormFieldType.PASSWORD,
                   required: true,
+                  prefix: <KeyIcon />,
                 },
               ],
             },

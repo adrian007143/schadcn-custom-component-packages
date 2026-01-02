@@ -6,7 +6,7 @@ import type {
 } from "react-hook-form";
 import type { ComponentProps, ReactNode } from "react";
 import type { FormFieldType } from "./constants";
-import * as SwitchPrimitive from '@radix-ui/react-switch';
+import * as SwitchPrimitive from "@radix-ui/react-switch";
 
 /* -------------------------------------------
  * HEIGHT TYPES

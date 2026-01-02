@@ -17,4 +17,5 @@ export enum FormFieldType {
   MASKED = "masked",
   ASYNC_SELECT = "async_select",
   SWITCH = "switch",
+  FILE_UPLOAD = "file-upload"
 }

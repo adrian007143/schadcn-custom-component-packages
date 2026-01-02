@@ -67,6 +67,17 @@ export async function loadDummyUsers(query: string) {
 }
 
 // Form validation schema
+
+// add near the top of the file
+const storedFileSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  type: z.string(),
+  size: z.number(),
+  data: z.string().optional(),
+  url: z.string().optional(),
+});
+
 const formSchema = z.object({
   userID: z.number().optional(),
   name: z
@@ -80,6 +91,8 @@ const formSchema = z.object({
   role_id: z.string().optional(),
   rate: z.number().optional(),
   active: z.boolean().optional(),
+  // ✅ FILE UPLOAD
+  attachments: z.array(storedFileSchema).optional(),
 });
 
 export default function FormComponent() {
@@ -98,6 +111,9 @@ export default function FormComponent() {
       tin: "",
       rate: undefined,
       active: false,
+
+      // ✅ default
+      attachments: [],
     },
   });
 
@@ -261,7 +277,6 @@ export default function FormComponent() {
                   name="active"
                   fieldType={FormFieldType.SWITCH}
                   label="Is Active"
-                  
 
                   // placeholder="0%"
                   // textAlign="right"
@@ -271,14 +286,11 @@ export default function FormComponent() {
                 control={form.control}
                 name="active"
                 fieldType={FormFieldType.SKELETON}
-                // label="Is Active"
-  
 
                 // placeholder="0%"
                 // textAlign="right"
               />
             </FormSection>
-
             {/* ACTIONS */}
             <FormActions>
               <Button type="submit" className="w-full" disabled={isLoading}>
