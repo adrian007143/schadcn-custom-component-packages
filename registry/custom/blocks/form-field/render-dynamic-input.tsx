@@ -111,6 +111,7 @@ const DEFAULT_HEIGHTS: Partial<Record<FormFieldType, InputHeight>> = {
   [FormFieldType.MASKED]: "md",
   [FormFieldType.ASYNC_SELECT]: "md",
   [FormFieldType.SWITCH]: "auto",
+  [FormFieldType.FILE_UPLOAD]: "auto",
 };
 
 /* -------------------------------------------------------------
@@ -134,26 +135,36 @@ export const DynamicRenderInput = <
     inputClassName,
   } = props;
 
-  const heightClass =
-    HEIGHT_CLASSES[height || DEFAULT_HEIGHTS[fieldType] || "md"];
-
-  const groupClass = cn(
-    "w-full flex items-center rounded-md border border-border bg-background",
-    "transition-colors",
-    "focus-within:border-primary/70",
-    "focus-within:ring-1 focus-within:ring-primary/30",
-    "hover:border-muted-foreground/40",
-    disabled && "opacity-60 cursor-not-allowed",
-    heightClass,
-    className
+  const heightClass = React.useMemo(
+    () => HEIGHT_CLASSES[height || DEFAULT_HEIGHTS[fieldType] || "md"],
+    [height, fieldType]
   );
 
-  const inputClasses = cn(
-    "w-full bg-transparent text-sm leading-none",
-    "placeholder:text-muted-foreground/60",
-    "border-0 outline-none",
-    "focus-visible:ring-0 focus-visible:ring-offset-0",
-    inputClassName
+  const groupClass = React.useMemo(
+    () =>
+      cn(
+        "w-full flex items-center rounded-md border border-border bg-background",
+        "transition-colors",
+        "focus-within:border-primary/70",
+        "focus-within:ring-1 focus-within:ring-primary/30",
+        "hover:border-muted-foreground/40",
+        disabled && "opacity-60 cursor-not-allowed",
+        heightClass,
+        className
+      ),
+    [heightClass, className, disabled]
+  );
+
+  const inputClasses = React.useMemo(
+    () =>
+      cn(
+        "w-full bg-transparent text-sm leading-none",
+        "placeholder:text-muted-foreground/60",
+        "border-0 outline-none",
+        "focus-visible:ring-0 focus-visible:ring-offset-0",
+        inputClassName
+      ),
+    [inputClassName]
   );
 
   /* -------------------------------------------------------------
@@ -316,7 +327,7 @@ export const DynamicRenderInput = <
     case FormFieldType.ASYNC_SELECT: {
       type Row = Record<string, unknown>;
 
-      const asyncData = props.data ? ([...props.data] as Row[]) : undefined;
+      const asyncData = props.data as Row[] | undefined;
 
       const valueKey: StringKeyOf<Row> =
         (props.valueKey as StringKeyOf<Row>) ?? ("value" as StringKeyOf<Row>);
@@ -393,9 +404,10 @@ export const DynamicRenderInput = <
           }
           className={cn(inputClasses, props.inputProps?.className)}
           value={applyMask(field.value ?? "", props.mask ?? "")}
-          onChange={(e) =>
-            field.onChange(applyMask(e.target.value, props.mask ?? ""))
-          }
+          onChange={(e) => {
+            const next = applyMask(e.target.value, props.mask ?? "");
+            if (next !== field.value) field.onChange(next);
+          }}
         />
       );
       break;

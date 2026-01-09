@@ -90,7 +90,10 @@ const HEIGHT_CLASSES: Record<InputHeight, string> = {
 /* ---------------------------------------------
  * PADDING CLASSES based on height for consistency
  * --------------------------------------------- */
-const PADDING_CLASSES: Record<InputHeight, { x: string; iconLeft: string; iconRight: string }> = {
+const PADDING_CLASSES: Record<
+  InputHeight,
+  { x: string; iconLeft: string; iconRight: string }
+> = {
   sm: { x: "px-2", iconLeft: "left-2", iconRight: "right-2" },
   md: { x: "px-3", iconLeft: "left-3", iconRight: "right-3" },
   lg: { x: "px-3", iconLeft: "left-3", iconRight: "right-3" },
@@ -196,20 +199,27 @@ export function AsyncSelect<T extends Record<string, unknown>>({
     };
   }, [debouncedQuery, fetchList]);
 
+  //Modified
   const openList = () => {
-    setLoading(true);
-    fetchList("")
-      .then((list) => {
-        setOptions(list);
-        setHighlightIndex(list.length > 0 ? 0 : -1);
-      })
-      .finally(() => setLoading(false));
-
     setOpen(true);
-    // Focus the input when dropdown opens
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
+    requestAnimationFrame(() => inputRef.current?.focus());
+
+    if (hasStatic && data) {
+      setOptions(data);
+      setHighlightIndex(data.length ? 0 : -1);
+      return;
+    }
+
+    // Only refetch if we have no options yet
+    if (options.length === 0) {
+      setLoading(true);
+      fetchList("")
+        .then((list) => {
+          setOptions(list);
+          setHighlightIndex(list.length ? 0 : -1);
+        })
+        .finally(() => setLoading(false));
+    }
   };
 
   /* ---------------------------------------------
@@ -232,13 +242,24 @@ export function AsyncSelect<T extends Record<string, unknown>>({
   }, []);
 
   useEffect(() => {
-    if (open) requestAnimationFrame(computePlacement);
-  }, [open, options, computePlacement]);
+    if (!open) return;
+
+    const onResize = () => computePlacement();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onResize, true);
+    requestAnimationFrame(computePlacement);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onResize, true);
+    };
+  }, [open, computePlacement]);
 
   /* ---------------------------------------------
    * Outside click to close
    * --------------------------------------------- */
   useEffect(() => {
+    if (!open) return;
     const handler = (event: MouseEvent) => {
       if (
         containerRef.current &&
@@ -249,7 +270,7 @@ export function AsyncSelect<T extends Record<string, unknown>>({
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [open]);
 
   /* ---------------------------------------------
    * Keyboard navigation
@@ -337,11 +358,13 @@ export function AsyncSelect<T extends Record<string, unknown>>({
       <div className={wrapperClass}>
         {/* Search Icon - More subtle styling */}
         {iconSearch && (
-          <div className={cn(
-            "absolute top-1/2 -translate-y-1/2",
-            padding.iconLeft,
-            "text-muted-foreground/70"
-          )}>
+          <div
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2",
+              padding.iconLeft,
+              "text-muted-foreground/70"
+            )}
+          >
             <Search className="h-4 w-4" />
           </div>
         )}
@@ -364,11 +387,13 @@ export function AsyncSelect<T extends Record<string, unknown>>({
 
         {/* Loading Spinner */}
         {loading && (
-          <div className={cn(
-            "absolute top-1/2 -translate-y-1/2",
-            padding.iconRight,
-            "text-muted-foreground"
-          )}>
+          <div
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2",
+              padding.iconRight,
+              "text-muted-foreground"
+            )}
+          >
             <Loader2 className="h-4 w-4 animate-spin" />
           </div>
         )}
@@ -436,9 +461,7 @@ export function AsyncSelect<T extends Record<string, unknown>>({
                       "flex items-center justify-between"
                     )}
                   >
-                    <div className="flex-1 truncate text-sm">
-                      {primary}
-                    </div>
+                    <div className="flex-1 truncate text-sm">{primary}</div>
 
                     {cols.length > 0 && (
                       <div className="flex items-center space-x-4 ml-4 text-xs text-muted-foreground">

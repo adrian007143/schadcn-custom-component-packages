@@ -13,15 +13,25 @@ export function CurrencyInput({
 }: LazyFieldInputProps) {
   const [uiValue, setUiValue] = React.useState("");
 
+  // ✅ Prevent syncing from RHF while user is typing
+  const isEditingRef = React.useRef(false);
+
+  const locale = props.currencyLocale ?? "en-PH";
+  const decimalPlaces = props.decimalPlaces ?? 2;
+  const thousandSeparator = props.thousandSeparator ?? true;
+  const trimTrailingZeros = props.trimTrailingZeros ?? false;
+
   React.useEffect(() => {
+    if (isEditingRef.current) return;
+
     if (typeof field.value === "number") {
       setUiValue(
         formatCurrency(
           field.value,
-          props.currencyLocale ?? "en-PH",
-          props.decimalPlaces ?? 2,
-          props.thousandSeparator ?? true,
-          props.trimTrailingZeros ?? false
+          locale,
+          decimalPlaces,
+          thousandSeparator,
+          trimTrailingZeros
         )
       );
     } else {
@@ -29,10 +39,10 @@ export function CurrencyInput({
     }
   }, [
     field.value,
-    props.currencyLocale,
-    props.decimalPlaces,
-    props.thousandSeparator,
-    props.trimTrailingZeros,
+    locale,
+    decimalPlaces,
+    thousandSeparator,
+    trimTrailingZeros,
   ]);
 
   return (
@@ -44,10 +54,14 @@ export function CurrencyInput({
       value={uiValue}
       placeholder={props.placeholder ?? props.inputProps?.placeholder ?? ""}
       onChange={(e) => {
+        isEditingRef.current = true;
+
         const raw = e.target.value;
         if (/^[0-9,.\s]*$/.test(raw)) setUiValue(raw);
       }}
       onBlur={() => {
+        isEditingRef.current = false;
+
         const num = parseFloat(uiValue.replace(/,/g, ""));
         if (isNaN(num)) {
           field.onChange(null);
@@ -57,10 +71,10 @@ export function CurrencyInput({
           setUiValue(
             formatCurrency(
               num,
-              props.currencyLocale ?? "en-PH",
-              props.decimalPlaces ?? 2,
-              props.thousandSeparator ?? true,
-              props.trimTrailingZeros ?? false
+              locale,
+              decimalPlaces,
+              thousandSeparator,
+              trimTrailingZeros
             )
           );
         }

@@ -14,13 +14,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 /* -------------------------------------------------------------
@@ -32,35 +32,38 @@ type PhoneInputProps = Omit<
   "onChange" | "value" | "ref"
 > &
   Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
-    onChange?: (value: RPNInput.Value) => void;
+    onChange?: (value?: RPNInput.Value) => void;
   };
+
+const noop = () => {};
 
 /* -------------------------------------------------------------
  * MAIN PHONE INPUT
  * ------------------------------------------------------------- */
 
-export const PhoneInput = React.forwardRef<
-  React.ComponentRef<typeof RPNInput.default>,
-  PhoneInputProps
->(({ className, onChange, value, ...props }, ref) => {
-  return (
-    <RPNInput.default
-      ref={ref}
-      className={cn(
-        "flex w-full items-stretch rounded-md border border-border bg-input",
-        "focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary",
-        className
-      )}
-      flagComponent={FlagComponent}
-      countrySelectComponent={CountrySelect}
-      inputComponent={InputComponent}
-      smartCaret={false}
-      value={value || undefined}
-      onChange={(v) => onChange?.(v || ("" as RPNInput.Value))}
-      {...props}
-    />
-  );
-});
+export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
+  ({ className, onChange, value, ...props }, ref) => {
+    return (
+      <RPNInput.default
+        // ✅ FIX: pass RHF/input refs to the underlying <input/>
+        inputRef={ref}
+        className={cn(
+          "flex w-full items-stretch rounded-md border border-border bg-input",
+          "focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary",
+          className
+        )}
+        flagComponent={FlagComponent}
+        countrySelectComponent={CountrySelect}
+        inputComponent={InputComponent}
+        smartCaret={false}
+        value={value || undefined}
+        // ✅ FIX: always provide a function + keep cleared value as undefined
+        onChange={onChange ?? noop}
+        {...props}
+      />
+    );
+  }
+);
 PhoneInput.displayName = "PhoneInput";
 
 /* -------------------------------------------------------------
@@ -105,39 +108,32 @@ const CountrySelect = ({
   options: countryList,
   onChange,
 }: CountrySelectProps) => {
-  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
-  const [searchValue, setSearchValue] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState("");
 
-  /* ✅ Reset scroll when search changes */
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
     const viewport = scrollAreaRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]"
     ) as HTMLElement | null;
-
     if (viewport) viewport.scrollTop = 0;
   }, [searchValue]);
 
-  /* ✅ MANUAL FILTERING (FIXES SEARCH) */
   const filteredCountries = React.useMemo(() => {
-    if (!searchValue.trim()) return countryList;
-
-    const q = searchValue.toLowerCase();
-
-    return countryList.filter(
-      (c) => c.value && c.label.toLowerCase().includes(q)
-    );
+    const q = searchValue.trim().toLowerCase();
+    if (!q) return countryList;
+    return countryList.filter((c) => c.label.toLowerCase().includes(q));
   }, [countryList, searchValue]);
 
-  /* ✅ Memoized rendering */
   const renderedOptions = React.useMemo(
     () =>
-      filteredCountries.map(({ value, label }) =>
-        value ? (
+      filteredCountries.map((c) =>
+        c.value ? (
           <CountrySelectOption
-            key={value}
-            country={value}
-            countryName={label}
+            key={c.value}
+            country={c.value}
+            countryName={c.label}
             selectedCountry={selectedCountry}
             onChange={onChange}
             onSelectComplete={() => setIsOpen(false)}
@@ -221,24 +217,22 @@ const CountrySelectOption = React.memo(
     onChange,
     onSelectComplete,
   }: CountrySelectOptionProps) => {
-    const handleSelect = () => {
+    const handleSelect = React.useCallback(() => {
       onChange(country);
       onSelectComplete();
-    };
+    }, [country, onChange, onSelectComplete]);
 
     return (
-      <CommandItem className="gap-2" onSelect={handleSelect}>
+      <CommandItem
+        value={countryName}
+        onSelect={handleSelect}
+        className="flex items-center gap-2"
+      >
         <FlagComponent country={country} countryName={countryName} />
         <span className="flex-1 text-sm">{countryName}</span>
-        <span className="text-sm text-foreground/50">
-          +{RPNInput.getCountryCallingCode(country)}
-        </span>
-        <CheckIcon
-          className={cn(
-            "ml-auto size-4",
-            country === selectedCountry ? "opacity-100" : "opacity-0"
-          )}
-        />
+        {country === selectedCountry ? (
+          <CheckIcon className="size-4 opacity-100" />
+        ) : null}
       </CommandItem>
     );
   }

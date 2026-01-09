@@ -84,7 +84,10 @@ const formSchema = z.object({
     .string()
     .min(3, { message: "Name must be at least 3 characters long" }),
   email: z.email(),
-  mobile: z.string().optional(),
+  mobile: z
+    .string()
+    .min(13, { message: "Mobile number is required" })
+    .max(13, { message: "Mobile number must be 11 digits long" }),
   date_of_birth: z.date().optional(),
   amount: z.number().optional(),
   tin: z.string().optional(),
