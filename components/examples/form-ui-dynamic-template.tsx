@@ -64,7 +64,7 @@ export default function LoginFormPage() {
         <FormBuilderStandard<Login>
           schema={LoginSchema}
           formType="CREATE"
-          recaptcha
+          // recaptcha
           defaultValues={{
             email: "testing@example.com",
             password: "testingQQW!1",
