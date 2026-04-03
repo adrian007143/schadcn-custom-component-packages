@@ -1,0 +1,106 @@
+export interface RegistryItem {
+  name: string
+  title: string
+  description: string
+  category: "forms" | "data-table" | "redux"
+  dependencies: string[]
+  registryFile: string  // just the filename, e.g. "form-field.json"
+  previewPath?: string
+  docsPath?: string
+}
+
+export const REGISTRY_ITEMS: RegistryItem[] = [
+  {
+    name: "form-field",
+    title: "Dynamic Form Field",
+    description:
+      "Schema-driven dynamic form field system built on react-hook-form. Supports 17+ field types including currency, phone, async-select, date picker, file upload, and more.",
+    category: "forms",
+    dependencies: [
+      "react-hook-form",
+      "@hookform/resolvers",
+      "react-phone-number-input",
+      "lucide-react",
+    ],
+    registryFile: "form-field.json",
+    previewPath: "/blocks/login-standard",
+    docsPath: "/docs/form-field",
+  },
+  {
+    name: "form-layout",
+    title: "Form Layout",
+    description:
+      "Composable layout primitives for building structured and responsive forms. Includes FormSection, FormColumns, FormRow, FormActions, and more.",
+    category: "forms",
+    dependencies: [],
+    registryFile: "form-layout.json",
+    previewPath: "/blocks/form-layout",
+    docsPath: "/docs/form-layout",
+  },
+  {
+    name: "form-dynamic-template",
+    title: "Form Dynamic Template",
+    description:
+      "Template showcasing dynamic form fields with FormBuilderStandard — a schema-driven form builder with Zod validation and toast notifications.",
+    category: "forms",
+    dependencies: ["react-hook-form", "@hookform/resolvers", "zod"],
+    registryFile: "form-dynamic-template.json",
+    previewPath: "/blocks/login-standard",
+    docsPath: "/docs/form-builder",
+  },
+  {
+    name: "multistep-form-template",
+    title: "Multi-Step Form",
+    description:
+      "Reusable multi-step form with per-step validation, progress tracking, reCAPTCHA support, auto/horizontal/vertical layouts, and sticky footer.",
+    category: "forms",
+    dependencies: [
+      "react-hook-form",
+      "@hookform/resolvers",
+      "zod",
+      "react-google-recaptcha",
+    ],
+    registryFile: "multistep-form-template.json",
+    previewPath: "/blocks/multistep",
+    docsPath: "/docs/multistep-form",
+  },
+  {
+    name: "form-template-01",
+    title: "Form Template",
+    description:
+      "A starter form layout template using FormBuilderStandard with common field patterns, validation, and submit handling.",
+    category: "forms",
+    dependencies: ["react-hook-form", "@hookform/resolvers", "zod"],
+    registryFile: "form-template-01.json",
+    previewPath: "/blocks/form-layout",
+    docsPath: "/docs/form-builder",
+  },
+  {
+    name: "data-table-dynamic",
+    title: "Dynamic Data Table",
+    description:
+      "A fully dynamic, editable, draggable data table built on TanStack Table. Supports inline editing, drag-and-drop rows/columns, faceted filtering, column visibility, and custom cells.",
+    category: "data-table",
+    dependencies: [
+      "@tanstack/react-table",
+      "@dnd-kit/core",
+      "@dnd-kit/sortable",
+      "@dnd-kit/modifiers",
+      "date-fns",
+    ],
+    registryFile: "data-table-dynamic.json",
+    previewPath: "/blocks/data-table-dynamic",
+    docsPath: "/docs/data-table",
+  },
+  {
+    name: "redux-methods-tool",
+    title: "Redux Tool",
+    description:
+      "Complete Redux setup with store, reducers, StoreProvider, and localStorage persistence helpers. Includes example todo and notification slices.",
+    category: "redux",
+    dependencies: ["react-redux-methods"],
+    registryFile: "redux-methods-tool.json",
+    previewPath: "/blocks/redux-usage",
+    docsPath: "/docs/redux",
+  },
+]

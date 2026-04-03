@@ -21,7 +21,7 @@
     },
     {
       "path": "app/blocks/login-standard/page.tsx",
-      "content": "import LoginFormPage from \"@/components/examples/form-ui-dynamic-template\";\r\n\r\nexport default function LoginPage() {\r\n  return (\r\n    <div className=\"bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10\">\r\n      <LoginFormPage />\r\n    </div>\r\n  );\r\n}\r\n",
+      "content": "import LoginFormPage from \"@/components/examples/form-ui-dynamic-template\"\nimport { ExamplePageShell } from \"@/components/site/ExamplePageShell\"\n\nexport default function LoginPage() {\n  return (\n    <ExamplePageShell\n      title=\"Dynamic Form — Login\"\n      description=\"A login form built with FormBuilderStandard using schema-driven fields, Zod validation, and toast notifications.\"\n      registryFile=\"form-dynamic-template.json\"\n    >\n      <div className=\"flex justify-center\">\n        <LoginFormPage />\n      </div>\n    </ExamplePageShell>\n  )\n}\n",
       "type": "registry:block",
       "target": "app/login-standard/page.tsx"
     },

@@ -1,24 +1,14 @@
-import DataTableDynamic from "@/components/examples/data-table-dynamic";
+import DataTableDynamic from "@/components/examples/data-table-dynamic"
+import { ExamplePageShell } from "@/components/site/ExamplePageShell"
 
-
-export default function UserPage() {
+export default function DataTablePage() {
   return (
-    <main className="">
-      {/* Page Header */}
-      <header className="flex items-center justify-between py-1">
-        <div className="flex items-center space-x-2 p-1">
-          <h4> 👥 </h4>
-                
-          <p className=" text-sm text-muted-foreground">
-            Manage all registered users in the system.
-          </p>
-        </div>
-      </header>
-
-      {/* Table */}
-      <section className="rounded-lg border bg-card shadow-sm px-4">
-        <DataTableDynamic/>
-      </section>
-    </main>
-  );
+    <ExamplePageShell
+      title="Dynamic Data Table"
+      description="Fully dynamic, editable, draggable data table with inline editing, drag-and-drop rows/columns, faceted filtering, and custom cell types."
+      registryFile="data-table-dynamic.json"
+    >
+      <DataTableDynamic />
+    </ExamplePageShell>
+  )
 }

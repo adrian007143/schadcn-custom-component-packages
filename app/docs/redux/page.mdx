@@ -1,0 +1,101 @@
+# Redux Setup
+
+A complete Redux configuration with `react-redux-methods`, localStorage persistence, and example slices. Installs everything needed to start using Redux in your app.
+
+## Install
+
+```bash
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/redux-methods-tool.json
+```
+
+## What's installed
+
+- `redux/store.ts` — Redux store with DevTools and localStorage persistence
+- `redux/StoreProvider.tsx` — React context wrapper
+- `redux/connections.ts` — Connection utilities
+- `redux/reducers/notification.ts` — Notification slice
+- `redux/reducers/sidebar.ts` — Sidebar open/close slice
+- `redux/reducers/todo.ts` — Todo list slice
+- `lib/helper/storageLocal.ts` — localStorage read/write helpers
+
+## Setup
+
+Wrap your app with `StoreProvider` in your root layout:
+
+```tsx
+// app/layout.tsx
+import StoreProvider from "@/redux/StoreProvider"
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <StoreProvider>{children}</StoreProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+## Reading state
+
+Use the provided selector hooks:
+
+```tsx
+import { getTodos, getTodoCount } from "@/redux/reducers/todo"
+import { getNotificationStatus } from "@/redux/reducers/notification"
+import { getSidebarStatus } from "@/redux/reducers/sidebar"
+
+// In a client component:
+const todos = useSelector(getTodos)
+const count = useSelector(getTodoCount)
+const isOpen = useSelector(getNotificationStatus)
+```
+
+## Dispatching actions
+
+```tsx
+import { addTodo, toggleTodo, deleteTodo } from "@/redux/reducers/todo"
+import { setNotificationShow, setNotificationHide } from "@/redux/reducers/notification"
+import { setSidebarShow, setSidebarHide } from "@/redux/reducers/sidebar"
+
+const dispatch = useDispatch()
+
+// Add a todo
+dispatch(addTodo({ id: crypto.randomUUID(), text: "New task", completed: false }))
+
+// Toggle completion
+dispatch(toggleTodo(todoId))
+
+// Show a notification
+dispatch(setNotificationShow({ message: "Saved successfully!" }))
+```
+
+## LocalStorage Persistence
+
+Selected slices are persisted to localStorage automatically. The store reads persisted state on initialization (browser-only, SSR-safe).
+
+The slices persisted by default: `notifications`, `sidebar`, `todo`.
+
+To add a new persisted slice, update `redux/store.ts` to include it in the persistence config.
+
+## Adding a new slice
+
+```ts
+// redux/reducers/myFeature.ts
+import { createSlice } from "react-redux-methods"
+
+const myFeatureSlice = createSlice({
+  name: "myFeature",
+  initialState: { value: "" },
+  reducers: {
+    setValue: (state, action) => { state.value = action.payload },
+  },
+})
+
+export const { setValue } = myFeatureSlice.actions
+export const getValue = (state) => state.myFeature.value
+export default myFeatureSlice.reducer
+```
+
+Then register it in `redux/reducers/index.ts` and `redux/store.ts`.

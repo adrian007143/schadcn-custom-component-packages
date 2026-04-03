@@ -1,0 +1,125 @@
+# DynamicFormField
+
+A schema-driven form field component built on `react-hook-form`. A single component handles all 17 field types — just change the `fieldType` prop.
+
+## Install
+
+```bash
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-field.json
+```
+
+## Usage
+
+```tsx
+import { DynamicFormField } from "@/components/forms/form-field/DynamicFormField"
+import { FormFieldType } from "@/components/forms/form-field/constants"
+
+<DynamicFormField
+  control={form.control}
+  name="email"
+  fieldType={FormFieldType.INPUT}
+  label="Email"
+  placeholder="you@example.com"
+  required
+/>
+```
+
+## Field Types
+
+| Value | Description |
+|---|---|
+| `INPUT` | Standard text input |
+| `PASSWORD` | Password field with show/hide toggle |
+| `TEXTAREA` | Multi-line text area |
+| `DATE_PICKER` | Calendar date picker |
+| `SELECT` | Dropdown select from a data array |
+| `SINGLE_SELECT` | Single-option selector with search |
+| `COMMAND` | Command palette style selector |
+| `ASYNC_SELECT` | Select with async data loading and debounce |
+| `PHONE_INPUT` | International phone number with country flag |
+| `CURRENCY` | Formatted currency input with locale support |
+| `PERCENT` | Percentage input with decimal control |
+| `MASKED` | Input with a custom mask pattern |
+| `CHECKBOX` | Checkbox with label |
+| `SWITCH` | Toggle switch |
+| `FILE_UPLOAD` | File upload with react-dropzone |
+| `HIDDEN` | Hidden field (no UI rendered) |
+| `SKELETON` | Skeleton loader placeholder |
+
+## Core Props
+
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `control` | `Control<T>` | Yes | React Hook Form control object |
+| `name` | `FieldPath<T>` | Yes | Field name matching your Zod schema |
+| `fieldType` | `FormFieldType` | Yes | Which input type to render |
+| `label` | `string` | — | Label text above the field |
+| `placeholder` | `string` | — | Placeholder text inside the input |
+| `description` | `string` | — | Helper text below the field |
+| `required` | `boolean` | — | Shows required indicator |
+| `disabled` | `boolean` | — | Disables the field |
+| `height` | `"sm" \| "md" \| "lg" \| "xl" \| "auto"` | — | Input height |
+| `prefix` | `ReactNode` | — | Node rendered before the input |
+| `suffix` | `ReactNode` | — | Node rendered after the input |
+
+## Select Props
+
+These apply to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
+
+| Prop | Type | Description |
+|---|---|---|
+| `data` | `TRow[]` | Array of option objects |
+| `labelKey` | `StringKeyOf<TRow>` | Key used for option display text |
+| `valueKey` | `StringKeyOf<TRow>` | Key used for option value |
+| `selectLabelKey` | `SelectLabelKey<TRow>` | Advanced label config (multi-column) |
+| `loadOptions` | `(query: string) => Promise<TRow[]>` | Async data loader (ASYNC_SELECT only) |
+
+## Currency & Percent Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `currencyLocale` | `string` | Locale for formatting (e.g. `"en-US"`) |
+| `decimalPlaces` | `number` | Number of decimal places |
+| `thousandSeparator` | `boolean` | Show thousand separators |
+| `percentDecimalPlaces` | `number` | Decimal places for percent |
+
+## Mask Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `mask` | `string` | Mask pattern (e.g. `"99/99/9999"`) |
+| `maskPlaceholder` | `string` | Placeholder character |
+
+## Examples
+
+### Async Select
+
+```tsx
+<DynamicFormField
+  control={form.control}
+  name="userId"
+  fieldType={FormFieldType.ASYNC_SELECT}
+  label="User"
+  data={[]}
+  labelKey="name"
+  valueKey="id"
+  loadOptions={async (query) => {
+    const res = await fetch(`/api/users?q=${query}`)
+    return res.json()
+  }}
+/>
+```
+
+### Currency
+
+```tsx
+<DynamicFormField
+  control={form.control}
+  name="price"
+  fieldType={FormFieldType.CURRENCY}
+  label="Price"
+  currencyLocale="en-US"
+  decimalPlaces={2}
+  thousandSeparator
+/>
+```

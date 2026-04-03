@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FormKitCN
 
-## Getting Started
+A schema-driven component toolkit for building production-ready forms, tables, and UI systems in React — powered by shadcn/ui.
 
-First, run the development server:
+## Features
+
+| Feature | Description |
+|---|---|
+| **17+ Field Types** | Input, password, textarea, date picker, select, async-select, phone, currency, percent, masked, file upload, switch, checkbox, and more |
+| **FormBuilderStandard** | Schema-driven form builder with Zod validation, CREATE/UPDATE/VIEW modes |
+| **Multi-Step Forms** | Per-step validation, progress tracking, reCAPTCHA, flexible layouts |
+| **Form Layout Primitives** | `FormSection`, `FormColumns`, `FormRow`, `FormActions`, `FormFieldWrapper` |
+| **Dynamic Data Table** | Inline editing, drag-and-drop rows/columns, faceted filtering, column visibility |
+| **Redux Toolkit** | Store, reducers, StoreProvider, localStorage persistence |
+| **Registry-Based** | Every block installs directly into your project via the shadcn CLI |
+
+## Quick Install
+
+Install any block with one command:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Dynamic form field system (17+ field types)
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-field.json
+
+# Form layout primitives
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-layout.json
+
+# Multi-step form
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/multistep-form-template.json
+
+# Dynamic data table
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/data-table-dynamic.json
+
+# Redux setup
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/redux-methods-tool.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Dev Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app runs at [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js (App Router) + TypeScript
+- Tailwind CSS v4 + shadcn/ui
+- React Hook Form + Zod
+- TanStack Table v8
+- dnd-kit
+- Redux (`react-redux-methods`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Registry
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Browse all available blocks at `/blocks` or install directly from the registry URLs above.

@@ -1,0 +1,128 @@
+# Form Layout
+
+Composable layout primitives for building structured, responsive forms. Use these when you want full control over layout without using `FormBuilderStandard`.
+
+## Install
+
+```bash
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-layout.json
+```
+
+## Components
+
+### FormLayout
+
+Top-level wrapper. Sets up spacing and structure.
+
+```tsx
+import { FormLayout } from "@/components/forms/form-layout/FormLayout"
+
+<FormLayout>
+  {/* sections go here */}
+</FormLayout>
+```
+
+### FormSection
+
+Groups related fields under an optional title and description.
+
+```tsx
+import { FormSection } from "@/components/forms/form-layout/FormSection"
+
+<FormSection title="Personal Info" description="Your basic details.">
+  {/* fields */}
+</FormSection>
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `title` | `string` | Section heading |
+| `description` | `string` | Section subheading |
+| `layout` | `SectionLayout` | Grid layout for children |
+
+### FormColumns
+
+Arranges fields in a multi-column grid.
+
+```tsx
+import { FormColumns } from "@/components/forms/form-layout/FormColumns"
+
+<FormColumns columns={2}>
+  <DynamicFormField ... />
+  <DynamicFormField ... />
+</FormColumns>
+```
+
+### FormRow
+
+Single horizontal row of fields.
+
+```tsx
+import { FormRow } from "@/components/forms/form-layout/FormRow"
+
+<FormRow>
+  <DynamicFormField ... />
+  <DynamicFormField ... />
+</FormRow>
+```
+
+### FormDivider
+
+Visual separator between sections.
+
+```tsx
+import { FormDivider } from "@/components/forms/form-layout/FormDivider"
+
+<FormDivider />
+```
+
+### FormActions
+
+Action button row (submit, cancel, reset).
+
+```tsx
+import { FormActions } from "@/components/forms/form-layout/FormActions"
+
+<FormActions layout="right">
+  <Button variant="outline">Cancel</Button>
+  <Button type="submit">Save</Button>
+</FormActions>
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `layout` | `"stack" \| "inline" \| "right" \| "space-between"` | Button alignment |
+
+### FormFieldWrapper
+
+Adds consistent padding/spacing around any field.
+
+```tsx
+import { FormFieldWrapper } from "@/components/forms/form-layout/FormFieldWrapper"
+
+<FormFieldWrapper>
+  <DynamicFormField ... />
+</FormFieldWrapper>
+```
+
+## Full Example
+
+```tsx
+<FormLayout>
+  <FormSection title="Account" layout="grid-2">
+    <DynamicFormField name="email" fieldType={FormFieldType.INPUT} label="Email" control={control} />
+    <DynamicFormField name="phone" fieldType={FormFieldType.PHONE_INPUT} label="Phone" control={control} />
+  </FormSection>
+
+  <FormDivider />
+
+  <FormSection title="Address" layout="grid-2">
+    <DynamicFormField name="city" fieldType={FormFieldType.INPUT} label="City" control={control} />
+    <DynamicFormField name="country" fieldType={FormFieldType.SELECT} label="Country" control={control} data={countries} labelKey="name" valueKey="code" />
+  </FormSection>
+
+  <FormActions layout="right">
+    <Button type="submit">Save</Button>
+  </FormActions>
+</FormLayout>
+```

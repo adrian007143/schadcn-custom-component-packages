@@ -4,6 +4,9 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import StoreProvider from "@/redux/StoreProvider";
+import { ThemeProvider } from "next-themes";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,14 +48,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
-        <StoreProvider>
-          {children}
-          <Toaster position="top-center" />
-        </StoreProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <StoreProvider>
+            <div className="flex min-h-screen flex-col">
+              <SiteHeader />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
+            </div>
+            <Toaster position="top-center" />
+          </StoreProvider>
+        </ThemeProvider>
         <SpeedInsights />
       </body>
     </html>

@@ -7,6 +7,7 @@ import type {
 import type { ReactNode } from "react";
 import type { ZodType } from "zod";
 import { FormFieldType } from "@/components/forms/form-field";
+import type { SelectLabelKey } from "@/components/forms/form-field/types";
 
 export type CRUDFormType = "CREATE" | "UPDATE" | "VIEW";
 
@@ -35,7 +36,7 @@ export interface FormBuilderField<T extends FieldValues> {
   data?: Record<string, unknown>[];
   labelKey?: string;
   valueKey?: string;
-  selectLabelKey?: string;
+  selectLabelKey?: SelectLabelKey<Record<string, unknown>>;
   mask?: string;
   maskPlaceholder?: string;
   className?: string;

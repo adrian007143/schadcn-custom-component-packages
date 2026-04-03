@@ -1,0 +1,106 @@
+# FormBuilderStandard
+
+A schema-driven form builder that renders a complete form from a configuration array. Handles layout, validation, loading states, and button actions automatically.
+
+## Install
+
+```bash
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-dynamic-template.json
+```
+
+## Usage
+
+```tsx
+import { FormBuilderStandard } from "@/components/forms/form-ui/standard-form/FormBuilderStandard"
+import { FormFieldType } from "@/components/forms/form-field/constants"
+import { z } from "zod"
+
+const schema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
+})
+
+export function ProfileForm() {
+  return (
+    <FormBuilderStandard
+      schema={schema}
+      defaultValues={{ firstName: "", lastName: "", email: "" }}
+      sections={[
+        {
+          title: "Personal Info",
+          layout: "grid-2",
+          fields: [
+            { name: "firstName", fieldType: FormFieldType.INPUT, label: "First name" },
+            { name: "lastName", fieldType: FormFieldType.INPUT, label: "Last name" },
+            { name: "email", fieldType: FormFieldType.INPUT, label: "Email" },
+          ],
+        },
+      ]}
+      buttons={{
+        submit: {
+          label: "Save",
+          submit: true,
+          loadingLabel: "Saving...",
+          onSubmit: async (values) => {
+            await saveProfile(values)
+          },
+        },
+      }}
+    />
+  )
+}
+```
+
+## Props
+
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `schema` | `ZodType<T>` | Yes | Zod schema for validation |
+| `defaultValues` | `DefaultValues<T>` | Yes | Initial field values |
+| `sections` | `FormBuilderSection<T>[]` | Yes | Section config array |
+| `buttons` | `Record<string, FormBuilderButton<T>>` | Yes | Button config map |
+| `formType` | `"CREATE" \| "UPDATE" \| "VIEW"` | — | Affects field editability |
+| `buttonLayout` | `"stack" \| "inline" \| "right" \| "space-between"` | — | Button placement |
+| `className` | `string` | — | Wrapper class name |
+
+## Section Config
+
+```ts
+interface FormBuilderSection<T> {
+  title?: string         // Section heading
+  description?: string   // Section subheading
+  layout?: SectionLayout // "stack" | "grid-2" | "grid-3" | "grid-4" | "auto-fit"
+  columns?: number       // Override column count for "grid" layout
+  fields: FormBuilderField<T>[]
+}
+```
+
+## Field Config
+
+Each field in `sections[].fields` accepts:
+
+| Key | Type | Description |
+|---|---|---|
+| `name` | `FieldPath<T>` | Schema field name |
+| `fieldType` | `FormFieldType` | Input type |
+| `label` | `string` | Label text |
+| `placeholder` | `string` | Placeholder |
+| `required` | `boolean` | Required indicator |
+| `disabled` | `boolean` | Disabled state |
+| `data` | `Record<string, unknown>[]` | Options for select fields |
+| `labelKey` | `string` | Display key for select |
+| `valueKey` | `string` | Value key for select |
+
+## CRUD Modes
+
+```tsx
+// Create mode (default) — all fields editable
+<FormBuilderStandard formType="CREATE" ... />
+
+// Update mode — fields pre-filled, all editable
+<FormBuilderStandard formType="UPDATE" defaultValues={existingData} ... />
+
+// View mode — all fields read-only
+<FormBuilderStandard formType="VIEW" defaultValues={existingData} ... />
+```

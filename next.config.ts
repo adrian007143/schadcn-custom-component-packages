@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
+
+const withMDX = createMDX({});
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  pageExtensions: ["ts", "tsx", "mdx"],
   images: {
     unoptimized: false,
 
@@ -10,14 +13,15 @@ const nextConfig: NextConfig = {
     localPatterns: [
       {
         pathname: "/images/**",
-        search: undefined, // images without query params
+        search: undefined,
       },
       {
         pathname: "/images/**",
-        search: "(.*)", // images WITH any query params
+        search: "(.*)",
       },
     ],
   },
+  allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev']
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

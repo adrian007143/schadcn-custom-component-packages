@@ -1,11 +1,14 @@
-import FormLayoutComponent from "@/components/examples/form-layout-template";
+import FormLayoutComponent from "@/components/examples/form-layout-template"
+import { ExamplePageShell } from "@/components/site/ExamplePageShell"
 
-
-
-export default function TestPage() {
+export default function FormLayoutPage() {
   return (
-    <div className='flex flex-col items-center justify-center h-auto gap-4 m-10'>
-        <FormLayoutComponent />
-    </div>
+    <ExamplePageShell
+      title="Form Layout"
+      description="Composable form layout primitives — FormSection, FormColumns, FormRow, FormActions, and FormFieldWrapper."
+      registryFile="form-layout.json"
+    >
+      <FormLayoutComponent />
+    </ExamplePageShell>
   )
 }

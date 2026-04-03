@@ -1,9 +1,16 @@
-import LoginFormPage from "@/components/examples/form-ui-dynamic-template";
+import LoginFormPage from "@/components/examples/form-ui-dynamic-template"
+import { ExamplePageShell } from "@/components/site/ExamplePageShell"
 
 export default function LoginPage() {
   return (
-    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <LoginFormPage />
-    </div>
-  );
+    <ExamplePageShell
+      title="Dynamic Form — Login"
+      description="A login form built with FormBuilderStandard using schema-driven fields, Zod validation, and toast notifications."
+      registryFile="form-dynamic-template.json"
+    >
+      <div className="flex justify-center">
+        <LoginFormPage />
+      </div>
+    </ExamplePageShell>
+  )
 }

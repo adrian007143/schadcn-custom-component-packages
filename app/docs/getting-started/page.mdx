@@ -1,0 +1,91 @@
+# Getting Started
+
+FormKitCN is a schema-driven component toolkit for building production-ready forms, tables, and UI systems in React. Every block installs directly into your project via the shadcn CLI — no separate package to maintain.
+
+## Prerequisites
+
+Your project needs:
+
+- Next.js 13+ (App Router)
+- React 18+
+- [shadcn/ui](https://ui.shadcn.com) initialized (`npx shadcn@latest init`)
+- TypeScript
+- Tailwind CSS
+
+## Install your first block
+
+Pick a block and add it to your project:
+
+```bash
+# Dynamic form field (17+ field types)
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-field.json
+```
+
+The CLI will copy the component files into your project and install any required dependencies automatically.
+
+## Available blocks
+
+| Block | Install URL |
+|---|---|
+| Dynamic Form Field | `/r/form-field.json` |
+| Form Layout | `/r/form-layout.json` |
+| FormBuilderStandard | `/r/form-dynamic-template.json` |
+| Multi-Step Form | `/r/multistep-form-template.json` |
+| Dynamic Data Table | `/r/data-table-dynamic.json` |
+| Redux Tool | `/r/redux-methods-tool.json` |
+
+All URLs are prefixed with `https://schadcn-custom-component-packages.vercel.app`.
+
+## Quick example
+
+After installing `form-field` and `form-layout`:
+
+```tsx
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Form } from "@/components/ui/form"
+import { DynamicFormField } from "@/components/forms/form-field/DynamicFormField"
+import { FormFieldType } from "@/components/forms/form-field/constants"
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+})
+
+export function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { email: "", password: "" },
+  })
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(console.log)} className="space-y-4">
+        <DynamicFormField
+          control={form.control}
+          name="email"
+          fieldType={FormFieldType.INPUT}
+          label="Email"
+          placeholder="you@example.com"
+        />
+        <DynamicFormField
+          control={form.control}
+          name="password"
+          fieldType={FormFieldType.PASSWORD}
+          label="Password"
+        />
+        <button type="submit">Login</button>
+      </form>
+    </Form>
+  )
+}
+```
+
+## Next steps
+
+- [DynamicFormField docs](/docs/form-field) — all 17 field types and their props
+- [FormBuilderStandard docs](/docs/form-builder) — schema-driven form builder
+- [Multi-Step Form docs](/docs/multistep-form) — multi-step forms with validation
+- [Data Table docs](/docs/data-table) — editable, draggable table
+- [Redux docs](/docs/redux) — state management with persistence

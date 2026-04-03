@@ -1,0 +1,86 @@
+# DynamicDataTable
+
+A fully featured, editable data table built on TanStack Table v8. Supports inline cell editing, drag-and-drop row/column reordering, faceted filtering, column visibility, and custom cell types.
+
+## Install
+
+```bash
+npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/data-table-dynamic.json
+```
+
+## Usage
+
+```tsx
+import { DynamicDataTable } from "@/components/data-table/data-table-dynamic/core/dynamic-data-table"
+import { FormFieldType } from "@/components/forms/form-field/constants"
+
+type User = { id: string; name: string; email: string; role: string; status: string }
+
+const columns: DynamicColumnDef<User>[] = [
+  { accessorKey: "name", header: "Name", cellType: "editable" },
+  { accessorKey: "email", header: "Email", cellType: "editable" },
+  { accessorKey: "role", header: "Role", cellType: "select", selectOptions: ["admin", "user", "viewer"] },
+  { accessorKey: "status", header: "Status", cellType: "badge" },
+]
+
+export function UsersTable({ data }: { data: User[] }) {
+  return (
+    <DynamicDataTable
+      data={data}
+      columnConfig={columns}
+      rowIdKey="id"
+      enableRowSelection
+      enableRowDrag
+      enableGlobalFilter
+      onDataChange={(updated) => console.log(updated)}
+    />
+  )
+}
+```
+
+## Props
+
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `data` | `TData[]` | Yes | Row data array |
+| `columnConfig` | `DynamicColumnDef<TData>[]` | Yes | Column definitions |
+| `rowIdKey` | `keyof TData` | Yes | Unique row identifier key |
+| `enableRowSelection` | `boolean` | — | Enable row checkboxes |
+| `enableRowDrag` | `boolean` | — | Enable row drag-and-drop |
+| `enableColumnDrag` | `boolean` | — | Enable column reordering |
+| `enableColumnVisibility` | `boolean` | — | Show column visibility toggle |
+| `enableGlobalFilter` | `boolean` | — | Show global search input |
+| `viewMode` | `"compact" \| "comfortable" \| "spacious"` | — | Row density |
+| `onDataChange` | `(rows: TData[]) => void` | — | Called when data changes |
+| `onViewRow` | `(row: TData) => void` | — | View row action callback |
+| `onEditRow` | `(row: TData) => void` | — | Edit row action callback |
+| `onDeleteRow` | `(row: TData) => void` | — | Delete row action callback |
+
+## Column Definition
+
+```ts
+interface DynamicColumnDef<TData> {
+  accessorKey: keyof TData & string
+  header: string
+  cellType?: "text" | "editable" | "badge" | "select" | "datepicker" | "image"
+  selectOptions?: string[]   // for cellType: "select"
+  width?: number
+  enableSorting?: boolean
+  enableHiding?: boolean
+}
+```
+
+## Cell Types
+
+| `cellType` | Description |
+|---|---|
+| `text` | Read-only text display |
+| `editable` | Click-to-edit text cell |
+| `badge` | Colored badge based on value |
+| `select` | Inline dropdown |
+| `datepicker` | Inline date picker |
+| `image` | Avatar/image display |
+
+## Drag and Drop
+
+Drag-and-drop uses `@dnd-kit`. Enable with `enableRowDrag` and/or `enableColumnDrag`. Row order changes trigger `onDataChange` with the reordered array.

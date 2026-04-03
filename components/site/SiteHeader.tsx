@@ -1,0 +1,55 @@
+import Link from "next/link"
+import Image from "next/image"
+import { ThemeToggle } from "./ThemeToggle"
+import { Button } from "@/components/ui/button"
+
+const NAV_LINKS = [
+  { href: "/blocks", label: "Components" },
+  { href: "/docs/getting-started", label: "Docs" },
+  { href: "/blocks/login-standard", label: "Examples" },
+]
+
+export function SiteHeader() {
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="max-w-7xl mx-auto flex h-14 items-center px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="mr-6 flex items-center gap-2">
+          <Image
+            src="/images/favicon-logo.png"
+            alt="FormKitCN logo"
+            width={28}
+            height={28}
+            className="shrink-0"
+          />
+          <span className="font-semibold text-base tracking-tight">
+            FormKit<span className="text-primary">CN</span>
+          </span>
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-1 flex-1">
+          {NAV_LINKS.map((link) => (
+            <Button key={link.href} variant="ghost" size="sm" asChild>
+              <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground">
+                {link.label}
+              </Link>
+            </Button>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2 ml-auto">
+          <Button variant="ghost" size="sm" asChild>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              GitHub
+            </a>
+          </Button>
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  )
+}
