@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "@/components/ui/button"
 
@@ -14,14 +13,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto flex h-14 items-center px-4 sm:px-6 lg:px-8">
         <Link href="/" className="mr-6 flex items-center gap-2">
-          <Image
-            src="/images/favicon-logo.png"
-            alt="FormKitCN logo"
-            width={28}
-            height={28}
-            className="shrink-0"
-            style={{ height: "auto" }}
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/favicon-logo.png" alt="FormKitCN logo" width={28} height={28} className="shrink-0" />
           <span className="font-semibold text-base tracking-tight">
             FormKit<span className="text-primary">CN</span>
           </span>

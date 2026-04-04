@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { InstallSnippet } from "./InstallSnippet"
@@ -27,13 +26,8 @@ export async function HeroSection() {
           <div className="relative">
             <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl scale-150" />
             <div className="relative rounded-2xl border border-primary/20 bg-background/80 p-3 shadow-lg backdrop-blur-sm">
-              <Image
-                src="/images/favicon-logo.png"
-                alt="FormKitCN"
-                width={56}
-                height={56}
-                style={{ height: "auto" }}
-              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/favicon-logo.png" alt="FormKitCN" width={56} height={56} />
             </div>
           </div>
 

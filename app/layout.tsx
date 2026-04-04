@@ -19,26 +19,76 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://formkitcn.pro"),
+
   title: {
-    default: "FormKitCn",
-    template: "%s | FormKitCn",
+    default: "FormKitCN — shadcn/ui Form Toolkit for React",
+    template: "%s | FormKitCN",
   },
   description:
-    "A free, open-source form builder for React using shadcn/ui with registry-based components.",
+    "FormKitCN is a free, open-source registry of schema-driven form components for React. Built on shadcn/ui — install DynamicFormField, FormBuilderStandard, MultiStepForm, DataTable, and more with one CLI command.",
+  keywords: [
+    "shadcn ui forms",
+    "react form builder",
+    "schema driven form",
+    "react hook form components",
+    "dynamic form field",
+    "nextjs form components",
+    "shadcn registry",
+    "formkitcn",
+    "multistep form react",
+    "tanstack table react",
+    "zod form validation",
+  ],
+  authors: [{ name: "FormKitCN", url: "https://formkitcn.pro" }],
+  creator: "FormKitCN",
 
   icons: {
     icon: [{ url: "/images/favicon-logo.png", type: "image/png" }],
     apple: [{ url: "/images/favicon-logo.png", sizes: "180x180" }],
     shortcut: ["/images/favicon-logo.png"],
   },
-  
+
   openGraph: {
-    title: "FormKitCn",
-    description:
-      "A free, open-source form builder for React using shadcn/ui with registry-based components.",
-    url: "https://formkitcn.pro",
-    siteName: "FormKitCn",
     type: "website",
+    locale: "en_US",
+    url: "https://formkitcn.pro",
+    siteName: "FormKitCN",
+    title: "FormKitCN — shadcn/ui Form Toolkit for React",
+    description:
+      "Schema-driven form components for React. Built on shadcn/ui. Install any block with one CLI command.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "FormKitCN — shadcn/ui Form Components for React",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "FormKitCN — shadcn/ui Form Toolkit for React",
+    description:
+      "Schema-driven form components for React. Built on shadcn/ui. Install any block with one CLI command.",
+    images: ["/opengraph-image"],
+  },
+
+  alternates: {
+    canonical: "https://formkitcn.pro",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

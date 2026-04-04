@@ -1,19 +1,12 @@
 import Link from "next/link"
-import Image from "next/image"
 
 export function SiteFooter() {
   return (
     <footer className="border-t py-6 mt-auto">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2">
-          <Image
-            src="/images/favicon-logo.png"
-            alt="FormKitCN logo"
-            width={22}
-            height={22}
-            className="shrink-0"
-            style={{ height: "auto" }}
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/favicon-logo.png" alt="FormKitCN logo" width={22} height={22} className="shrink-0" />
           <span className="font-semibold text-sm">
             FormKit<span className="text-primary">CN</span>
           </span>

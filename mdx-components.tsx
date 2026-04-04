@@ -20,32 +20,32 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
     // Styled markdown tables
     table: ({ children, ...props }) => (
-      <div className="not-prose my-5 overflow-x-auto rounded-lg border">
-        <table className="w-full text-sm" {...props}>
+      <div className="not-prose my-6 overflow-x-auto rounded-xl border border-border">
+        <table className="w-full text-sm border-collapse" {...props}>
           {children}
         </table>
       </div>
     ),
     thead: ({ children, ...props }) => (
-      <thead className="border-b bg-muted/50" {...props}>
+      <thead className="bg-muted/60 border-b border-border" {...props}>
         {children}
       </thead>
     ),
     tbody: ({ children, ...props }) => (
-      <tbody {...props}>{children}</tbody>
+      <tbody className="divide-y divide-border" {...props}>{children}</tbody>
     ),
     tr: ({ children, ...props }) => (
-      <tr className="border-b last:border-0 transition-colors hover:bg-muted/20" {...props}>
+      <tr className="transition-colors hover:bg-muted/30" {...props}>
         {children}
       </tr>
     ),
     th: ({ children, ...props }) => (
-      <th className="px-4 py-2.5 text-left font-medium text-foreground" {...props}>
+      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground" {...props}>
         {children}
       </th>
     ),
     td: ({ children, ...props }) => (
-      <td className="px-4 py-2.5 text-muted-foreground" {...props}>
+      <td className="px-4 py-3 text-sm text-foreground/90 align-top" {...props}>
         {children}
       </td>
     ),
