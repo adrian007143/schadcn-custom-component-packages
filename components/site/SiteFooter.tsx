@@ -12,6 +12,7 @@ export function SiteFooter() {
             width={22}
             height={22}
             className="shrink-0"
+            style={{ height: "auto" }}
           />
           <span className="font-semibold text-sm">
             FormKit<span className="text-primary">CN</span>

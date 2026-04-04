@@ -20,6 +20,7 @@ export function SiteHeader() {
             width={28}
             height={28}
             className="shrink-0"
+            style={{ height: "auto" }}
           />
           <span className="font-semibold text-base tracking-tight">
             FormKit<span className="text-primary">CN</span>

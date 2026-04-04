@@ -46,6 +46,82 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+/* Offset docs sidebar container below the sticky site header (desktop only) */
+.docs-sidebar-offset [data-slot="sidebar-container"] {
+  top: var(--docs-header-offset, 0px) !important;
+  height: calc(100svh - var(--docs-header-offset, 0px)) !important;
+}
+
+/* ── Docs prose typography ───────────────────────────────────────── */
+
+/* Page title (h1) — large, heavy, with bottom border */
+.docs-prose h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid hsl(var(--border));
+  margin-bottom: 0.5rem;
+}
+
+/* Lead paragraph right after h1 */
+.docs-prose h1 + p {
+  font-size: 1.05rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+/* Section headings (h2) */
+.docs-prose h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+/* Sub-section headings (h3) */
+.docs-prose h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Inline code — pill style like shadcn */
+.docs-prose :not(pre) > code {
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+  font-size: 0.82em;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+/* Body text */
+.docs-prose p {
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+/* Lists */
+.docs-prose ul,
+.docs-prose ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.docs-prose li {
+  margin-bottom: 0.35rem;
+  line-height: 1.7;
+}
+
 :root {
   --radius: 0.625rem;
   --card: oklch(1 0 0);

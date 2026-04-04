@@ -7,6 +7,7 @@ export default function FormLayoutPage() {
       title="Form Layout"
       description="Composable form layout primitives — FormSection, FormColumns, FormRow, FormActions, and FormFieldWrapper."
       registryFile="form-layout.json"
+      codeFiles={["components/examples/form-layout-template.tsx"]}
     >
       <FormLayoutComponent />
     </ExamplePageShell>

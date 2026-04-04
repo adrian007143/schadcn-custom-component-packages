@@ -32,6 +32,7 @@ export async function HeroSection() {
                 alt="FormKitCN"
                 width={56}
                 height={56}
+                style={{ height: "auto" }}
               />
             </div>
           </div>

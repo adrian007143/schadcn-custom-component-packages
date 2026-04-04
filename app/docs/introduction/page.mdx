@@ -1,0 +1,60 @@
+# Introduction
+
+FormKitCN is a **schema-driven component toolkit** for building production-ready forms, tables, and UI systems in React. It is built on top of shadcn/ui and installs directly into your project — no separate package to maintain, no version conflicts, no vendor lock-in.
+
+<Callout variant="tip">
+  Every component in FormKitCN is a **shadcn registry block**. You own the code after installation — customize it freely.
+</Callout>
+
+## What's included
+
+| Block | Description |
+|---|---|
+| **DynamicFormField** | One component for all 17+ field types — input, select, date, phone, currency, file, and more |
+| **FormBuilderStandard** | Schema-driven form builder — define sections, fields, and buttons as a config array |
+| **MultiStepForm** | Multi-step forms with per-step Zod validation, progress tracking, and reCAPTCHA |
+| **Form Layout** | Composable layout primitives — sections, column grids, rows, and action bars |
+| **DynamicDataTable** | Editable TanStack Table with drag-and-drop rows/columns, filtering, and custom cells |
+| **Redux Tool** | Drop-in Redux store with localStorage persistence and example slices |
+
+## Architecture
+
+FormKitCN follows a **layered architecture**:
+
+```
+Your App
+  └── FormBuilderStandard / MultiStepForm   ← schema-driven form builders
+        └── DynamicFormField                ← single component, 17 field types
+              └── shadcn/ui inputs          ← Button, Input, Select, Popover…
+                    └── Tailwind CSS        ← utility-first styling
+```
+
+Each layer is independently installable. You can use just `DynamicFormField` with your own `react-hook-form` setup, or use `FormBuilderStandard` to skip the boilerplate entirely.
+
+## Who it's for
+
+FormKitCN is designed for:
+
+- **Full-stack developers** building admin dashboards, CRUD apps, and SaaS products
+- **Frontend teams** who want consistent, type-safe form patterns across a codebase
+- **shadcn/ui users** who want to extend their component library with richer form primitives
+
+<Callout variant="info">
+  FormKitCN requires an existing Next.js + shadcn/ui project. If you haven't set up shadcn yet, run `npx shadcn@latest init` first.
+</Callout>
+
+## Registry-based installation
+
+Rather than being a published npm package, FormKitCN uses the **shadcn registry system**. This means:
+
+1. You run `npx shadcn@latest add <url>` to copy a component into your project
+2. The CLI resolves dependencies and installs npm packages automatically
+3. The component source lives in your repo — you can read and modify it freely
+4. Updates are opt-in: re-run the add command when you want a newer version
+
+## Next steps
+
+- [Installation](/docs/getting-started) — install your first block
+- [DynamicFormField](/docs/form-field) — all 17 field types
+- [FormBuilderStandard](/docs/form-builder) — schema-driven form builder
+- [Browse all blocks](/blocks) — see live previews

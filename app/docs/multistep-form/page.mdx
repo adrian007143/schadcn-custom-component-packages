@@ -1,12 +1,10 @@
 # MultiStepForm
 
-A multi-step form component with per-step Zod validation, progress tracking, flexible layouts, and optional reCAPTCHA.
+A multi-step form with per-step Zod validation, progress tracking, flexible layouts, and optional reCAPTCHA. Each step validates independently — the user can't advance until the current step is valid.
 
 ## Install
 
-```bash
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/multistep-form-template.json
-```
+<InstallCmd file="multistep-form-template.json" />
 
 ## Usage
 
@@ -15,38 +13,39 @@ import { MultiStepForm } from "@/components/forms/form-ui/multistep-form/MultiSt
 import { FormFieldType } from "@/components/forms/form-field/constants"
 import { z } from "zod"
 
-const step1Schema = z.object({
+const step1 = z.object({
   orgName: z.string().min(1, "Required"),
   industry: z.string().min(1, "Required"),
 })
 
-const step2Schema = z.object({
+const step2 = z.object({
   adminEmail: z.string().email(),
-  adminName: z.string().min(1),
+  adminName: z.string().min(1, "Required"),
 })
 
 export function CreateOrgForm() {
   return (
     <MultiStepForm
+      defaultValues={{ orgName: "", industry: "", adminEmail: "", adminName: "" }}
       steps={[
         {
           title: "Organization",
-          schema: step1Schema,
+          schema: step1,
           fields: [
             { name: "orgName", fieldType: FormFieldType.INPUT, label: "Organization name" },
-            { name: "industry", fieldType: FormFieldType.SELECT, label: "Industry", data: industries, labelKey: "label", valueKey: "value" },
+            { name: "industry", fieldType: FormFieldType.SELECT, label: "Industry",
+              data: industries, labelKey: "label", valueKey: "value" },
           ],
         },
         {
           title: "Admin Account",
-          schema: step2Schema,
+          schema: step2,
           fields: [
-            { name: "adminName", fieldType: FormFieldType.INPUT, label: "Admin name" },
-            { name: "adminEmail", fieldType: FormFieldType.INPUT, label: "Admin email" },
+            { name: "adminName", fieldType: FormFieldType.INPUT, label: "Full name" },
+            { name: "adminEmail", fieldType: FormFieldType.INPUT, label: "Email address" },
           ],
         },
       ]}
-      defaultValues={{ orgName: "", industry: "", adminEmail: "", adminName: "" }}
       onSubmit={async (values) => {
         await createOrg(values)
       }}
@@ -57,34 +56,49 @@ export function CreateOrgForm() {
 
 ## Props
 
-| Prop | Type | Required | Description |
-|---|---|---|---|
-| `steps` | `FormStep[]` | Yes | Array of step definitions |
-| `defaultValues` | `DefaultValues<T>` | Yes | Combined initial values for all steps |
-| `onSubmit` | `(values: T) => void \| Promise<void>` | Yes | Final submit handler |
-| `layout` | `"auto" \| "horizontal" \| "vertical"` | — | Progress indicator layout |
-| `recaptcha` | `boolean` | — | Enable reCAPTCHA on final step |
-| `siteKey` | `string` | — | Google reCAPTCHA site key |
+<PropsTable items={[
+  { name: "steps", type: "MultiStepFormStep<T>[]", required: true, description: "Array of step definitions — each with its own schema and fields" },
+  { name: "defaultValues", type: "DefaultValues<T>", required: true, description: "Combined initial values for all steps" },
+  { name: "onSubmit", type: "(values: T) => void | Promise<void>", required: true, description: "Called when the last step is submitted successfully" },
+  { name: "layout", type: '"auto" | "horizontal" | "vertical"', default: '"auto"', description: "Progress indicator orientation" },
+  { name: "variant", type: '"card" | "outline" | "ghost"', default: '"card"', description: "Visual style of the step container" },
+  { name: "recaptcha", type: "boolean", default: "false", description: "Enable reCAPTCHA verification on the final step" },
+  { name: "siteKey", type: "string", description: "Google reCAPTCHA v2 site key — required when recaptcha={true}" },
+]} />
 
-## Step Config
+## Step config
 
 ```ts
-interface FormStep<T> {
-  title: string
-  description?: string
-  schema: ZodType      // validated when "Next" is clicked
+interface MultiStepFormStep<T> {
+  title: string               // Shown in the progress indicator
+  description?: string        // Optional sub-title for the step
+  schema: ZodType             // Validated when "Next" is clicked
   fields: FormBuilderField<T>[]
-  layout?: SectionLayout
+  sections?: FormBuilderSection<T>[]  // Use sections for multi-column layouts
+  layout?: SectionLayout      // Grid layout for this step's fields
 }
 ```
 
-## Per-Step Validation
+<Callout variant="info">
+  Each step's `schema` should only include the fields present in that step. The combined values of all steps are passed to `onSubmit`.
+</Callout>
 
-Each step has its own `schema`. Clicking "Next" validates only the current step's fields against its schema. The user cannot advance until the current step is valid.
+## Layout modes
+
+```tsx
+// Auto — horizontal on desktop, vertical on mobile
+<MultiStepForm layout="auto" ... />
+
+// Always horizontal (steps shown left-to-right)
+<MultiStepForm layout="horizontal" ... />
+
+// Always vertical (steps shown top-to-bottom)
+<MultiStepForm layout="vertical" ... />
+```
 
 ## reCAPTCHA
 
-Set `recaptcha={true}` and `siteKey="YOUR_SITE_KEY"`. The reCAPTCHA token is verified before the final `onSubmit` is called.
+Set `recaptcha={true}` with your site key. The reCAPTCHA appears on the final step before the submit button. `onSubmit` is only called after a valid reCAPTCHA token is obtained.
 
 ```tsx
 <MultiStepForm
@@ -93,3 +107,28 @@ Set `recaptcha={true}` and `siteKey="YOUR_SITE_KEY"`. The reCAPTCHA token is ver
   ...
 />
 ```
+
+<Callout variant="warning">
+  reCAPTCHA requires a valid Google site key. Use `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` in your `.env.local` file. The component will not render the reCAPTCHA widget if no `siteKey` is provided.
+</Callout>
+
+## Per-step validation
+
+Clicking "Next" triggers validation for only the fields in the current step's `schema`. The user cannot advance until all fields in the current step are valid. This means:
+
+1. Each step's `schema` keys must match the field `name` values in that step
+2. The combined type `T` spans all steps — use `z.object({...step1, ...step2})` for the full schema type
+
+```ts
+// Full schema type for type safety
+type FormValues = z.infer<typeof step1> & z.infer<typeof step2>
+```
+
+## Live example
+
+See `MultiStepForm` in the [Multi-Step Form block](/blocks/multistep).
+
+## See also
+
+- [FormBuilderStandard](/docs/form-builder) — single-step schema-driven form
+- [DynamicFormField](/docs/form-field) — individual field types reference

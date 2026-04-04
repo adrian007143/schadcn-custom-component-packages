@@ -8,6 +8,10 @@ export default function ReduxUsage() {
       title="Redux State Management"
       description="Drop-in Redux store with localStorage persistence. Demonstrates notification and todo slices using react-redux-methods."
       registryFile="redux-methods-tool.json"
+      codeFiles={[
+        "components/examples/redux-tool-notification.tsx",
+        "components/examples/redux-tool-todo.tsx",
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <NotificationPage />

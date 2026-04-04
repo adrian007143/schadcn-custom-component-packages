@@ -1,128 +1,136 @@
 # Form Layout
 
-Composable layout primitives for building structured, responsive forms. Use these when you want full control over layout without using `FormBuilderStandard`.
+Composable layout primitives for structuring forms. Use these when you want full control over form structure without using `FormBuilderStandard`.
 
 ## Install
 
-```bash
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-layout.json
-```
+<InstallCmd file="form-layout.json" />
 
 ## Components
 
-### FormLayout
+| Component | Purpose |
+|---|---|
+| `FormLayout` | Outermost wrapper — adds vertical spacing between sections |
+| `FormSection` | Titled section with optional description |
+| `FormColumns` | Responsive column grid (1–4 columns) |
+| `FormRow` | Horizontal flex row for grouped inline fields |
+| `FormActions` | Action bar with a top separator for buttons |
+| `FormDivider` | Visual divider between form areas |
+| `FormFieldWrapper` | Thin wrapper with consistent field spacing |
 
-Top-level wrapper. Sets up spacing and structure.
+## Full example
 
 ```tsx
 import { FormLayout } from "@/components/forms/form-layout/FormLayout"
+import { FormSection } from "@/components/forms/form-layout/FormSection"
+import { FormColumns } from "@/components/forms/form-layout/FormColumns"
+import { FormDivider } from "@/components/forms/form-layout/FormDivider"
+import { FormActions } from "@/components/forms/form-layout/FormActions"
 
-<FormLayout>
-  {/* sections go here */}
+export function AddressForm() {
+  return (
+    <FormLayout>
+      <FormSection title="Account" description="Your login details.">
+        <FormColumns columns={2}>
+          <DynamicFormField control={control} name="email" fieldType={FormFieldType.INPUT} label="Email" />
+          <DynamicFormField control={control} name="phone" fieldType={FormFieldType.PHONE_INPUT} label="Phone" />
+        </FormColumns>
+      </FormSection>
+
+      <FormDivider />
+
+      <FormSection title="Address">
+        <FormColumns columns={3}>
+          <DynamicFormField control={control} name="city" fieldType={FormFieldType.INPUT} label="City" />
+          <DynamicFormField control={control} name="state" fieldType={FormFieldType.INPUT} label="State" />
+          <DynamicFormField control={control} name="zip" fieldType={FormFieldType.MASKED} label="ZIP" mask="99999" />
+        </FormColumns>
+      </FormSection>
+
+      <FormActions layout="right">
+        <Button variant="outline">Cancel</Button>
+        <Button type="submit">Save</Button>
+      </FormActions>
+    </FormLayout>
+  )
+}
+```
+
+## FormLayout
+
+Top-level wrapper. Applies `space-y-10` between child sections.
+
+```tsx
+<FormLayout className="max-w-2xl">
+  {/* sections */}
 </FormLayout>
 ```
 
-### FormSection
+## FormSection
 
 Groups related fields under an optional title and description.
 
-```tsx
-import { FormSection } from "@/components/forms/form-layout/FormSection"
+<PropsTable items={[
+  { name: "title", type: "string", description: "Section heading rendered above the fields" },
+  { name: "description", type: "string", description: "Sub-heading rendered below the title" },
+  { name: "layout", type: "SectionLayout", description: "Optional grid layout applied to children" },
+  { name: "children", type: "ReactNode", required: true, description: "Field components" },
+]} />
 
-<FormSection title="Personal Info" description="Your basic details.">
-  {/* fields */}
-</FormSection>
-```
+## FormColumns
 
-| Prop | Type | Description |
-|---|---|---|
-| `title` | `string` | Section heading |
-| `description` | `string` | Section subheading |
-| `layout` | `SectionLayout` | Grid layout for children |
+Renders a responsive CSS grid. On screens smaller than `sm`, always collapses to a single column.
 
-### FormColumns
+<PropsTable items={[
+  { name: "columns", type: "1 | 2 | 3 | 4", default: "2", description: "Number of equal-width columns" },
+  { name: "className", type: "string", description: "Extra class applied to the grid container" },
+  { name: "children", type: "ReactNode", required: true, description: "Fields placed in grid cells" },
+]} />
 
-Arranges fields in a multi-column grid.
+<Callout variant="tip">
+  On small screens, `FormColumns` always collapses to a single column regardless of the `columns` prop — no media query overrides needed.
+</Callout>
 
-```tsx
-import { FormColumns } from "@/components/forms/form-layout/FormColumns"
+## FormRow
 
-<FormColumns columns={2}>
-  <DynamicFormField ... />
-  <DynamicFormField ... />
-</FormColumns>
-```
-
-### FormRow
-
-Single horizontal row of fields.
+Horizontal flex row for fields that sit side-by-side at equal widths.
 
 ```tsx
-import { FormRow } from "@/components/forms/form-layout/FormRow"
-
 <FormRow>
-  <DynamicFormField ... />
-  <DynamicFormField ... />
+  <DynamicFormField ... name="startDate" label="Start" />
+  <DynamicFormField ... name="endDate" label="End" />
 </FormRow>
 ```
 
-### FormDivider
+## FormActions
 
-Visual separator between sections.
+Renders a top separator followed by a flex row for action buttons.
 
-```tsx
-import { FormDivider } from "@/components/forms/form-layout/FormDivider"
-
-<FormDivider />
-```
-
-### FormActions
-
-Action button row (submit, cancel, reset).
+<PropsTable items={[
+  { name: "layout", type: '"stack" | "inline" | "right" | "space-between"', default: '"right"', description: "Button alignment within the action bar" },
+  { name: "children", type: "ReactNode", required: true, description: "Button components" },
+]} />
 
 ```tsx
-import { FormActions } from "@/components/forms/form-layout/FormActions"
-
-<FormActions layout="right">
-  <Button variant="outline">Cancel</Button>
-  <Button type="submit">Save</Button>
+<FormActions layout="space-between">
+  <Button variant="outline">Back</Button>
+  <Button type="submit">Next</Button>
 </FormActions>
 ```
 
-| Prop | Type | Description |
-|---|---|---|
-| `layout` | `"stack" \| "inline" \| "right" \| "space-between"` | Button alignment |
+## FormDivider
 
-### FormFieldWrapper
-
-Adds consistent padding/spacing around any field.
+Visual `<hr>` separator between sections.
 
 ```tsx
-import { FormFieldWrapper } from "@/components/forms/form-layout/FormFieldWrapper"
-
-<FormFieldWrapper>
-  <DynamicFormField ... />
-</FormFieldWrapper>
+<FormDivider />
 ```
 
-## Full Example
+## Live example
 
-```tsx
-<FormLayout>
-  <FormSection title="Account" layout="grid-2">
-    <DynamicFormField name="email" fieldType={FormFieldType.INPUT} label="Email" control={control} />
-    <DynamicFormField name="phone" fieldType={FormFieldType.PHONE_INPUT} label="Phone" control={control} />
-  </FormSection>
+See the layout primitives in action at the [Form Layout block](/blocks/form-layout).
 
-  <FormDivider />
+## See also
 
-  <FormSection title="Address" layout="grid-2">
-    <DynamicFormField name="city" fieldType={FormFieldType.INPUT} label="City" control={control} />
-    <DynamicFormField name="country" fieldType={FormFieldType.SELECT} label="Country" control={control} data={countries} labelKey="name" valueKey="code" />
-  </FormSection>
-
-  <FormActions layout="right">
-    <Button type="submit">Save</Button>
-  </FormActions>
-</FormLayout>
-```
+- [DynamicFormField](/docs/form-field) — field components to place inside layouts
+- [FormBuilderStandard](/docs/form-builder) — uses `SectionLayout` for built-in grid control without manual layout components

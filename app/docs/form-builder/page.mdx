@@ -1,12 +1,14 @@
 # FormBuilderStandard
 
-A schema-driven form builder that renders a complete form from a configuration array. Handles layout, validation, loading states, and button actions automatically.
+A schema-driven form builder. Define your form as a config array — sections, fields, layout, and buttons — and `FormBuilderStandard` handles rendering, validation, loading states, and submission.
 
 ## Install
 
-```bash
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-dynamic-template.json
-```
+<InstallCmd file="form-dynamic-template.json" />
+
+<Callout variant="info">
+  This block includes `FormBuilderStandard`, `DynamicFormField`, and all supporting utilities. Install this if you want the full form builder experience.
+</Callout>
 
 ## Usage
 
@@ -16,8 +18,8 @@ import { FormFieldType } from "@/components/forms/form-field/constants"
 import { z } from "zod"
 
 const schema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
+  firstName: z.string().min(1, "Required"),
+  lastName: z.string().min(1, "Required"),
   email: z.string().email(),
 })
 
@@ -33,15 +35,15 @@ export function ProfileForm() {
           fields: [
             { name: "firstName", fieldType: FormFieldType.INPUT, label: "First name" },
             { name: "lastName", fieldType: FormFieldType.INPUT, label: "Last name" },
-            { name: "email", fieldType: FormFieldType.INPUT, label: "Email" },
+            { name: "email", fieldType: FormFieldType.INPUT, label: "Email", required: true },
           ],
         },
       ]}
       buttons={{
         submit: {
-          label: "Save",
+          label: "Save profile",
           submit: true,
-          loadingLabel: "Saving...",
+          loadingLabel: "Saving…",
           onSubmit: async (values) => {
             await saveProfile(values)
           },
@@ -54,53 +56,108 @@ export function ProfileForm() {
 
 ## Props
 
-| Prop | Type | Required | Description |
-|---|---|---|---|
-| `schema` | `ZodType<T>` | Yes | Zod schema for validation |
-| `defaultValues` | `DefaultValues<T>` | Yes | Initial field values |
-| `sections` | `FormBuilderSection<T>[]` | Yes | Section config array |
-| `buttons` | `Record<string, FormBuilderButton<T>>` | Yes | Button config map |
-| `formType` | `"CREATE" \| "UPDATE" \| "VIEW"` | — | Affects field editability |
-| `buttonLayout` | `"stack" \| "inline" \| "right" \| "space-between"` | — | Button placement |
-| `className` | `string` | — | Wrapper class name |
+<PropsTable items={[
+  { name: "schema", type: "ZodType<T>", required: true, description: "Zod schema — used for form validation" },
+  { name: "defaultValues", type: "DefaultValues<T>", required: true, description: "Initial values for all fields" },
+  { name: "sections", type: "FormBuilderSection<T>[]", required: true, description: "Array of form sections with fields" },
+  { name: "buttons", type: "Record<string, FormBuilderButton<T>>", required: true, description: "Map of button keys to button configs" },
+  { name: "formType", type: '"CREATE" | "UPDATE" | "VIEW"', default: '"CREATE"', description: "Controls field editability" },
+  { name: "buttonLayout", type: '"stack" | "inline" | "right" | "space-between"', default: '"inline"', description: "Button alignment" },
+  { name: "className", type: "string", description: "Class applied to the form wrapper" },
+]} />
 
-## Section Config
+## Section config
+
+Each item in `sections` configures a visual grouping of fields:
 
 ```ts
 interface FormBuilderSection<T> {
-  title?: string         // Section heading
-  description?: string   // Section subheading
-  layout?: SectionLayout // "stack" | "grid-2" | "grid-3" | "grid-4" | "auto-fit"
-  columns?: number       // Override column count for "grid" layout
+  title?: string           // Section heading
+  description?: string     // Section sub-heading
+  layout?: SectionLayout   // Controls the field grid
   fields: FormBuilderField<T>[]
+}
+
+type SectionLayout =
+  | "stack"     // Single column (default)
+  | "grid"      // 2-column grid
+  | "grid-2"    // 2-column grid
+  | "grid-3"    // 3-column grid
+  | "grid-4"    // 4-column grid
+  | "grid-6"    // 6-column grid
+  | "auto-fit"  // Auto-fit columns based on container width
+```
+
+## Field config
+
+Each field in `sections[].fields`:
+
+<PropsTable items={[
+  { name: "name", type: "FieldPath<T>", required: true, description: "Schema field key" },
+  { name: "fieldType", type: "FormFieldType", required: true, description: "Input type to render" },
+  { name: "label", type: "string", description: "Label text" },
+  { name: "placeholder", type: "string", description: "Placeholder text" },
+  { name: "required", type: "boolean", description: "Show required indicator" },
+  { name: "disabled", type: "boolean", description: "Disable the field" },
+  { name: "data", type: "Record<string, unknown>[]", description: "Options for select fields" },
+  { name: "labelKey", type: "string", description: "Display key for select options" },
+  { name: "valueKey", type: "string", description: "Value key for select options" },
+]} />
+
+## Button config
+
+```ts
+interface FormBuilderButton<T> {
+  label: string               // Button text
+  submit?: boolean            // true = triggers form submit + onSubmit
+  loadingLabel?: string       // Text shown while onSubmit is pending
+  variant?: ButtonVariant     // shadcn button variant
+  onSubmit?: (values: T) => void | Promise<void>
 }
 ```
 
-## Field Config
-
-Each field in `sections[].fields` accepts:
-
-| Key | Type | Description |
-|---|---|---|
-| `name` | `FieldPath<T>` | Schema field name |
-| `fieldType` | `FormFieldType` | Input type |
-| `label` | `string` | Label text |
-| `placeholder` | `string` | Placeholder |
-| `required` | `boolean` | Required indicator |
-| `disabled` | `boolean` | Disabled state |
-| `data` | `Record<string, unknown>[]` | Options for select fields |
-| `labelKey` | `string` | Display key for select |
-| `valueKey` | `string` | Value key for select |
-
-## CRUD Modes
+Multiple buttons are supported — each can have its own `onSubmit` handler:
 
 ```tsx
-// Create mode (default) — all fields editable
+buttons={{
+  save: {
+    label: "Save draft",
+    submit: true,
+    loadingLabel: "Saving…",
+    onSubmit: async (values) => saveDraft(values),
+  },
+  publish: {
+    label: "Publish",
+    submit: true,
+    loadingLabel: "Publishing…",
+    onSubmit: async (values) => publish(values),
+  },
+}}
+```
+
+## CRUD modes
+
+```tsx
+// CREATE — blank form, resets after successful submit
 <FormBuilderStandard formType="CREATE" ... />
 
-// Update mode — fields pre-filled, all editable
-<FormBuilderStandard formType="UPDATE" defaultValues={existingData} ... />
+// UPDATE — pre-filled, all fields editable
+<FormBuilderStandard formType="UPDATE" defaultValues={existing} ... />
 
-// View mode — all fields read-only
-<FormBuilderStandard formType="VIEW" defaultValues={existingData} ... />
+// VIEW — all fields rendered as read-only
+<FormBuilderStandard formType="VIEW" defaultValues={existing} ... />
 ```
+
+<Callout variant="tip">
+  In `VIEW` mode, all `DynamicFormField` instances receive `disabled={true}` automatically — no extra config needed.
+</Callout>
+
+## Live example
+
+See `FormBuilderStandard` in the [Login Form block](/blocks/login-standard).
+
+## See also
+
+- [DynamicFormField](/docs/form-field) — use individual fields with your own form setup
+- [Form Layout](/docs/form-layout) — layout primitives if you need more structural control
+- [MultiStepForm](/docs/multistep-form) — multi-step variant with per-step validation

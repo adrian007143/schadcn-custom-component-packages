@@ -1,105 +1,107 @@
 # DynamicFormField
 
-A schema-driven form field component built on `react-hook-form`. A single component handles all 17 field types — just change the `fieldType` prop.
+A single component that renders any of 17+ field types based on the `fieldType` prop. Built on `react-hook-form` — just pass `control` and `name` from your form.
 
 ## Install
 
-```bash
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-field.json
-```
+<InstallCmd file="form-field.json" />
 
 ## Usage
 
 ```tsx
+import { useForm } from "react-hook-form"
+import { Form } from "@/components/ui/form"
 import { DynamicFormField } from "@/components/forms/form-field/DynamicFormField"
 import { FormFieldType } from "@/components/forms/form-field/constants"
 
-<DynamicFormField
-  control={form.control}
-  name="email"
-  fieldType={FormFieldType.INPUT}
-  label="Email"
-  placeholder="you@example.com"
-  required
-/>
+export function MyForm() {
+  const form = useForm({ defaultValues: { name: "" } })
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(console.log)}>
+        <DynamicFormField
+          control={form.control}
+          name="name"
+          fieldType={FormFieldType.INPUT}
+          label="Full name"
+          placeholder="John Doe"
+          required
+        />
+      </form>
+    </Form>
+  )
+}
 ```
 
-## Field Types
+<Callout variant="tip">
+  Use **FormBuilderStandard** if you want to define an entire form from a config array — it uses `DynamicFormField` internally. See the [FormBuilderStandard docs](/docs/form-builder).
+</Callout>
 
-| Value | Description |
-|---|---|
-| `INPUT` | Standard text input |
-| `PASSWORD` | Password field with show/hide toggle |
-| `TEXTAREA` | Multi-line text area |
-| `DATE_PICKER` | Calendar date picker |
-| `SELECT` | Dropdown select from a data array |
-| `SINGLE_SELECT` | Single-option selector with search |
-| `COMMAND` | Command palette style selector |
-| `ASYNC_SELECT` | Select with async data loading and debounce |
-| `PHONE_INPUT` | International phone number with country flag |
-| `CURRENCY` | Formatted currency input with locale support |
-| `PERCENT` | Percentage input with decimal control |
-| `MASKED` | Input with a custom mask pattern |
-| `CHECKBOX` | Checkbox with label |
-| `SWITCH` | Toggle switch |
-| `FILE_UPLOAD` | File upload with react-dropzone |
-| `HIDDEN` | Hidden field (no UI rendered) |
-| `SKELETON` | Skeleton loader placeholder |
+## Field types
 
-## Core Props
+<FieldTypeGrid />
 
-| Prop | Type | Required | Description |
-|---|---|---|---|
-| `control` | `Control<T>` | Yes | React Hook Form control object |
-| `name` | `FieldPath<T>` | Yes | Field name matching your Zod schema |
-| `fieldType` | `FormFieldType` | Yes | Which input type to render |
-| `label` | `string` | — | Label text above the field |
-| `placeholder` | `string` | — | Placeholder text inside the input |
-| `description` | `string` | — | Helper text below the field |
-| `required` | `boolean` | — | Shows required indicator |
-| `disabled` | `boolean` | — | Disables the field |
-| `height` | `"sm" \| "md" \| "lg" \| "xl" \| "auto"` | — | Input height |
-| `prefix` | `ReactNode` | — | Node rendered before the input |
-| `suffix` | `ReactNode` | — | Node rendered after the input |
+## Core props
 
-## Select Props
+<PropsTable items={[
+  { name: "control", type: "Control<T>", required: true, description: "React Hook Form control object from useForm()" },
+  { name: "name", type: "FieldPath<T>", required: true, description: "Field name — must match a key in your Zod schema" },
+  { name: "fieldType", type: "FormFieldType", required: true, description: "Which input type to render" },
+  { name: "label", type: "string", description: "Label text above the field" },
+  { name: "placeholder", type: "string", description: "Placeholder text inside the input" },
+  { name: "description", type: "string", description: "Helper text displayed below the field" },
+  { name: "required", type: "boolean", default: "false", description: "Shows a required indicator (*) on the label" },
+  { name: "disabled", type: "boolean", default: "false", description: "Disables the field" },
+  { name: "height", type: '"sm" | "md" | "lg" | "xl" | "auto"', default: '"md"', description: "Controls input height" },
+  { name: "prefix", type: "ReactNode", description: "Node rendered to the left of the input" },
+  { name: "suffix", type: "ReactNode", description: "Node rendered to the right of the input" },
+  { name: "hideLabel", type: "boolean", default: "false", description: "Hides the label" },
+  { name: "hideDescription", type: "boolean", default: "false", description: "Hides the description text" },
+  { name: "wrapperClassName", type: "string", description: "Class applied to the field wrapper div" },
+  { name: "inputClassName", type: "string", description: "Class applied to the input element" },
+]} />
 
-These apply to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
+## Select props
 
-| Prop | Type | Description |
-|---|---|---|
-| `data` | `TRow[]` | Array of option objects |
-| `labelKey` | `StringKeyOf<TRow>` | Key used for option display text |
-| `valueKey` | `StringKeyOf<TRow>` | Key used for option value |
-| `selectLabelKey` | `SelectLabelKey<TRow>` | Advanced label config (multi-column) |
-| `loadOptions` | `(query: string) => Promise<TRow[]>` | Async data loader (ASYNC_SELECT only) |
+Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 
-## Currency & Percent Props
+<PropsTable items={[
+  { name: "data", type: "TRow[]", required: true, description: "Array of option objects" },
+  { name: "labelKey", type: "StringKeyOf<TRow>", required: true, description: "Key used for option display text" },
+  { name: "valueKey", type: "StringKeyOf<TRow>", required: true, description: "Key used for the stored value" },
+  { name: "selectLabelKey", type: "SelectLabelKey<TRow>", description: "Advanced label config for multi-column display" },
+  { name: "loadOptions", type: "(query: string) => Promise<TRow[]>", description: "Async data loader — ASYNC_SELECT only" },
+  { name: "debounceTime", type: "number", default: "300", description: "Debounce delay in ms for ASYNC_SELECT" },
+  { name: "onAddNew", type: "() => void", description: "Callback for an 'Add new' option in the list" },
+]} />
 
-| Prop | Type | Description |
-|---|---|---|
-| `currencyLocale` | `string` | Locale for formatting (e.g. `"en-US"`) |
-| `decimalPlaces` | `number` | Number of decimal places |
-| `thousandSeparator` | `boolean` | Show thousand separators |
-| `percentDecimalPlaces` | `number` | Decimal places for percent |
+## Currency & percent props
 
-## Mask Props
+<PropsTable items={[
+  { name: "currencyLocale", type: "string", default: '"en-US"', description: "Locale string for number formatting" },
+  { name: "decimalPlaces", type: "number", default: "2", description: "Number of decimal places for CURRENCY" },
+  { name: "thousandSeparator", type: "boolean", default: "true", description: "Show thousand separator commas" },
+  { name: "percentDecimalPlaces", type: "number", default: "2", description: "Decimal places for PERCENT" },
+]} />
 
-| Prop | Type | Description |
-|---|---|---|
-| `mask` | `string` | Mask pattern (e.g. `"99/99/9999"`) |
-| `maskPlaceholder` | `string` | Placeholder character |
+## Mask props
+
+<PropsTable items={[
+  { name: "mask", type: "string", required: true, description: 'Mask pattern e.g. "99/99/9999" or "(999) 999-9999"' },
+  { name: "maskPlaceholder", type: "string", default: '"_"', description: "Character shown for unfilled positions" },
+]} />
 
 ## Examples
 
-### Async Select
+### Async select
 
 ```tsx
 <DynamicFormField
   control={form.control}
   name="userId"
   fieldType={FormFieldType.ASYNC_SELECT}
-  label="User"
+  label="Assign to"
   data={[]}
   labelKey="name"
   valueKey="id"
@@ -110,7 +112,7 @@ These apply to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 />
 ```
 
-### Currency
+### Currency input
 
 ```tsx
 <DynamicFormField
@@ -123,3 +125,36 @@ These apply to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
   thousandSeparator
 />
 ```
+
+### Masked input
+
+```tsx
+<DynamicFormField
+  control={form.control}
+  name="phone"
+  fieldType={FormFieldType.MASKED}
+  label="Phone"
+  mask="(999) 999-9999"
+/>
+```
+
+### With prefix / suffix
+
+```tsx
+<DynamicFormField
+  control={form.control}
+  name="website"
+  fieldType={FormFieldType.INPUT}
+  label="Website"
+  prefix={<span className="text-muted-foreground text-sm">https://</span>}
+/>
+```
+
+## Live example
+
+See `DynamicFormField` in action in the [Login Form block](/blocks/login-standard).
+
+## See also
+
+- [FormBuilderStandard](/docs/form-builder) — use a config array instead of rendering fields manually
+- [Form Layout](/docs/form-layout) — layout primitives for multi-column forms

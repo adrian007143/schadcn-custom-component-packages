@@ -6,17 +6,20 @@ import { cn } from "@/lib/utils"
 import {
   Sidebar,
   SidebarContent,
+  SidebarHeader,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 const NAV_GROUPS = [
   {
     label: "Getting Started",
     items: [
+      { href: "/docs/introduction", label: "Introduction" },
       { href: "/docs/getting-started", label: "Installation" },
     ],
   },
@@ -50,9 +53,17 @@ const NAV_GROUPS = [
 
 export function DocsSidebar() {
   const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  const handleLinkClick = () => {
+    if (isMobile) setOpenMobile(false)
+  }
 
   return (
     <Sidebar>
+      <SidebarHeader className="border-b px-4 py-3">
+        <span className="text-sm font-semibold text-foreground">Docs</span>
+      </SidebarHeader>
       <SidebarContent>
         {NAV_GROUPS.map((group) => (
           <SidebarGroup key={group.label}>
@@ -64,7 +75,7 @@ export function DocsSidebar() {
                     asChild
                     isActive={pathname === item.href}
                   >
-                    <Link href={item.href} className={cn(
+                    <Link href={item.href} onClick={handleLinkClick} className={cn(
                       "text-sm",
                       pathname === item.href
                         ? "font-medium text-foreground"

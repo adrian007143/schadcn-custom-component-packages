@@ -1,26 +1,30 @@
 # Redux Setup
 
-A complete Redux configuration with `react-redux-methods`, localStorage persistence, and example slices. Installs everything needed to start using Redux in your app.
+A complete Redux configuration with `react-redux-methods`, localStorage persistence, and ready-to-use example slices. One install gives you a working store with DevTools support.
 
 ## Install
 
-```bash
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/redux-methods-tool.json
-```
+<InstallCmd file="redux-methods-tool.json" />
 
 ## What's installed
 
-- `redux/store.ts` — Redux store with DevTools and localStorage persistence
-- `redux/StoreProvider.tsx` — React context wrapper
-- `redux/connections.ts` — Connection utilities
-- `redux/reducers/notification.ts` — Notification slice
-- `redux/reducers/sidebar.ts` — Sidebar open/close slice
-- `redux/reducers/todo.ts` — Todo list slice
-- `lib/helper/storageLocal.ts` — localStorage read/write helpers
+```
+redux/
+├── store.ts              Redux store with DevTools + localStorage persistence
+├── StoreProvider.tsx     React context wrapper component
+├── connections.ts        Typed useSelector / useDispatch hooks
+└── reducers/
+    ├── index.ts          Root reducer combining all slices
+    ├── notification.ts   Show/hide notification state
+    ├── sidebar.ts        Sidebar open/close state
+    └── todo.ts           Todo list with add/toggle/delete
+
+lib/helper/storageLocal.ts  localStorage read/write helpers
+```
 
 ## Setup
 
-Wrap your app with `StoreProvider` in your root layout:
+Wrap your app root with `StoreProvider`:
 
 ```tsx
 // app/layout.tsx
@@ -37,47 +41,71 @@ export default function RootLayout({ children }) {
 }
 ```
 
+<Callout variant="info">
+  `StoreProvider` is a `"use client"` component. It's safe to use in your root layout — it will only hydrate on the client side.
+</Callout>
+
 ## Reading state
 
-Use the provided selector hooks:
+Use the typed selector hooks:
 
 ```tsx
+"use client"
+
+import { useSelector } from "@/redux/connections"
 import { getTodos, getTodoCount } from "@/redux/reducers/todo"
 import { getNotificationStatus } from "@/redux/reducers/notification"
 import { getSidebarStatus } from "@/redux/reducers/sidebar"
 
-// In a client component:
-const todos = useSelector(getTodos)
-const count = useSelector(getTodoCount)
-const isOpen = useSelector(getNotificationStatus)
+export function StatusBar() {
+  const todos = useSelector(getTodos)
+  const count = useSelector(getTodoCount)
+  const notifOpen = useSelector(getNotificationStatus)
+  const sidebarOpen = useSelector(getSidebarStatus)
+
+  return <div>{count} todos · {notifOpen ? "Notif open" : "Notif closed"}</div>
+}
 ```
 
 ## Dispatching actions
 
 ```tsx
+"use client"
+
+import { useDispatch } from "@/redux/connections"
 import { addTodo, toggleTodo, deleteTodo } from "@/redux/reducers/todo"
 import { setNotificationShow, setNotificationHide } from "@/redux/reducers/notification"
 import { setSidebarShow, setSidebarHide } from "@/redux/reducers/sidebar"
 
-const dispatch = useDispatch()
+export function TodoActions() {
+  const dispatch = useDispatch()
 
-// Add a todo
-dispatch(addTodo({ id: crypto.randomUUID(), text: "New task", completed: false }))
-
-// Toggle completion
-dispatch(toggleTodo(todoId))
-
-// Show a notification
-dispatch(setNotificationShow({ message: "Saved successfully!" }))
+  return (
+    <button onClick={() =>
+      dispatch(addTodo({ id: crypto.randomUUID(), text: "New task", completed: false }))
+    }>
+      Add Todo
+    </button>
+  )
+}
 ```
 
-## LocalStorage Persistence
+## localStorage persistence
 
-Selected slices are persisted to localStorage automatically. The store reads persisted state on initialization (browser-only, SSR-safe).
+Selected slices are automatically saved to localStorage and restored on page load (SSR-safe — only runs in the browser).
 
-The slices persisted by default: `notifications`, `sidebar`, `todo`.
+Default persisted slices: `notifications`, `sidebar`, `todo`.
 
-To add a new persisted slice, update `redux/store.ts` to include it in the persistence config.
+To add a new slice to persistence, update `redux/store.ts`:
+
+```ts
+// redux/store.ts — add to the persistence config
+const persistedReducer = persistReducer({
+  key: "root",
+  storage,
+  whitelist: ["notifications", "sidebar", "todo", "myFeature"], // ← add here
+}, rootReducer)
+```
 
 ## Adding a new slice
 
@@ -87,15 +115,42 @@ import { createSlice } from "react-redux-methods"
 
 const myFeatureSlice = createSlice({
   name: "myFeature",
-  initialState: { value: "" },
+  initialState: { value: "" as string },
   reducers: {
-    setValue: (state, action) => { state.value = action.payload },
+    setValue: (state, action) => {
+      state.value = action.payload
+    },
+    clearValue: (state) => {
+      state.value = ""
+    },
   },
 })
 
-export const { setValue } = myFeatureSlice.actions
-export const getValue = (state) => state.myFeature.value
+export const { setValue, clearValue } = myFeatureSlice.actions
+export const getMyFeatureValue = (state: RootState) => state.myFeature.value
 export default myFeatureSlice.reducer
 ```
 
-Then register it in `redux/reducers/index.ts` and `redux/store.ts`.
+Then register it in `redux/reducers/index.ts`:
+
+```ts
+import myFeatureReducer from "./myFeature"
+
+export const rootReducer = combineReducers({
+  // ...existing reducers
+  myFeature: myFeatureReducer,
+})
+```
+
+<Callout variant="tip">
+  The `createSlice` from `react-redux-methods` is compatible with standard Redux Toolkit patterns — you can mix and match with existing Redux Toolkit slices.
+</Callout>
+
+## Live example
+
+See the Redux store in action at the [Redux Usage block](/blocks/redux-usage).
+
+## See also
+
+- [Installation](/docs/getting-started) — install the block
+- [DynamicDataTable](/docs/data-table) — combine with Redux to persist table filters

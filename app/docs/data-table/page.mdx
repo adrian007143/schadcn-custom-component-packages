@@ -1,26 +1,32 @@
 # DynamicDataTable
 
-A fully featured, editable data table built on TanStack Table v8. Supports inline cell editing, drag-and-drop row/column reordering, faceted filtering, column visibility, and custom cell types.
+A fully featured, editable data table built on TanStack Table v8. Supports inline cell editing, drag-and-drop row/column reordering, faceted filtering, column visibility toggles, and custom cell renderers.
 
 ## Install
 
-```bash
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/data-table-dynamic.json
-```
+<InstallCmd file="data-table-dynamic.json" />
 
 ## Usage
 
 ```tsx
 import { DynamicDataTable } from "@/components/data-table/data-table-dynamic/core/dynamic-data-table"
-import { FormFieldType } from "@/components/forms/form-field/constants"
 
-type User = { id: string; name: string; email: string; role: string; status: string }
+type User = {
+  id: string
+  name: string
+  email: string
+  role: string
+  status: string
+  joinedAt: string
+}
 
 const columns: DynamicColumnDef<User>[] = [
   { accessorKey: "name", header: "Name", cellType: "editable" },
   { accessorKey: "email", header: "Email", cellType: "editable" },
-  { accessorKey: "role", header: "Role", cellType: "select", selectOptions: ["admin", "user", "viewer"] },
+  { accessorKey: "role", header: "Role", cellType: "select",
+    selectOptions: ["admin", "user", "viewer"] },
   { accessorKey: "status", header: "Status", cellType: "badge" },
+  { accessorKey: "joinedAt", header: "Joined", cellType: "datepicker" },
 ]
 
 export function UsersTable({ data }: { data: User[] }) {
@@ -31,8 +37,11 @@ export function UsersTable({ data }: { data: User[] }) {
       rowIdKey="id"
       enableRowSelection
       enableRowDrag
+      enableColumnDrag
       enableGlobalFilter
-      onDataChange={(updated) => console.log(updated)}
+      enableColumnVisibility
+      onDataChange={(updated) => console.log("Updated rows:", updated)}
+      onDeleteRow={(row) => deleteUser(row.id)}
     />
   )
 }
@@ -40,47 +49,71 @@ export function UsersTable({ data }: { data: User[] }) {
 
 ## Props
 
-| Prop | Type | Required | Description |
-|---|---|---|---|
-| `data` | `TData[]` | Yes | Row data array |
-| `columnConfig` | `DynamicColumnDef<TData>[]` | Yes | Column definitions |
-| `rowIdKey` | `keyof TData` | Yes | Unique row identifier key |
-| `enableRowSelection` | `boolean` | — | Enable row checkboxes |
-| `enableRowDrag` | `boolean` | — | Enable row drag-and-drop |
-| `enableColumnDrag` | `boolean` | — | Enable column reordering |
-| `enableColumnVisibility` | `boolean` | — | Show column visibility toggle |
-| `enableGlobalFilter` | `boolean` | — | Show global search input |
-| `viewMode` | `"compact" \| "comfortable" \| "spacious"` | — | Row density |
-| `onDataChange` | `(rows: TData[]) => void` | — | Called when data changes |
-| `onViewRow` | `(row: TData) => void` | — | View row action callback |
-| `onEditRow` | `(row: TData) => void` | — | Edit row action callback |
-| `onDeleteRow` | `(row: TData) => void` | — | Delete row action callback |
+<PropsTable items={[
+  { name: "data", type: "TData[]", required: true, description: "Array of row objects" },
+  { name: "columnConfig", type: "DynamicColumnDef<TData>[]", required: true, description: "Column definitions" },
+  { name: "rowIdKey", type: "keyof TData", required: true, description: "Key that uniquely identifies each row" },
+  { name: "enableRowSelection", type: "boolean", default: "false", description: "Show row checkboxes for bulk selection" },
+  { name: "enableRowDrag", type: "boolean", default: "false", description: "Allow rows to be reordered by drag-and-drop" },
+  { name: "enableColumnDrag", type: "boolean", default: "false", description: "Allow columns to be reordered by drag-and-drop" },
+  { name: "enableColumnVisibility", type: "boolean", default: "false", description: "Show column visibility toggle menu" },
+  { name: "enableGlobalFilter", type: "boolean", default: "false", description: "Show global search input above the table" },
+  { name: "viewMode", type: '"compact" | "comfortable" | "spacious"', default: '"comfortable"', description: "Row height / density" },
+  { name: "onDataChange", type: "(rows: TData[]) => void", description: "Called whenever row data changes (edit, reorder)" },
+  { name: "onViewRow", type: "(row: TData) => void", description: "Callback for the View action on a row" },
+  { name: "onEditRow", type: "(row: TData) => void", description: "Callback for the Edit action on a row" },
+  { name: "onDeleteRow", type: "(row: TData) => void", description: "Callback for the Delete action on a row" },
+]} />
 
-## Column Definition
+## Column definition
 
 ```ts
 interface DynamicColumnDef<TData> {
-  accessorKey: keyof TData & string
-  header: string
-  cellType?: "text" | "editable" | "badge" | "select" | "datepicker" | "image"
-  selectOptions?: string[]   // for cellType: "select"
-  width?: number
-  enableSorting?: boolean
-  enableHiding?: boolean
+  accessorKey: keyof TData & string  // Maps to a data field
+  header: string                     // Column heading text
+  cellType?: CellType                // How to render the cell
+  selectOptions?: string[]           // Options for cellType "select"
+  width?: number                     // Fixed column width in px
+  enableSorting?: boolean            // Allow column sorting
+  enableHiding?: boolean             // Allow column to be hidden
 }
 ```
 
-## Cell Types
+## Cell types
 
-| `cellType` | Description |
-|---|---|
-| `text` | Read-only text display |
-| `editable` | Click-to-edit text cell |
-| `badge` | Colored badge based on value |
-| `select` | Inline dropdown |
-| `datepicker` | Inline date picker |
-| `image` | Avatar/image display |
+<PropsTable items={[
+  { name: "text", type: "cellType", description: "Read-only text display (default)" },
+  { name: "editable", type: "cellType", description: "Click to edit inline text cell" },
+  { name: "badge", type: "cellType", description: "Colored badge — color based on value" },
+  { name: "select", type: "cellType", description: "Inline dropdown — requires selectOptions" },
+  { name: "datepicker", type: "cellType", description: "Inline date picker popover" },
+  { name: "image", type: "cellType", description: "Renders a small avatar / image" },
+]} />
 
-## Drag and Drop
+## Drag and drop
 
-Drag-and-drop uses `@dnd-kit`. Enable with `enableRowDrag` and/or `enableColumnDrag`. Row order changes trigger `onDataChange` with the reordered array.
+Row and column drag-and-drop uses `@dnd-kit`. Enable with `enableRowDrag` and/or `enableColumnDrag`.
+
+- **Row drag**: Dragging a row to a new position triggers `onDataChange` with the reordered array
+- **Column drag**: Dragging a column header reorders the visible columns in-place
+
+<Callout variant="info">
+  Drag handles are shown automatically when `enableRowDrag` is true. No extra configuration needed.
+</Callout>
+
+## Faceted filtering
+
+The table includes built-in faceted filter support for columns with a finite set of values (e.g. status, role). Filters appear as multi-select dropdowns in the toolbar.
+
+<Callout variant="tip">
+  Combine `enableGlobalFilter` (full-text search) with faceted filters for a full search experience with no extra code.
+</Callout>
+
+## Live example
+
+See the table in action at the [Dynamic Data Table block](/blocks/data-table-dynamic).
+
+## See also
+
+- [FormBuilderStandard](/docs/form-builder) — pair with a form for inline add/edit workflows
+- [Redux Setup](/docs/redux) — persist table state (selection, filters) in Redux

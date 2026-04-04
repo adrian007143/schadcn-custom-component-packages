@@ -7,6 +7,7 @@ export default function DataTablePage() {
       title="Dynamic Data Table"
       description="Fully dynamic, editable, draggable data table with inline editing, drag-and-drop rows/columns, faceted filtering, and custom cell types."
       registryFile="data-table-dynamic.json"
+      codeFiles={["components/examples/data-table-dynamic.tsx"]}
     >
       <DataTableDynamic />
     </ExamplePageShell>

@@ -1,6 +1,6 @@
-# Getting Started
+# Installation
 
-FormKitCN is a schema-driven component toolkit for building production-ready forms, tables, and UI systems in React. Every block installs directly into your project via the shadcn CLI — no separate package to maintain.
+Get your first FormKitCN block installed and running in under a minute.
 
 ## Prerequisites
 
@@ -8,43 +8,45 @@ Your project needs:
 
 - Next.js 13+ (App Router)
 - React 18+
-- [shadcn/ui](https://ui.shadcn.com) initialized (`npx shadcn@latest init`)
 - TypeScript
 - Tailwind CSS
+- shadcn/ui initialized — run `npx shadcn@latest init` if you haven't already
+
+<Callout variant="info">
+  FormKitCN components are shadcn registry blocks. The shadcn CLI handles all dependency installation automatically.
+</Callout>
 
 ## Install your first block
 
-Pick a block and add it to your project:
+Pick a block and add it to your project with one command. Here's the most common starting point — the dynamic form field:
 
-```bash
-# Dynamic form field (17+ field types)
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-field.json
-```
+<InstallCmd file="form-field.json" />
 
-The CLI will copy the component files into your project and install any required dependencies automatically.
+The CLI will copy the component files into your project and install all required npm packages.
 
-## Available blocks
+## All available blocks
 
-| Block | Install URL |
+| Block | Registry file |
 |---|---|
-| Dynamic Form Field | `/r/form-field.json` |
-| Form Layout | `/r/form-layout.json` |
-| FormBuilderStandard | `/r/form-dynamic-template.json` |
-| Multi-Step Form | `/r/multistep-form-template.json` |
-| Dynamic Data Table | `/r/data-table-dynamic.json` |
-| Redux Tool | `/r/redux-methods-tool.json` |
+| DynamicFormField | `form-field.json` |
+| Form Layout primitives | `form-layout.json` |
+| FormBuilderStandard | `form-dynamic-template.json` |
+| Multi-Step Form | `multistep-form-template.json` |
+| Dynamic Data Table | `data-table-dynamic.json` |
+| Redux Store | `redux-methods-tool.json` |
 
-All URLs are prefixed with `https://schadcn-custom-component-packages.vercel.app`.
+To install any block, replace the file name in the install command above.
 
 ## Quick example
 
-After installing `form-field` and `form-layout`:
+After installing `form-field`, here's a minimal working form using `DynamicFormField` with `react-hook-form` and Zod:
 
 ```tsx
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Form } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
 import { DynamicFormField } from "@/components/forms/form-field/DynamicFormField"
 import { FormFieldType } from "@/components/forms/form-field/constants"
 
@@ -68,24 +70,29 @@ export function LoginForm() {
           fieldType={FormFieldType.INPUT}
           label="Email"
           placeholder="you@example.com"
+          required
         />
         <DynamicFormField
           control={form.control}
           name="password"
           fieldType={FormFieldType.PASSWORD}
           label="Password"
+          required
         />
-        <button type="submit">Login</button>
+        <Button type="submit">Sign in</Button>
       </form>
     </Form>
   )
 }
 ```
 
-## Next steps
+<Callout variant="tip">
+  Want to skip the react-hook-form boilerplate? Use **FormBuilderStandard** instead — it handles schema, layout, and submission automatically. See the [FormBuilderStandard docs](/docs/form-builder).
+</Callout>
 
-- [DynamicFormField docs](/docs/form-field) — all 17 field types and their props
-- [FormBuilderStandard docs](/docs/form-builder) — schema-driven form builder
-- [Multi-Step Form docs](/docs/multistep-form) — multi-step forms with validation
-- [Data Table docs](/docs/data-table) — editable, draggable table
-- [Redux docs](/docs/redux) — state management with persistence
+## See also
+
+- [Introduction](/docs/introduction) — architecture overview and what's included
+- [DynamicFormField](/docs/form-field) — all 17 field types and their props
+- [FormBuilderStandard](/docs/form-builder) — schema-driven form builder
+- [Live examples](/blocks) — browse all block previews
