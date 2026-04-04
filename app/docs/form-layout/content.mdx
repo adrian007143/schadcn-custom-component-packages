@@ -8,42 +8,42 @@ Composable layout primitives for structuring forms. Use these when you want full
 
 ## Components
 
-<div className="not-prose my-6 overflow-x-auto rounded-xl border border-zinc-700/60">
+<div className="not-prose my-6 overflow-x-auto rounded-xl border border-border">
   <table className="w-full text-sm border-collapse">
     <thead>
-      <tr className="border-b border-zinc-700/60 bg-zinc-800/50">
-        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-400">Component</th>
-        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-400">Purpose</th>
+      <tr className="border-b border-border bg-muted/60">
+        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Component</th>
+        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Purpose</th>
       </tr>
     </thead>
-    <tbody className="divide-y divide-zinc-700/40">
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+    <tbody className="divide-y divide-border">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormLayout</code></td>
-        <td className="px-4 py-3 text-zinc-300">Outermost wrapper — adds vertical spacing between sections</td>
+        <td className="px-4 py-3 text-foreground/80">Outermost wrapper — adds vertical spacing between sections</td>
       </tr>
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormSection</code></td>
-        <td className="px-4 py-3 text-zinc-300">Titled section with optional description</td>
+        <td className="px-4 py-3 text-foreground/80">Titled section with optional description</td>
       </tr>
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormColumns</code></td>
-        <td className="px-4 py-3 text-zinc-300">Responsive column grid (1–4 columns)</td>
+        <td className="px-4 py-3 text-foreground/80">Responsive column grid (1–4 columns)</td>
       </tr>
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormRow</code></td>
-        <td className="px-4 py-3 text-zinc-300">Horizontal flex row for grouped inline fields</td>
+        <td className="px-4 py-3 text-foreground/80">Horizontal flex row for grouped inline fields</td>
       </tr>
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormActions</code></td>
-        <td className="px-4 py-3 text-zinc-300">Action bar with a top separator for buttons</td>
+        <td className="px-4 py-3 text-foreground/80">Action bar with a top separator for buttons</td>
       </tr>
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormDivider</code></td>
-        <td className="px-4 py-3 text-zinc-300">Visual divider between form areas</td>
+        <td className="px-4 py-3 text-foreground/80">Visual divider between form areas</td>
       </tr>
-      <tr className="hover:bg-zinc-800/30 transition-colors">
+      <tr className="hover:bg-muted/40 transition-colors">
         <td className="px-4 py-3 font-mono text-xs text-primary font-medium whitespace-nowrap"><code>FormFieldWrapper</code></td>
-        <td className="px-4 py-3 text-zinc-300">Thin wrapper with consistent field spacing</td>
+        <td className="px-4 py-3 text-foreground/80">Thin wrapper with consistent field spacing</td>
       </tr>
     </tbody>
   </table>
