@@ -9,7 +9,7 @@
       "title": "Field Renderer",
       "description": "Schema-driven field renderer system built on react-hook-form.",
       "dependencies": [
-        "@base-ui-components/react",
+        "@base-ui/react",
         "react-hook-form",
         "lucide-react",
         "react-phone-number-input"

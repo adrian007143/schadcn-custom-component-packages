@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import * as TabsPrimitive from "@base-ui-components/react/tabs"
+import * as TabsPrimitive from "@base-ui/react/tabs"
 
 import { cn } from "@/lib/utils"
 

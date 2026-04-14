@@ -19,12 +19,29 @@ interface ExamplePageShellProps {
 }
 
 async function highlightFile(relPath: string) {
-  const absPath = path.join(process.cwd(), relPath)
+  const examplesRoot = path.join(process.cwd(), "components", "examples")
+  const normalizedPath = relPath.replaceAll("\\", "/")
+  const relativeExamplePath = normalizedPath.startsWith("components/examples/")
+    ? normalizedPath.slice("components/examples/".length)
+    : null
+
   let rawCode = ""
-  try {
-    rawCode = fs.readFileSync(absPath, "utf-8")
-  } catch {
-    rawCode = `// Could not load source: ${relPath}`
+
+  if (!relativeExamplePath) {
+    rawCode = `// Unsupported source path: ${relPath}`
+  } else {
+    const absPath = path.join(examplesRoot, relativeExamplePath)
+    const relativeResolved = path.relative(examplesRoot, absPath)
+
+    if (relativeResolved.startsWith("..") || path.isAbsolute(relativeResolved)) {
+      rawCode = `// Invalid source path: ${relPath}`
+    } else {
+      try {
+        rawCode = fs.readFileSync(absPath, "utf-8")
+      } catch {
+        rawCode = `// Could not load source: ${relPath}`
+      }
+    }
   }
 
   const ext = path.extname(relPath).replace(".", "")
