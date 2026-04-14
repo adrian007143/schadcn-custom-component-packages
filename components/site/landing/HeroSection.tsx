@@ -7,8 +7,8 @@ import { buildInstallCommand } from "@/lib/site-url"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { FormKitCNLogoIcon } from "@/components/site/FormKitCNLogo"
 
-export async function HeroSection() {
-  const baseUrl = await getBaseUrl()
+export function HeroSection() {
+  const baseUrl = getBaseUrl()
   const installCommand = buildInstallCommand(baseUrl, "form-field.json")
 
   return (

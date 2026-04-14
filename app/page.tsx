@@ -55,8 +55,8 @@ const jsonLd = {
   license: "https://opensource.org/licenses/MIT",
 }
 
-export default async function HomePage() {
-  const baseUrl = await getBaseUrl()
+export default function HomePage() {
+  const baseUrl = getBaseUrl()
 
   return (
     <>

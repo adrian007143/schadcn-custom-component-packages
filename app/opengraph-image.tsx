@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og"
 
-export const runtime = "edge"
-export const alt = "FormKitCN — shadcn/ui Form Toolkit for React"
+export const alt = "FormKitCN - shadcn/ui Form Toolkit for React"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -22,7 +21,6 @@ export default function OGImage() {
           fontFamily: "sans-serif",
         }}
       >
-        {/* Grid pattern overlay */}
         <div
           style={{
             position: "absolute",
@@ -33,7 +31,6 @@ export default function OGImage() {
           }}
         />
 
-        {/* Glow orb */}
         <div
           style={{
             position: "absolute",
@@ -47,7 +44,6 @@ export default function OGImage() {
           }}
         />
 
-        {/* Top badge */}
         <div
           style={{
             position: "absolute",
@@ -71,12 +67,18 @@ export default function OGImage() {
             }}
           />
           <span style={{ color: "#a78bfa", fontSize: 14, fontWeight: 600 }}>
-            Open Source · Free · shadcn/ui Registry
+            Open Source - Free - shadcn/ui Registry
           </span>
         </div>
 
-        {/* Brand */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            marginBottom: 20,
+          }}
+        >
           <div
             style={{
               width: 56,
@@ -88,7 +90,9 @@ export default function OGImage() {
               justifyContent: "center",
             }}
           >
-            <span style={{ color: "white", fontSize: 28, fontWeight: 900 }}>F</span>
+            <span style={{ color: "white", fontSize: 28, fontWeight: 900 }}>
+              F
+            </span>
           </div>
           <span
             style={{
@@ -103,7 +107,6 @@ export default function OGImage() {
           </span>
         </div>
 
-        {/* Tagline */}
         <p
           style={{
             fontSize: 22,
@@ -115,32 +118,35 @@ export default function OGImage() {
           }}
         >
           Schema-driven form components for React. 17+ field types, multi-step
-          forms, data tables, and Redux — install any block with one CLI command.
+          forms, data tables, and Redux - install any block with one CLI
+          command.
         </p>
 
-        {/* Feature pills */}
         <div style={{ display: "flex", gap: 10 }}>
-          {["DynamicFormField", "FormBuilder", "MultiStepForm", "DataTable", "Redux"].map(
-            (label) => (
-              <div
-                key={label}
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 8,
-                  padding: "8px 16px",
-                  color: "#e6edf3",
-                  fontSize: 13,
-                  fontWeight: 500,
-                }}
-              >
-                {label}
-              </div>
-            )
-          )}
+          {[
+            "DynamicFormField",
+            "FormBuilder",
+            "MultiStepForm",
+            "DataTable",
+            "Redux",
+          ].map((label) => (
+            <div
+              key={label}
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 8,
+                padding: "8px 16px",
+                color: "#e6edf3",
+                fontSize: 13,
+                fontWeight: 500,
+              }}
+            >
+              {label}
+            </div>
+          ))}
         </div>
 
-        {/* URL */}
         <div
           style={{
             position: "absolute",
@@ -155,6 +161,6 @@ export default function OGImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   )
 }

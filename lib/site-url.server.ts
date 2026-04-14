@@ -1,18 +1,25 @@
-import { headers } from "next/headers"
+function normalizeBaseUrl(value: string): string {
+  return value.replace(/\/+$/, "")
+}
 
-/**
- * Server-only: reads the host from request headers to build the base URL.
- * Works on localhost, Vercel, and any custom domain automatically.
- * DO NOT import this in client components.
- */
-export async function getBaseUrl(): Promise<string> {
-  const headersList = await headers()
-  const host =
-    headersList.get("x-forwarded-host") ||
-    headersList.get("host") ||
-    "localhost:3000"
-  const proto =
-    headersList.get("x-forwarded-proto") ||
-    (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https")
-  return `${proto}://${host}`
+export function getBaseUrl(): string {
+  const candidates = [
+    process.env.REGISTRY_BASE_URL,
+    process.env.NEXT_PUBLIC_APP_URL,
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : undefined,
+    process.env.NODE_ENV === "production"
+      ? "https://formkitcn.pro"
+      : "http://localhost:3000",
+  ]
+
+  const baseUrl = candidates.find(
+    (candidate): candidate is string =>
+      typeof candidate === "string" && candidate.trim().length > 0,
+  )
+
+  return normalizeBaseUrl(baseUrl ?? "http://localhost:3000")
 }

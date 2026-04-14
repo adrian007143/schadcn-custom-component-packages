@@ -65,7 +65,7 @@ export async function ExamplePageShell({
   codeFiles = [],
   children,
 }: ExamplePageShellProps) {
-  const baseUrl = await getBaseUrl()
+  const baseUrl = getBaseUrl()
   const installCommand = buildInstallCommand(baseUrl, registryFile)
 
   const files = await Promise.all(codeFiles.map(highlightFile))
