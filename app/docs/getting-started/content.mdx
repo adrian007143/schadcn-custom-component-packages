@@ -24,16 +24,49 @@ Pick a block and add it to your project with one command. Here's the most common
 
 The CLI will copy the component files into your project and install all required npm packages.
 
+## Sonner setup
+
+Blocks that depend on `sonner` also require a toaster in your root layout. This is currently needed for:
+
+- `form-dynamic-template.json`
+- `multistep-form-template.json`
+- `form-template-01.json`
+
+Add this once in `app/layout.tsx`:
+
+```tsx
+import { Toaster } from "@/components/ui/sonner"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster position="top-center" />
+      </body>
+    </html>
+  )
+}
+```
+
 ## All available blocks
 
-| Block | Registry file |
-|---|---|
-| DynamicFormField | `form-field.json` |
-| Form Layout primitives | `form-layout.json` |
-| FormBuilderStandard | `form-dynamic-template.json` |
-| Multi-Step Form | `multistep-form-template.json` |
-| Dynamic Data Table | `data-table-dynamic.json` |
-| Redux Store | `redux-methods-tool.json` |
+<table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+  <thead>
+    <tr className="bg-muted/60">
+      <th className="text-left px-4 py-3 font-semibold text-xs uppercase tracking-wide text-muted-foreground border-b border-border">Block</th>
+      <th className="text-left px-4 py-3 font-semibold text-xs uppercase tracking-wide text-muted-foreground border-b border-border">Registry file</th>
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-border">
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">DynamicFormField</td><td className="px-4 py-3"><code>form-field.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Form Layout primitives</td><td className="px-4 py-3"><code>form-layout.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">FormBuilderStandard</td><td className="px-4 py-3"><code>form-dynamic-template.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Multi-Step Form</td><td className="px-4 py-3"><code>multistep-form-template.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Dynamic Data Table</td><td className="px-4 py-3"><code>data-table-dynamic.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Redux Store</td><td className="px-4 py-3"><code>redux-methods-tool.json</code></td></tr>
+  </tbody>
+</table>
 
 To install any block, replace the file name in the install command above.
 

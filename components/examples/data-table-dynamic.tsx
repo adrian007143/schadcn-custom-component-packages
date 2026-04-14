@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { Badge } from "@/components/ui/badge"
-import { toast } from "sonner" // Assuming you have sonner installed, or use alert()
+import { toast } from "sonner"
 import { DynamicColumnDef } from "@/components/data-table/data-table-dynamic/types/column.types"
 import { DynamicDataTable } from "@/components/data-table/data-table-dynamic/core/dynamic-data-table"
 
@@ -169,23 +169,21 @@ export default function DataTableDynamic() {
 
   // 2. Handle Batch Delete
   const handleDeleteSelected = (selectedRows: User[]) => {
-    if(confirm(`Delete ${selectedRows.length} users?`)) {
-       // Filter out deleted rows from local state
-       const selectedIds = new Set(selectedRows.map(u => u.id))
-       const remaining = data.filter(u => !selectedIds.has(u.id))
-       
-       setData(remaining)
-       toast.success("Users deleted")
-    }
+    const selectedIds = new Set(selectedRows.map((user) => user.id))
+    const remaining = data.filter((user) => !selectedIds.has(user.id))
+
+    setData(remaining)
+    toast.success("Users deleted")
   }
 
   // 3. Row Actions
-  const handleView = (row: User) => alert(`Viewing details for ${row.name}`)
-  const handleEdit = (row: User) => alert(`Edit action clicked for ${row.name}`)
+  const handleView = (row: User) =>
+    toast.info(`Viewing details for ${row.name}`)
+  const handleEdit = (row: User) =>
+    toast.info(`Edit action clicked for ${row.name}`)
   const handleDelete = (row: User) => {
-    if(confirm(`Delete ${row.name}?`)) {
-      setData(prev => prev.filter(u => u.id !== row.id))
-    }
+    setData((prev) => prev.filter((user) => user.id !== row.id))
+    toast.success(`${row.name} deleted`)
   }
 
   // 4. Add Row
@@ -235,8 +233,8 @@ export default function DataTableDynamic() {
       </div>
 
       {/* Debug: View Raw Data */}
-      <div className="mt-8 rounded bg-slate-950 p-4 text-xs text-slate-50 font-mono">
-        <p className="mb-2 font-bold text-green-400">Current Data State:</p>
+      <div className="mt-8 rounded border bg-card p-4 font-mono text-xs text-card-foreground">
+        <p className="mb-2 font-bold text-primary">Current Data State:</p>
         <pre>{JSON.stringify(data.map(u => ({ name: u.name, role: u.role.name, verified: u.email_verified })), null, 2)}</pre>
       </div>
     </div>

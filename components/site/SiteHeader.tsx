@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { ThemeToggle } from "./ThemeToggle"
+import { ThemeBuilderTrigger } from "@/components/theme/ThemeBuilderTrigger"
 import { Button } from "@/components/ui/button"
+import { FormKitCNLogo } from "./FormKitCNLogo"
 
 const NAV_LINKS = [
   { href: "/blocks", label: "Components" },
@@ -12,12 +14,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto flex h-14 items-center px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="mr-6 flex items-center gap-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/favicon-logo.png" alt="FormKitCN logo" width={28} height={28} className="shrink-0" />
-          <span className="font-semibold text-base tracking-tight">
-            FormKit<span className="text-primary">CN</span>
-          </span>
+        <Link href="/" className="mr-6 flex items-center">
+          <FormKitCNLogo size={28} textClassName="text-base" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1 flex-1">
@@ -41,6 +39,7 @@ export function SiteHeader() {
               GitHub
             </a>
           </Button>
+          <ThemeBuilderTrigger />
           <ThemeToggle />
         </div>
       </div>

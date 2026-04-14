@@ -6,17 +6,18 @@
     {
       "name": "form-field",
       "type": "registry:block",
-      "title": "Dynamic Form Field",
-      "description": "Schema-driven dynamic form field system built on react-hook-form.",
+      "title": "Field Renderer",
+      "description": "Schema-driven field renderer system built on react-hook-form.",
       "dependencies": [
+        "@base-ui-components/react",
         "react-hook-form",
         "lucide-react",
-        "react-phone-number-input",
-        "@hookform/resolvers",
-        "react-hook-form"
+        "react-phone-number-input"
       ],
       "registryDependencies": [
-        "form",
+        "badge",
+        "field",
+        "button",
         "input",
         "command",
         "popover",
@@ -25,145 +26,187 @@
         "checkbox",
         "input-group",
         "scroll-area",
-        "sonner",
         "switch"
       ],
       "files": [
         {
-          "path": "registry/custom/blocks/form-field/DynamicFormField.tsx",
+          "path": "components/forms/core/FieldRenderer.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/DynamicFormField.tsx"
+          "target": "components/forms/core/FieldRenderer.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/render-dynamic-input.tsx",
+          "path": "components/forms/core/render-field-control.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/render-dynamic-input.tsx"
+          "target": "components/forms/core/render-field-control.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/FieldSkeletonLoader.tsx",
+          "path": "components/forms/core/FieldSkeleton.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/FieldSkeletonLoader.tsx"
+          "target": "components/forms/core/FieldSkeleton.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/constants.ts",
+          "path": "components/forms/core/constants.ts",
           "type": "registry:file",
-          "target": "components/forms/form-field/constants.ts"
+          "target": "components/forms/core/constants.ts"
         },
         {
-          "path": "registry/custom/blocks/form-field/types.ts",
+          "path": "components/forms/core/types.ts",
           "type": "registry:file",
-          "target": "components/forms/form-field/types.ts"
+          "target": "components/forms/core/types.ts"
         },
         {
-          "path": "registry/custom/blocks/form-field/index.ts",
+          "path": "components/forms/core/index.ts",
           "type": "registry:file",
-          "target": "components/forms/form-field/index.ts"
+          "target": "components/forms/core/index.ts"
         },
-
         {
-          "path": "registry/custom/blocks/form-field/field-utils/mask-utils.ts",
+          "path": "components/forms/fields/utils/mask.ts",
           "type": "registry:lib",
-          "target": "components/forms/form-field/field-utils/mask-utils.ts"
+          "target": "components/forms/fields/utils/mask.ts"
         },
         {
-          "path": "registry/custom/blocks/form-field/field-utils/currency-utils.ts",
+          "path": "components/forms/fields/utils/currency.ts",
           "type": "registry:lib",
-          "target": "components/forms/form-field/field-utils/currency-utils.ts"
-        },
-
-        {
-          "path": "registry/custom/blocks/form-field/inputs/async-select.tsx",
-          "type": "registry:component",
-          "target": "components/forms/form-field/inputs/async-select.tsx"
+          "target": "components/forms/fields/utils/currency.ts"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/phone-input.tsx",
+          "path": "components/forms/fields/controls/AsyncSelectField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/phone-input.tsx"
+          "target": "components/forms/fields/controls/AsyncSelectField.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/percent-input.tsx",
+          "path": "components/forms/fields/controls/RadioGroupField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/percent-input.tsx"
+          "target": "components/forms/fields/controls/RadioGroupField.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/currency-input.tsx",
+          "path": "components/forms/fields/controls/SliderField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/currency-input.tsx"
+          "target": "components/forms/fields/controls/SliderField.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/date-picker.tsx",
+          "path": "components/forms/fields/controls/OtpField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/date-picker.tsx"
+          "target": "components/forms/fields/controls/OtpField.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/select-input.tsx",
+          "path": "components/forms/fields/controls/MultiSelectField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/select-input.tsx"
+          "target": "components/forms/fields/controls/MultiSelectField.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/single-selector.tsx",
+          "path": "components/forms/fields/controls/NumberField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/single-selector.tsx"
+          "target": "components/forms/fields/controls/NumberField.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-field/inputs/input-password.tsx",
+          "path": "components/forms/fields/controls/PhoneField.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-field/inputs/input-password.tsx"
+          "target": "components/forms/fields/controls/PhoneField.tsx"
+        },
+        {
+          "path": "components/forms/fields/controls/PercentField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/PercentField.tsx"
+        },
+        {
+          "path": "components/forms/fields/controls/CurrencyField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/CurrencyField.tsx"
+        },
+        {
+          "path": "components/forms/fields/controls/DateField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/DateField.tsx"
+        },
+        {
+          "path": "components/forms/fields/controls/ComboboxField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/ComboboxField.tsx"
+        },
+        {
+          "path": "components/forms/fields/controls/SearchSelect.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/SearchSelect.tsx"
+        },
+        {
+          "path": "components/forms/fields/controls/PasswordField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/PasswordField.tsx"
+        },
+        {
+          "path": "components/ui/radio-group.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/radio-group.tsx"
+        },
+        {
+          "path": "components/ui/slider.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/slider.tsx"
+        },
+        {
+          "path": "components/ui/input-otp.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/input-otp.tsx"
+        },
+        {
+          "path": "components/ui/multi-select.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/multi-select.tsx"
         }
       ]
     },
-
     {
       "name": "form-layout",
       "type": "registry:block",
       "title": "Form Layout",
       "description": "Composable layout primitives for building structured and responsive forms.",
-      "registryDependencies": ["button", "separator", "field"],
+      "registryDependencies": [
+        "field"
+      ],
       "files": [
         {
-          "path": "registry/custom/blocks/form-layout/FormLayout.tsx",
+          "path": "components/forms/layout/FormLayout.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormLayout.tsx"
+          "target": "components/forms/layout/FormLayout.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-layout/FormSection.tsx",
+          "path": "components/forms/layout/FormSection.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormSection.tsx"
+          "target": "components/forms/layout/FormSection.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-layout/FormColumns.tsx",
+          "path": "components/forms/layout/FormGrid.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormColumns.tsx"
+          "target": "components/forms/layout/FormGrid.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-layout/FormRow.tsx",
+          "path": "components/forms/layout/InlineFieldRow.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormRow.tsx"
+          "target": "components/forms/layout/InlineFieldRow.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-layout/FormDivider.tsx",
+          "path": "components/forms/layout/SectionDivider.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormDivider.tsx"
+          "target": "components/forms/layout/SectionDivider.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-layout/FormActions.tsx",
+          "path": "components/forms/layout/FormActionBar.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormActions.tsx"
+          "target": "components/forms/layout/FormActionBar.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-layout/FormFieldWrapper.tsx",
+          "path": "components/forms/layout/FieldGroup.tsx",
           "type": "registry:component",
-          "target": "components/forms/form-layout/FormFieldWrapper.tsx"
+          "target": "components/forms/layout/FieldGroup.tsx"
         }
       ]
     },
-
     {
       "name": "data-table-dynamic",
       "type": "registry:block",
-      "title": "Dynamic Data Table",
-      "description": "A fully dynamic, editable, draggable data table with custom cells.",
+      "title": "Data Grid",
+      "description": "A production-ready, editable, draggable data grid with custom cells.",
       "dependencies": [
         "date-fns",
         "@dnd-kit/core",
@@ -186,103 +229,102 @@
         "tabs",
         "checkbox",
         "dropdown-menu",
+        "alert-dialog",
         "label"
       ],
       "files": [
         {
-          "path": "registry/custom/blocks/data-table-dynamic/cells/badge-cell.tsx",
-          "target": "components/data-table/data-table-dynamic/cells/badge-cell.tsx",
+          "path": "components/data-grid/cells/StatusBadgeCell.tsx",
+          "target": "components/data-grid/cells/StatusBadgeCell.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/cells/datepicker-cell.tsx",
-          "target": "components/data-table/data-table-dynamic/cells/datepicker-cell.tsx",
+          "path": "components/data-grid/cells/DateCell.tsx",
+          "target": "components/data-grid/cells/DateCell.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/cells/editable-cell.tsx",
-          "target": "components/data-table/data-table-dynamic/cells/editable-cell.tsx",
+          "path": "components/data-grid/cells/EditableTextCell.tsx",
+          "target": "components/data-grid/cells/EditableTextCell.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/cells/image-cell.tsx",
-          "target": "components/data-table/data-table-dynamic/cells/image-cell.tsx",
+          "path": "components/data-grid/cells/AvatarCell.tsx",
+          "target": "components/data-grid/cells/AvatarCell.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/cells/select-cell.tsx",
-          "target": "components/data-table/data-table-dynamic/cells/select-cell.tsx",
+          "path": "components/data-grid/cells/SelectOptionCell.tsx",
+          "target": "components/data-grid/cells/SelectOptionCell.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/data-table-faceted-filter.tsx",
-          "target": "components/data-table/data-table-dynamic/core/data-table-faceted-filter.tsx",
+          "path": "components/data-grid/core/DataGridFilter.tsx",
+          "target": "components/data-grid/core/DataGridFilter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/drag-handle.tsx",
-          "target": "components/data-table/data-table-dynamic/core/drag-handle.tsx",
+          "path": "components/data-grid/core/RowDragHandle.tsx",
+          "target": "components/data-grid/core/RowDragHandle.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/draggable-row.tsx",
-          "target": "components/data-table/data-table-dynamic/core/draggable-row.tsx",
+          "path": "components/data-grid/core/SortableRow.tsx",
+          "target": "components/data-grid/core/SortableRow.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/dynamic-data-table.tsx",
-          "target": "components/data-table/data-table-dynamic/core/dynamic-data-table.tsx",
+          "path": "components/data-grid/core/DataGrid.tsx",
+          "target": "components/data-grid/core/DataGrid.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/row-drag-context.ts",
-          "target": "components/data-table/data-table-dynamic/core/row-drag-context.ts",
+          "path": "components/data-grid/core/row-drag-context.ts",
+          "target": "components/data-grid/core/row-drag-context.ts",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/table-footer.tsx",
-          "target": "components/data-table/data-table-dynamic/core/table-footer.tsx",
+          "path": "components/data-grid/core/DataGridFooter.tsx",
+          "target": "components/data-grid/core/DataGridFooter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/core/table-toolbar.tsx",
-          "target": "components/data-table/data-table-dynamic/core/table-toolbar.tsx",
+          "path": "components/data-grid/core/DataGridToolbar.tsx",
+          "target": "components/data-grid/core/DataGridToolbar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/hooks/use-editable.ts",
-          "target": "components/data-table/data-table-dynamic/hooks/use-editable.ts",
+          "path": "components/data-grid/hooks/useEditableGrid.ts",
+          "target": "components/data-grid/hooks/useEditableGrid.ts",
           "type": "registry:hook"
         },
-
         {
-          "path": "registry/custom/blocks/data-table-dynamic/inputs/search-input.tsx",
-          "target": "components/data-table/data-table-dynamic/inputs/search-input.tsx",
+          "path": "components/data-grid/inputs/search-input.tsx",
+          "target": "components/data-grid/inputs/search-input.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/types/column.types.ts",
-          "target": "components/data-table/data-table-dynamic/types/column.types.ts",
+          "path": "components/data-grid/types/columns.ts",
+          "target": "components/data-grid/types/columns.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/custom/blocks/data-table-dynamic/types/table.types.ts",
-          "target": "components/data-table/data-table-dynamic/types/table.types.ts",
+          "path": "components/data-grid/types/table.ts",
+          "target": "components/data-grid/types/table.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/custom/templates/data-table-dynamic.tsx",
+          "path": "components/examples/data-table-dynamic.tsx",
           "target": "components/examples/data-table-dynamic.tsx",
           "type": "registry:component"
         }
       ]
     },
-
     {
       "name": "multistep-form-template",
       "type": "registry:block",
-      "title": "Form Utilities",
-      "description": "Reusable form utilities for building forms.",
+      "title": "Step Form",
+      "description": "Guided multi-step forms built on shared schema-driven field primitives.",
       "dependencies": [
         "react-hook-form",
         "zod",
@@ -292,82 +334,90 @@
         "@hookform/resolvers"
       ],
       "registryDependencies": [
-        "form",
         "field",
         "button",
         "sonner",
         "progress",
-        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json",
-        "https://schadcn-custom-component-packages.vercel.app/r/form-layout.json"
+        "http://localhost:3000/r/form-field.json",
+        "http://localhost:3000/r/form-layout.json"
       ],
       "files": [
         {
-          "path": "registry/custom/blocks/form-ui/form-utils/ReCAPTCHAComponent.tsx",
-          "target": "components/forms/form-ui/form-utils/ReCAPTCHAComponent.tsx",
+          "path": "components/forms/patterns/ReCAPTCHAField.tsx",
+          "target": "components/forms/patterns/ReCAPTCHAField.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
+          "path": "lib/helper/toast-icon.tsx",
           "target": "lib/helper/toast-icon.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/custom/blocks/form-ui/form-utils/typedZodResolver.ts",
+          "path": "lib/utils/typedZodResolver.ts",
           "target": "lib/utils/typedZodResolver.ts",
           "type": "registry:lib"
         },
-
         {
-          "path": "registry/custom/blocks/form-ui/multistep-form/MultiStepForm.tsx",
-          "target": "components/forms/form-ui/multistep-form/MultiStepForm.tsx",
+          "path": "components/forms/patterns/StepForm.tsx",
+          "target": "components/forms/patterns/StepForm.tsx",
           "type": "registry:component"
         },
-
         {
-          "path": "registry/custom/templates/form-ui-multistep-template.tsx",
+          "path": "components/examples/form-ui-multistep-template.tsx",
           "target": "components/examples/form-ui-multistep-template.tsx",
           "type": "registry:block"
         },
         {
-          "path": "registry/custom/templates/schema.ts",
+          "path": "components/examples/schema.ts",
           "target": "components/examples/schema.ts",
           "type": "registry:lib"
         }
       ]
     },
-
     {
       "name": "form-template-01",
       "type": "registry:block",
-      "title": "Form tempalate",
-      "description": "Composable layout primitives for building structured and responsive forms.",
-      "dependencies": ["react-hook-form", "@hookform/resolvers", "zod"],
+      "title": "Form Layout Template",
+      "description": "Example showing shared field renderer and layout primitives together.",
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod"
+      ],
       "registryDependencies": [
+        "button",
         "sonner",
-        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
+        "http://localhost:3000/r/form-field.json",
+        "http://localhost:3000/r/form-layout.json"
       ],
       "files": [
         {
-          "path": "registry/custom/templates/form-layout-template.tsx",
+          "path": "components/examples/form-layout-template.tsx",
           "type": "registry:component",
           "target": "components/examples/form-layout-template.tsx"
         }
       ]
     },
-
     {
       "name": "form-dynamic-template",
       "type": "registry:block",
-      "title": "Form Dynamic Template",
-      "description": "Template showcasing dynamic form fields with layout.",
-      "dependencies": ["react-hook-form", "@hookform/resolvers", "zod"],
+      "title": "Schema Form",
+      "description": "Template showcasing schema-driven forms with shared field controls.",
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod"
+      ],
       "registryDependencies": [
+        "card",
         "sonner",
-        "https://schadcn-custom-component-packages.vercel.app/r/form-field.json"
+        "button",
+        "field",
+        "http://localhost:3000/r/form-field.json"
       ],
       "files": [
         {
-          "path": "registry/custom/templates/form-ui-dynamic-template.tsx",
+          "path": "components/examples/form-ui-dynamic-template.tsx",
           "type": "registry:block",
           "target": "components/examples/form-ui-dynamic-template.tsx"
         },
@@ -377,35 +427,36 @@
           "target": "app/login-standard/page.tsx"
         },
         {
-          "path": "registry/custom/blocks/form-ui/standard-form/FormBuilderStandard.tsx",
-          "target": "components/forms/form-ui/standard-form/FormBuilderStandard.tsx",
+          "path": "components/forms/patterns/SchemaForm.tsx",
+          "target": "components/forms/patterns/SchemaForm.tsx",
           "type": "registry:component"
         },
-{
-          "path": "registry/custom/blocks/form-ui/standard-form/types.ts",
-          "target": "components/forms/form-ui/standard-form/types.ts",
+        {
+          "path": "components/forms/patterns/schema-form.types.ts",
+          "target": "components/forms/patterns/schema-form.types.ts",
           "type": "registry:lib"
         },
-
         {
-          "path": "registry/custom/blocks/form-ui/form-utils/toast-icon.tsx",
+          "path": "lib/helper/toast-icon.tsx",
           "target": "lib/helper/toast-icon.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/custom/blocks/form-ui/form-utils/typedZodResolver.ts",
+          "path": "lib/utils/typedZodResolver.ts",
           "target": "lib/utils/typedZodResolver.ts",
           "type": "registry:lib"
         }
       ]
     },
-
     {
       "name": "redux-methods-tool",
       "type": "registry:block",
       "title": "Redux Tool",
       "description": "Reusable Redux Toolkit setup with store, reducers, provider, and local storage helpers.",
-      "dependencies": ["react-redux-methods", "lucide-react"],
+      "dependencies": [
+        "react-redux-methods",
+        "lucide-react"
+      ],
       "registryDependencies": [
         "card",
         "button",
@@ -435,7 +486,6 @@
           "target": "redux/StoreProvider.tsx",
           "type": "registry:component"
         },
-
         {
           "path": "redux/reducers/index.ts",
           "target": "redux/reducers/index.ts",
@@ -456,19 +506,18 @@
           "target": "redux/reducers/todo.ts",
           "type": "registry:lib"
         },
-
         {
           "path": "lib/helper/storageLocal.ts",
           "target": "lib/helper/storageLocal.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/custom/templates/redux-tool-todo.tsx",
+          "path": "components/examples/redux-tool-todo.tsx",
           "target": "components/examples/redux-tool-todo.tsx",
           "type": "registry:block"
         },
         {
-          "path": "registry/custom/templates/redux-tool-notification.tsx",
+          "path": "components/examples/redux-tool-notification.tsx",
           "target": "components/examples/redux-tool-notification.tsx",
           "type": "registry:block"
         },

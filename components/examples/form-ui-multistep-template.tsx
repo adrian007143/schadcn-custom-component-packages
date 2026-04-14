@@ -1,20 +1,22 @@
 "use client";
 
-import { Organization, OrganizationSchema } from "./schema";
-import { showSuccess } from "@/lib/helper/toast-icon";
 import { UseFormReturn } from "react-hook-form";
 import {
+  Banknote,
   Building2,
+  FileText,
   Globe,
+  Hash,
   Mail,
   MapPin,
-  Banknote,
-  FileText,
-  Hash,
-} from "lucide-react"; // ✅ Icons
-import { MultiStepForm } from "@/components/forms/form-ui/multistep-form/MultiStepForm";
-import { FormFieldType } from "../forms/form-field";
-import { FormLayout } from "../forms/form-layout/FormLayout";
+} from "lucide-react";
+
+import { StepForm } from "@/components/forms/patterns/StepForm";
+import { FormFieldType } from "@/components/forms/core";
+import { FormLayout } from "@/components/forms/layout/FormLayout";
+import { showSuccess } from "@/lib/helper/toast-icon";
+
+import { Organization, OrganizationSchema } from "./schema";
 
 const defaultValues: Organization = {
   name: "ABC COMPANY",
@@ -40,24 +42,20 @@ export default function CreateOrgForm() {
     values: Organization,
     form: UseFormReturn<Organization>
   ) => {
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1000));
-
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("Submitted:", values);
-
     showSuccess({
       message: "Organization created successfully",
       description: "You can now access your organization dashboard.",
     });
-
     form.reset();
   };
 
-  const inputheight = "md";
+  const inputHeight = "md";
 
   return (
     <FormLayout>
-      <MultiStepForm<Organization>
+      <StepForm<Organization>
         schema={OrganizationSchema}
         layoutMode="auto"
         variant="ghost"
@@ -78,7 +76,7 @@ export default function CreateOrgForm() {
                 placeholder: "Acme Corp",
                 fieldType: FormFieldType.INPUT,
                 required: true,
-                height: inputheight,
+                height: inputHeight,
                 prefix: <Building2 className="size-4" />,
               },
               {
@@ -87,7 +85,7 @@ export default function CreateOrgForm() {
                 placeholder: "Acme Corporation Inc.",
                 fieldType: FormFieldType.INPUT,
                 required: true,
-                height: inputheight,
+                height: inputHeight,
                 icon: <FileText className="size-4" />,
               },
               {
@@ -105,7 +103,7 @@ export default function CreateOrgForm() {
                 },
                 valueKey: "label",
                 required: true,
-                height: inputheight,
+                height: inputHeight,
                 icon: <Globe className="size-4" />,
               },
               {
@@ -122,7 +120,7 @@ export default function CreateOrgForm() {
                   columns: [{ key: "value" }],
                 },
                 required: true,
-                height: inputheight,
+                height: inputHeight,
                 icon: <Banknote className="size-4" />,
               },
               {
@@ -132,7 +130,7 @@ export default function CreateOrgForm() {
                 fieldType: FormFieldType.INPUT,
                 type: "email",
                 required: true,
-                height: inputheight,
+                height: inputHeight,
                 icon: <Mail className="size-4" />,
               },
               {
@@ -140,7 +138,7 @@ export default function CreateOrgForm() {
                 label: "Website",
                 placeholder: "https://",
                 fieldType: FormFieldType.INPUT,
-                height: inputheight,
+                height: inputHeight,
                 icon: <Globe className="size-4" />,
               },
               {
@@ -148,12 +146,11 @@ export default function CreateOrgForm() {
                 label: "Capital",
                 placeholder: "0.00",
                 fieldType: FormFieldType.CURRENCY,
-                height: inputheight,
+                height: inputHeight,
                 icon: "₱",
               },
             ],
           },
-
           {
             layout: "grid-2",
             title: "Classification",
@@ -179,13 +176,13 @@ export default function CreateOrgForm() {
                 labelKey: "label",
                 valueKey: "value",
                 required: true,
-                height: inputheight,
+                height: inputHeight,
               },
               {
                 name: "industry",
                 label: "Industry",
                 fieldType: FormFieldType.INPUT,
-                height: inputheight,
+                height: inputHeight,
               },
               {
                 name: "tax_id",
@@ -194,18 +191,17 @@ export default function CreateOrgForm() {
                 maskPlaceholder: "123-456-789-000",
                 placeholder: "000-000-000",
                 fieldType: FormFieldType.MASKED,
-                height: inputheight,
+                height: inputHeight,
                 icon: <Hash className="size-4" />,
               },
               {
                 name: "primary_activity",
                 label: "Primary Activity",
                 fieldType: FormFieldType.INPUT,
-                height: inputheight,
+                height: inputHeight,
               },
             ],
           },
-
           {
             layout: "grid-2",
             title: "Billing Address",
@@ -216,14 +212,14 @@ export default function CreateOrgForm() {
                 label: "Address Line 1",
                 fieldType: FormFieldType.INPUT,
                 required: true,
-                height: inputheight,
+                height: inputHeight,
                 icon: <MapPin className="size-4" />,
               },
               {
                 name: "address2",
                 label: "Address Line 2",
                 fieldType: FormFieldType.INPUT,
-                height: inputheight,
+                height: inputHeight,
                 icon: <MapPin className="size-4" />,
               },
               {
@@ -231,19 +227,19 @@ export default function CreateOrgForm() {
                 label: "City",
                 fieldType: FormFieldType.INPUT,
                 required: true,
-                height: inputheight,
+                height: inputHeight,
               },
               {
                 name: "zip_code",
                 label: "Zip Code",
                 fieldType: FormFieldType.INPUT,
-                height: inputheight,
+                height: inputHeight,
               },
               {
                 name: "phone",
                 label: "Phone Number",
-                fieldType: FormFieldType.PHONE_INPUT, // Assuming you have this set up
-                height: inputheight,
+                fieldType: FormFieldType.PHONE_INPUT,
+                height: inputHeight,
               },
             ],
           },

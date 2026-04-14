@@ -10,11 +10,11 @@ import { DocsSidebar } from "./DocsSidebar"
 const NAV_ORDER = [
   { href: "/docs/introduction", label: "Introduction" },
   { href: "/docs/getting-started", label: "Installation" },
-  { href: "/docs/form-field", label: "DynamicFormField" },
-  { href: "/docs/form-builder", label: "FormBuilderStandard" },
+  { href: "/docs/form-field", label: "Field Renderer" },
+  { href: "/docs/form-builder", label: "Schema Form" },
   { href: "/docs/form-layout", label: "Form Layout" },
-  { href: "/docs/multistep-form", label: "MultiStepForm" },
-  { href: "/docs/data-table", label: "DynamicDataTable" },
+  { href: "/docs/multistep-form", label: "Step Form" },
+  { href: "/docs/data-table", label: "Data Grid" },
   { href: "/docs/redux", label: "Redux Setup" },
 ]
 

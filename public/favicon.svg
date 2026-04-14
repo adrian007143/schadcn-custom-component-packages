@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" fill="none">
+  <style>
+    .bg { fill: #fbfbfa; }
+    .border { stroke: #d5d7db; }
+    .tile { fill: #59bb74; }
+    .check { stroke: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #181716; }
+      .border { stroke: rgba(255, 255, 255, 0.88); }
+      .tile { fill: #ffffff; }
+      .check { stroke: #59bb74; }
+    }
+  </style>
+  <rect x="5" y="5" width="62" height="62" rx="17" class="bg" />
+  <rect x="5" y="5" width="62" height="62" rx="17" class="border" stroke-width="2.5" fill="none" />
+  <path
+    d="M29.5 25L20 36L29.5 47"
+    stroke="#59bb74"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <rect x="37.5" y="25" width="20.5" height="20.5" rx="4.25" class="tile" />
+  <path
+    d="M42.75 35.5L47.5 39.75L54 33"
+    class="check"
+    stroke-width="4.25"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

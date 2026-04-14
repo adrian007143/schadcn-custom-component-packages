@@ -4,52 +4,50 @@
   "title": "Form Layout",
   "description": "Composable layout primitives for building structured and responsive forms.",
   "registryDependencies": [
-    "button",
-    "separator",
     "field"
   ],
   "files": [
     {
-      "path": "registry/custom/blocks/form-layout/FormLayout.tsx",
-      "content": "\"use client\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\n\r\nexport function FormLayout({\r\n  children,\r\n  className,\r\n}: {\r\n  children: React.ReactNode;\r\n  className?: string;\r\n}) {\r\n  return (\r\n    <div\r\n      className={cn(\r\n        \"space-y-10\",\r\n        className\r\n      )}\r\n    >\r\n      {children}\r\n    </div>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/FormLayout.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\r\nexport function FormLayout({\r\n  children,\r\n  className,\r\n}: {\n  children: ReactNode;\n  className?: string;\n}) {\n  return (\r\n    <div\r\n      className={cn(\r\n        \"space-y-10\",\r\n        className\r\n      )}\r\n    >\r\n      {children}\r\n    </div>\r\n  );\r\n}\r\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormLayout.tsx"
+      "target": "components/forms/layout/FormLayout.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-layout/FormSection.tsx",
-      "content": "\"use client\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\n\r\ninterface FormSectionProps {\r\n  children: React.ReactNode;\r\n  title?: string;\r\n  description?: string;\r\n  className?: string;\r\n}\r\n\r\nexport function FormSection({\r\n  title,\r\n  description,\r\n  children,\r\n  className\r\n}: FormSectionProps) {\r\n  return (\r\n    <div className=\"space-y-4\">\r\n      <div>\r\n        <h3 className=\"text-lg font-semibold text-foreground\">{title}</h3>\r\n        {description && (\r\n          <p className=\"text-sm text-muted-foreground\">{description}</p>\r\n        )}\r\n      </div>\r\n\r\n      {/* Reduced spacing for cleaner alignment */}\r\n      <div className={cn(\"space-y-3\", className)}>{children}</div>\r\n    </div>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/FormSection.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\r\ninterface FormSectionProps {\n  children: ReactNode;\n  title?: string;\r\n  description?: string;\r\n  className?: string;\r\n}\r\n\r\nexport function FormSection({\r\n  title,\r\n  description,\r\n  children,\r\n  className\r\n}: FormSectionProps) {\r\n  return (\r\n    <div className=\"space-y-4\">\r\n      <div>\r\n        <h3 className=\"text-lg font-semibold text-foreground\">{title}</h3>\r\n        {description && (\r\n          <p className=\"text-sm text-muted-foreground\">{description}</p>\r\n        )}\r\n      </div>\r\n\r\n      {/* Reduced spacing for cleaner alignment */}\r\n      <div className={cn(\"space-y-3\", className)}>{children}</div>\r\n    </div>\r\n  );\r\n}\r\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormSection.tsx"
+      "target": "components/forms/layout/FormSection.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-layout/FormColumns.tsx",
-      "content": "\"use client\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\n\r\nexport function FormColumns({\r\n  columns = 2,\r\n  children,\r\n}: {\r\n  columns?: 1 | 2 | 3 | 4;\r\n  children: React.ReactNode;\r\n}) {\r\n  return (\r\n    <div\r\n      className={cn(\r\n        \"grid gap-4\",\r\n        columns === 1 && \"grid-cols-1\",\r\n        columns === 2 && \"grid-cols-1 md:grid-cols-2\",\r\n        columns === 3 && \"grid-cols-1 md:grid-cols-3\",\r\n        columns === 4 && \"grid-cols-1 md:grid-cols-4\"\r\n      )}\r\n    >\r\n      {children}\r\n    </div>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/FormGrid.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\r\nexport function FormGrid({\n  columns = 2,\r\n  children,\r\n}: {\n  columns?: 1 | 2 | 3 | 4;\n  children: ReactNode;\n}) {\n  return (\r\n    <div\r\n      className={cn(\r\n        \"grid gap-4\",\r\n        columns === 1 && \"grid-cols-1\",\r\n        columns === 2 && \"grid-cols-1 md:grid-cols-2\",\r\n        columns === 3 && \"grid-cols-1 md:grid-cols-3\",\r\n        columns === 4 && \"grid-cols-1 md:grid-cols-4\"\r\n      )}\r\n    >\r\n      {children}\r\n    </div>\r\n  );\r\n}\n\n/** @deprecated Use FormGrid instead. */\nexport const FormColumns = FormGrid;\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormColumns.tsx"
+      "target": "components/forms/layout/FormGrid.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-layout/FormRow.tsx",
-      "content": "\"use client\";\r\n\r\nimport { FieldGroup } from \"@/components/ui/field\";\r\nimport { cn } from \"@/lib/utils\";\r\n\r\ninterface FormRowProps {\r\n  children: React.ReactNode;\r\n  className?: string;\r\n}\r\n\r\nexport function FormRow({ children, className }: FormRowProps) {\r\n  return (\r\n    <FieldGroup\r\n      className={cn(\"flex flex-row gap-4 items-start w-full\", className)}\r\n    >\r\n      {children}\r\n    </FieldGroup>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/InlineFieldRow.tsx",
+      "content": "\"use client\";\r\n\r\nimport { FieldGroup } from \"@/components/ui/field\";\r\nimport { cn } from \"@/lib/utils\";\r\n\r\ninterface FormRowProps {\r\n  children: React.ReactNode;\r\n  className?: string;\r\n}\r\n\r\nexport function InlineFieldRow({ children, className }: FormRowProps) {\n  return (\r\n    <FieldGroup\r\n      className={cn(\"flex flex-row gap-4 items-start w-full\", className)}\r\n    >\r\n      {children}\r\n    </FieldGroup>\r\n  );\r\n}\n\n/** @deprecated Use InlineFieldRow instead. */\nexport const FormRow = InlineFieldRow;\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormRow.tsx"
+      "target": "components/forms/layout/InlineFieldRow.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-layout/FormDivider.tsx",
-      "content": "\"use client\";\r\n\r\nexport function FormDivider({ label }: { label?: string }) {\r\n  return (\r\n    <div className=\"flex items-center gap-2 my-4\">\r\n      <div className=\"h-px flex-1 bg-border\" />\r\n      {label && <span className=\"text-xs text-muted-foreground\">{label}</span>}\r\n      <div className=\"h-px flex-1 bg-border\" />\r\n    </div>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/SectionDivider.tsx",
+      "content": "\"use client\";\r\n\r\nexport function SectionDivider({ label }: { label?: string }) {\n  return (\r\n    <div className=\"flex items-center gap-2 my-4\">\r\n      <div className=\"h-px flex-1 bg-border\" />\r\n      {label && <span className=\"text-xs text-muted-foreground\">{label}</span>}\r\n      <div className=\"h-px flex-1 bg-border\" />\r\n    </div>\r\n  );\r\n}\n\n/** @deprecated Use SectionDivider instead. */\nexport const FormDivider = SectionDivider;\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormDivider.tsx"
+      "target": "components/forms/layout/SectionDivider.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-layout/FormActions.tsx",
-      "content": "\"use client\";\r\n\r\nimport { FieldSeparator } from \"@/components/ui/field\";\r\n\r\nexport function FormActions({ children }: { children: React.ReactNode }) {\r\n  return (\r\n    <div className=\"pt-4\">\r\n      <FieldSeparator className=\"mb-2\" />\r\n      {children}\r\n    </div>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/FormActionBar.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\n\nimport { FieldSeparator } from \"@/components/ui/field\";\n\nexport function FormActionBar({ children }: { children: ReactNode }) {\n  return (\r\n    <div className=\"pt-4\">\r\n      <FieldSeparator className=\"mb-2\" />\r\n      {children}\r\n    </div>\r\n  );\r\n}\n\n/** @deprecated Use FormActionBar instead. */\nexport const FormActions = FormActionBar;\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormActions.tsx"
+      "target": "components/forms/layout/FormActionBar.tsx"
     },
     {
-      "path": "registry/custom/blocks/form-layout/FormFieldWrapper.tsx",
-      "content": "\"use client\";\r\n\r\nimport {\r\n  Field,\r\n  FieldLabel,\r\n  FieldDescription,\r\n  FieldError,\r\n} from \"@/components/ui/field\";\r\n\r\nexport function FormFieldWrapper({\r\n  label,\r\n  error,\r\n  description,\r\n  children,\r\n  orientation\r\n}: {\r\n  label?: string;\r\n  error?: string;\r\n  description?: string;\r\n  orientation?: \"horizontal\" | \"vertical\" | \"responsive\" | null | undefined;\r\n  children: React.ReactNode;\r\n}) {\r\n  return (\r\n    <Field className=\"space-y-1.5\" orientation={orientation}>\r\n      {label && <FieldLabel>{label}</FieldLabel>}\r\n      {children}\r\n      {description && <FieldDescription>{description}</FieldDescription>}\r\n      {error && <FieldError>{error}</FieldError>}\r\n    </Field>\r\n  );\r\n}\r\n",
+      "path": "components/forms/layout/FieldGroup.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\n\nimport {\n  Field,\n  FieldDescription,\n  FieldError,\n  FieldLabel,\n} from \"@/components/ui/field\";\n\ntype FieldGroupProps = {\n  label?: string;\n  error?: string;\n  description?: string;\n  orientation?: \"horizontal\" | \"vertical\" | \"responsive\" | null | undefined;\n  children: ReactNode;\n  className?: string;\n};\n\nexport function FieldGroup({\n  label,\n  error,\n  description,\n  children,\n  orientation,\n  className,\n}: FieldGroupProps) {\n  return (\n    <Field className={className ?? \"space-y-1.5\"} orientation={orientation}>\n      {label && <FieldLabel>{label}</FieldLabel>}\n      {children}\n      {description && <FieldDescription>{description}</FieldDescription>}\n      {error && <FieldError>{error}</FieldError>}\n    </Field>\n  );\n}\n\n/** @deprecated Use FieldGroup instead. */\nexport function FormFieldWrapper(props: FieldGroupProps) {\n  return <FieldGroup {...props} />;\n}\n",
       "type": "registry:component",
-      "target": "components/forms/form-layout/FormFieldWrapper.tsx"
+      "target": "components/forms/layout/FieldGroup.tsx"
     }
   ],
   "type": "registry:block"

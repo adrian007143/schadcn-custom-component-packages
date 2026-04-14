@@ -5,6 +5,7 @@ import { InstallSnippet } from "./InstallSnippet"
 import { getBaseUrl } from "@/lib/site-url.server"
 import { buildInstallCommand } from "@/lib/site-url"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { FormKitCNLogoIcon } from "@/components/site/FormKitCNLogo"
 
 export async function HeroSection() {
   const baseUrl = await getBaseUrl()
@@ -24,10 +25,9 @@ export async function HeroSection() {
         <div className="flex flex-col items-center text-center gap-8 max-w-3xl mx-auto">
           {/* Logo with glow ring */}
           <div className="relative">
-            <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl scale-150" />
-            <div className="relative rounded-2xl border border-primary/20 bg-background/80 p-3 shadow-lg backdrop-blur-sm">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/favicon-logo.png" alt="FormKitCN" width={56} height={56} />
+            <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-xl scale-150" />
+            <div className="relative rounded-3xl border border-primary/20 bg-background/80 p-3 shadow-lg backdrop-blur-sm">
+              <FormKitCNLogoIcon size={64} className="text-foreground" />
             </div>
           </div>
 

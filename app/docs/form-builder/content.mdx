@@ -10,6 +10,25 @@ A schema-driven form builder. Define your form as a config array — sections, f
   This block includes `FormBuilderStandard`, `DynamicFormField`, and all supporting utilities. Install this if you want the full form builder experience.
 </Callout>
 
+<Callout variant="warning">
+  This block installs `sonner`. After running the CLI, add the toaster once in your root layout:
+</Callout>
+
+```tsx
+import { Toaster } from "@/components/ui/sonner"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster position="top-center" />
+      </body>
+    </html>
+  )
+}
+```
+
 ## Usage
 
 ```tsx

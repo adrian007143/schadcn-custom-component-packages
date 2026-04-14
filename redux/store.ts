@@ -6,9 +6,10 @@ import { loadFromLocalStorage, saveToLocalStorage } from "@/lib/helper/storageLo
 export type RootState = typeof initialState;
 type StateKey = keyof RootState;
 
-export const persistKeys: StateKey[] = ["notifications", "sidebar", "todo"];
+export const persistKeys: StateKey[] = ["notifications", "sidebar", "todo", "theme"];
 
 const isBrowser = typeof window !== "undefined";
+let persistTimeout: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * Helper to safely assign state values
@@ -47,6 +48,19 @@ const savePersistedState = (store: Store<RootState>) => {
   persistKeys.forEach((key) => saveToLocalStorage(state[key], key));
 };
 
+const schedulePersistedStateSave = (store: Store<RootState>) => {
+  if (!isBrowser) return;
+
+  if (persistTimeout) {
+    clearTimeout(persistTimeout);
+  }
+
+  persistTimeout = setTimeout(() => {
+    savePersistedState(store);
+    persistTimeout = null;
+  }, 120);
+};
+
 declare global {
   interface Window {
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
@@ -63,7 +77,7 @@ function getStoreSingleton(): Store<RootState> {
 
   const preloadedState = loadInitialState();
   const store = createStore(rootReducer, preloadedState, composeEnhancers());
-  if (isBrowser) store.subscribe(() => savePersistedState(store));
+  if (isBrowser) store.subscribe(() => schedulePersistedStateSave(store));
 
   _store = store;
   return store;
