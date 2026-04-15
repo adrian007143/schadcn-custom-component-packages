@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Check, Copy, ArrowRight, Blocks } from "lucide-react"
-import { REGISTRY_ITEMS } from "@/lib/registry-manifest"
+import { LISTED_REGISTRY_ITEMS } from "@/lib/registry-manifest"
 import { getClientBaseUrl, buildInstallCommand } from "@/lib/site-url"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -56,7 +56,7 @@ export function BlocksPreviewSection() {
                 Registry Blocks
               </h2>
               <p className="mt-1 text-muted-foreground">
-                {REGISTRY_ITEMS.length} blocks ready to install into your project.
+                {LISTED_REGISTRY_ITEMS.length} blocks ready to install into your project.
               </p>
             </div>
           </div>
@@ -68,7 +68,7 @@ export function BlocksPreviewSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {REGISTRY_ITEMS.map((item) => (
+          {LISTED_REGISTRY_ITEMS.map((item) => (
             <div
               key={item.name}
               className="group flex flex-col rounded-xl border bg-card p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"

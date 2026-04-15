@@ -26,9 +26,9 @@ const NAV_GROUPS = [
   {
     label: "Form Components",
     items: [
-      { href: "/docs/form-field", label: "Field Renderer" },
-      { href: "/docs/form-builder", label: "Schema Form" },
-      { href: "/docs/multistep-form", label: "Step Form" },
+      { href: "/docs/form-field", label: "FieldRenderer" },
+      { href: "/docs/form-builder", label: "SchemaForm" },
+      { href: "/docs/multistep-form", label: "StepForm" },
     ],
   },
   {
@@ -40,7 +40,7 @@ const NAV_GROUPS = [
   {
     label: "Data Table",
     items: [
-      { href: "/docs/data-table", label: "Data Grid" },
+      { href: "/docs/data-table", label: "DynamicDataTable" },
     ],
   },
   {

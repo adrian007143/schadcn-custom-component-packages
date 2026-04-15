@@ -7,7 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
     { url: `${base}/blocks`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/blocks/login-standard`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/blocks/dynamic-form-field`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/blocks/login-form-template`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/blocks/multistep`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/blocks/form-layout`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/blocks/data-table-dynamic`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },

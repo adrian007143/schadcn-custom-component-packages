@@ -1,26 +1,34 @@
-# FormBuilderStandard
+# SchemaForm
 
-A schema-driven form builder. Define your form as a config array — sections, fields, layout, and buttons — and `FormBuilderStandard` handles rendering, validation, loading states, and submission.
+A schema-driven form builder. Define your form as a config array — sections, fields, layout, and buttons — and `SchemaForm` handles rendering, validation, loading states, and submission.
 
 ## Install
 
 <InstallCmd file="form-dynamic-template.json" />
 
 <Callout variant="info">
-  This block includes `FormBuilderStandard`, `DynamicFormField`, and all supporting utilities. Install this if you want the full form builder experience.
+  This block includes `SchemaForm`, `FieldRenderer`, and all supporting utilities. Install this if you want the full form builder experience.
 </Callout>
 
-<Callout variant="warning">
-  This block installs `sonner`. After running the CLI, add the toaster once in your root layout:
+<Callout variant="tip">
+  The registry install handles everything automatically — npm packages (`react-hook-form`, `@hookform/resolvers`, `zod`, `sonner`, `react-google-recaptcha`) and shadcn components (`field`, `button`, `card`, `sonner`). No manual installs needed.
 </Callout>
+
+After installing, add the `Toaster` once in your root layout. Make sure `font-sans` is on `<body>` or your app will render with a serif system font:
 
 ```tsx
+// app/layout.tsx
+import { Geist, Geist_Mono } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
+import "./globals.css"
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
         {children}
         <Toaster position="top-center" />
       </body>
@@ -31,9 +39,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ## Usage
 
+<Callout variant="warning">
+  `SchemaForm` uses React hooks internally — add `"use client"` to any file that renders it.
+</Callout>
+
 ```tsx
-import { FormBuilderStandard } from "@/components/forms/form-ui/standard-form/FormBuilderStandard"
-import { FormFieldType } from "@/components/forms/form-field/constants"
+"use client"
+
+import { SchemaForm } from "@/components/forms/form-ui/standard-form"
+import { FormFieldType } from "@/components/forms/core"
 import { z } from "zod"
 
 const schema = z.object({
@@ -44,7 +58,7 @@ const schema = z.object({
 
 export function ProfileForm() {
   return (
-    <FormBuilderStandard
+    <SchemaForm
       schema={schema}
       defaultValues={{ firstName: "", lastName: "", email: "" }}
       sections={[
@@ -54,7 +68,7 @@ export function ProfileForm() {
           fields: [
             { name: "firstName", fieldType: FormFieldType.INPUT, label: "First name" },
             { name: "lastName", fieldType: FormFieldType.INPUT, label: "Last name" },
-            { name: "email", fieldType: FormFieldType.INPUT, label: "Email", required: true },
+            { name: "email", fieldType: FormFieldType.INPUT, label: "Email", required: true, colSpan: "full" },
           ],
         },
       ]}
@@ -63,7 +77,7 @@ export function ProfileForm() {
           label: "Save profile",
           submit: true,
           loadingLabel: "Saving…",
-          onSubmit: async (values) => {
+          onSubmit: async (values, form) => {
             await saveProfile(values)
           },
         },
@@ -78,28 +92,34 @@ export function ProfileForm() {
 <PropsTable items={[
   { name: "schema", type: "ZodType<T>", required: true, description: "Zod schema — used for form validation" },
   { name: "defaultValues", type: "DefaultValues<T>", required: true, description: "Initial values for all fields" },
-  { name: "sections", type: "FormBuilderSection<T>[]", required: true, description: "Array of form sections with fields" },
-  { name: "buttons", type: "Record<string, FormBuilderButton<T>>", required: true, description: "Map of button keys to button configs" },
-  { name: "formType", type: '"CREATE" | "UPDATE" | "VIEW"', default: '"CREATE"', description: "Controls field editability" },
-  { name: "buttonLayout", type: '"stack" | "inline" | "right" | "space-between"', default: '"inline"', description: "Button alignment" },
-  { name: "className", type: "string", description: "Class applied to the form wrapper" },
+  { name: "sections", type: "SchemaSectionConfig<T>[]", required: true, description: "Array of form sections with fields" },
+  { name: "buttons", type: "Record<string, FormActionConfig<T>>", required: true, description: "Map of button keys to button configs" },
+  { name: "formType", type: '"CREATE" | "UPDATE" | "VIEW"', default: '"CREATE"', description: "Controls field editability and form reset behavior" },
+  { name: "buttonLayout", type: '"stack" | "inline" | "right" | "space-between"', default: '"stack"', description: "Button alignment" },
+  { name: "recaptcha", type: "boolean", default: "false", description: "Show reCAPTCHA verification above the submit buttons" },
+  { name: "className", type: "string", description: "Class applied to the form element" },
 ]} />
+
+<Callout variant="warning">
+  reCAPTCHA requires `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` in your `.env.local`. The widget reads this env var automatically — no prop needed.
+</Callout>
 
 ## Section config
 
 Each item in `sections` configures a visual grouping of fields:
 
 ```ts
-interface FormBuilderSection<T> {
+interface SchemaSectionConfig<T> {
   title?: string           // Section heading
   description?: string     // Section sub-heading
   layout?: SectionLayout   // Controls the field grid
-  fields: FormBuilderField<T>[]
+  columns?: number         // Column count when layout is "grid" (1–6)
+  fields: SchemaFieldConfig<T>[]
 }
 
 type SectionLayout =
   | "stack"     // Single column (default)
-  | "grid"      // 2-column grid
+  | "grid"      // Dynamic grid — use columns prop to set count
   | "grid-2"    // 2-column grid
   | "grid-3"    // 3-column grid
   | "grid-4"    // 4-column grid
@@ -109,15 +129,18 @@ type SectionLayout =
 
 ## Field config
 
-Each field in `sections[].fields`:
+Each field in `sections[].fields` accepts all `FieldRenderer` props minus `control`:
 
 <PropsTable items={[
   { name: "name", type: "FieldPath<T>", required: true, description: "Schema field key" },
   { name: "fieldType", type: "FormFieldType", required: true, description: "Input type to render" },
   { name: "label", type: "string", description: "Label text" },
   { name: "placeholder", type: "string", description: "Placeholder text" },
-  { name: "required", type: "boolean", description: "Show required indicator" },
+  { name: "description", type: "string", description: "Helper text below the field" },
+  { name: "required", type: "boolean", description: "Show required indicator (*)" },
   { name: "disabled", type: "boolean", description: "Disable the field" },
+  { name: "colSpan", type: '1 | 2 | 3 | 4 | "full"', description: "How many grid columns this field spans" },
+  { name: "show", type: "(values: T) => boolean", description: "Conditionally show/hide based on current form values" },
   { name: "data", type: "Record<string, unknown>[]", description: "Options for select fields" },
   { name: "labelKey", type: "string", description: "Display key for select options" },
   { name: "valueKey", type: "string", description: "Value key for select options" },
@@ -126,12 +149,15 @@ Each field in `sections[].fields`:
 ## Button config
 
 ```ts
-interface FormBuilderButton<T> {
-  label: string               // Button text
-  submit?: boolean            // true = triggers form submit + onSubmit
-  loadingLabel?: string       // Text shown while onSubmit is pending
-  variant?: ButtonVariant     // shadcn button variant
-  onSubmit?: (values: T) => void | Promise<void>
+interface FormActionConfig<T> {
+  label: string                  // Button text
+  submit?: boolean               // true = triggers form submit
+  loadingLabel?: string          // Text shown while onSubmit is pending
+  variant?: ButtonVariant        // shadcn button variant
+  iconLeft?: ReactNode           // Icon rendered left of label
+  iconRight?: ReactNode          // Icon rendered right of label
+  className?: string             // Additional button classes
+  onSubmit?: (values: T, form: UseFormReturn<T>) => void | Promise<void>
 }
 ```
 
@@ -143,13 +169,14 @@ buttons={{
     label: "Save draft",
     submit: true,
     loadingLabel: "Saving…",
-    onSubmit: async (values) => saveDraft(values),
+    onSubmit: async (values, form) => saveDraft(values),
   },
   publish: {
     label: "Publish",
     submit: true,
     loadingLabel: "Publishing…",
-    onSubmit: async (values) => publish(values),
+    variant: "default",
+    onSubmit: async (values, form) => publish(values),
   },
 }}
 ```
@@ -158,25 +185,57 @@ buttons={{
 
 ```tsx
 // CREATE — blank form, resets after successful submit
-<FormBuilderStandard formType="CREATE" ... />
+<SchemaForm formType="CREATE" ... />
 
 // UPDATE — pre-filled, all fields editable
-<FormBuilderStandard formType="UPDATE" defaultValues={existing} ... />
+<SchemaForm formType="UPDATE" defaultValues={existing} ... />
 
 // VIEW — all fields rendered as read-only
-<FormBuilderStandard formType="VIEW" defaultValues={existing} ... />
+<SchemaForm formType="VIEW" defaultValues={existing} ... />
 ```
 
 <Callout variant="tip">
-  In `VIEW` mode, all `DynamicFormField` instances receive `disabled={true}` automatically — no extra config needed.
+  In `VIEW` mode all fields are automatically disabled — no extra config needed per field.
 </Callout>
+
+## Conditional fields
+
+Use the `show` prop on any field to conditionally render it based on current form values:
+
+```tsx
+{
+  name: "companyName",
+  fieldType: FormFieldType.INPUT,
+  label: "Company name",
+  show: (values) => values.accountType === "business",
+}
+```
+
+## reCAPTCHA
+
+Set `recaptcha={true}` to show the reCAPTCHA widget above the submit buttons. Submission is blocked until the user completes verification.
+
+```tsx
+<SchemaForm
+  recaptcha
+  schema={schema}
+  defaultValues={defaults}
+  sections={sections}
+  buttons={buttons}
+/>
+```
+
+Add your site key to `.env.local`:
+
+```bash
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_site_key_here
+```
 
 ## Live example
 
-See `FormBuilderStandard` in the [Login Form block](/blocks/login-standard).
+See the template install in the [Login Form Template block](/blocks/login-form-template).
 
 ## See also
 
-- [DynamicFormField](/docs/form-field) — use individual fields with your own form setup
-- [Form Layout](/docs/form-layout) — layout primitives if you need more structural control
-- [MultiStepForm](/docs/multistep-form) — multi-step variant with per-step validation
+- [FieldRenderer](/docs/form-field) — use individual fields with your own form setup
+- [StepForm](/docs/multistep-form) — multi-step variant with per-step validation

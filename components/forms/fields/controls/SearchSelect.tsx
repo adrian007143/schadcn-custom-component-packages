@@ -151,7 +151,7 @@ export function SearchSelect<
     >
       <div
         className={cn(
-          "relative flex items-center w-full h-full rounded-md border border-input bg-background px-3 text-sm ring-offset-background",
+          "relative flex h-full w-full items-center rounded-md border border-input bg-background px-3 text-sm ring-offset-background shadow-xs",
           "placeholder:text-muted-foreground",
           "disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200",
           disabled && "cursor-not-allowed opacity-50",
@@ -193,7 +193,7 @@ export function SearchSelect<
               type="button"
               variant="ghost"
               size="sm"
-              className="h-4 w-4 p-0 hover:bg-accent text-muted-foreground hover:text-foreground"
+              className="h-5 w-5 p-0 text-muted-foreground hover:bg-accent hover:text-foreground"
               onClick={(e) => {
                 e.stopPropagation();
                 handleUnselect();

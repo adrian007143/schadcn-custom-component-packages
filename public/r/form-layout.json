@@ -4,7 +4,9 @@
   "title": "Form Layout",
   "description": "Composable layout primitives for building structured and responsive forms.",
   "registryDependencies": [
-    "field"
+    "field",
+    "button",
+    "separator"
   ],
   "files": [
     {

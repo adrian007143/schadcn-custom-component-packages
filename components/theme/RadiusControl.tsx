@@ -2,22 +2,24 @@
 
 import { cn } from "@/lib/utils";
 
-import { useThemeBuilderState } from "./useThemeBuilderState";
 import { dispatchThemeAction } from "./dispatchThemeAction";
+import { useThemeBuilderState } from "./useThemeBuilderState";
 
-const STEPS = Array.from({ length: 13 }, (_, i) => parseFloat((i * 0.125).toFixed(3)));
+const STEPS = Array.from({ length: 13 }, (_, i) =>
+  parseFloat((i * 0.125).toFixed(3))
+);
 
 export function RadiusControl() {
   const { radius } = useThemeBuilderState();
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
+      <div className="space-y-3 rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-slate-200">
+          <label className="text-sm font-medium text-foreground">
             Border Radius
           </label>
-          <span className="rounded-lg border border-slate-700 bg-slate-900/80 px-2.5 py-1 font-mono text-xs text-slate-200">
+          <span className="rounded-lg border border-border/70 bg-background/80 px-2.5 py-1 font-mono text-xs text-foreground">
             {radius.toFixed(3)}rem
           </span>
         </div>
@@ -38,20 +40,20 @@ export function RadiusControl() {
               key={step}
               className={cn(
                 "h-1 w-0.5 rounded-full transition-colors",
-                Math.abs(step - radius) < 0.001 ? "bg-primary" : "bg-slate-700"
+                Math.abs(step - radius) < 0.001 ? "bg-primary" : "bg-border"
               )}
             />
           ))}
         </div>
-        <div className="flex justify-between px-0.5 text-[10px] text-slate-500">
+        <div className="flex justify-between px-0.5 text-[10px] text-muted-foreground">
           <span>0</span>
           <span>0.625</span>
           <span>1.5rem</span>
         </div>
       </div>
 
-      <div className="space-y-3">
-        <label className="text-sm font-medium text-slate-200">Preview</label>
+      <div className="space-y-3 rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm">
+        <label className="text-sm font-medium text-foreground">Preview</label>
         <div className="grid grid-cols-3 gap-3">
           <div
             className="flex h-20 items-center justify-center border border-border bg-card shadow-sm transition-all"

@@ -302,7 +302,10 @@ export function AsyncSelectField<T extends Record<string, unknown>>({
   );
 
   return (
-    <div ref={containerRef} className="relative h-full w-full">
+    <div
+      ref={containerRef}
+      className={cn("relative h-full w-full", open && "z-20")}
+    >
       <div className={wrapperClass}>
         {iconSearch && (
           <div
@@ -359,7 +362,7 @@ export function AsyncSelectField<T extends Record<string, unknown>>({
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute left-0 right-0 z-50 rounded-md border border-border bg-popover shadow-md animate-in fade-in zoom-in-95",
+            "absolute left-0 right-0 z-30 rounded-md border border-border bg-background shadow-md animate-in fade-in zoom-in-95",
             position === "below" ? "top-full mt-1" : "bottom-full mb-1"
           )}
         >
@@ -418,7 +421,7 @@ export function AsyncSelectField<T extends Record<string, unknown>>({
           </div>
 
           {onAddNew && (
-            <div className="sticky bottom-0 border-t border-border bg-popover">
+            <div className="sticky bottom-0 border-t border-border bg-background">
               <button
                 type="button"
                 onClick={() => {

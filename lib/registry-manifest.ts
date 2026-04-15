@@ -4,9 +4,10 @@ export interface RegistryItem {
   description: string
   category: "forms" | "data-table" | "redux"
   dependencies: string[]
-  registryFile: string  // just the filename, e.g. "form-field.json"
+  registryFile: string
   previewPath?: string
   docsPath?: string
+  isListed?: boolean
 }
 
 export const REGISTRY_ITEMS: RegistryItem[] = [
@@ -23,8 +24,9 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
       "lucide-react",
     ],
     registryFile: "form-field.json",
-    previewPath: "/blocks/login-standard",
+    previewPath: "/blocks/dynamic-form-field",
     docsPath: "/docs/form-field",
+    isListed: true,
   },
   {
     name: "form-layout",
@@ -36,17 +38,19 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
     registryFile: "form-layout.json",
     previewPath: "/blocks/form-layout",
     docsPath: "/docs/form-layout",
+    isListed: true,
   },
   {
     name: "form-dynamic-template",
-    title: "Form Dynamic Template",
+    title: "Login Form Template",
     description:
-      "Template showcasing dynamic form fields with FormBuilderStandard — a schema-driven form builder with Zod validation and toast notifications.",
+      "A starter login experience built with the shared FieldRenderer system, react-hook-form, Zod validation, and toast feedback.",
     category: "forms",
     dependencies: ["react-hook-form", "@hookform/resolvers", "zod"],
     registryFile: "form-dynamic-template.json",
-    previewPath: "/blocks/login-standard",
+    previewPath: "/blocks/login-form-template",
     docsPath: "/docs/form-builder",
+    isListed: true,
   },
   {
     name: "multistep-form-template",
@@ -63,6 +67,7 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
     registryFile: "multistep-form-template.json",
     previewPath: "/blocks/multistep",
     docsPath: "/docs/multistep-form",
+    isListed: true,
   },
   {
     name: "form-template-01",
@@ -74,6 +79,7 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
     registryFile: "form-template-01.json",
     previewPath: "/blocks/form-layout",
     docsPath: "/docs/form-builder",
+    isListed: false,
   },
   {
     name: "data-table-dynamic",
@@ -91,6 +97,7 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
     registryFile: "data-table-dynamic.json",
     previewPath: "/blocks/data-table-dynamic",
     docsPath: "/docs/data-table",
+    isListed: true,
   },
   {
     name: "redux-methods-tool",
@@ -102,5 +109,10 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
     registryFile: "redux-methods-tool.json",
     previewPath: "/blocks/redux-usage",
     docsPath: "/docs/redux",
+    isListed: true,
   },
 ]
+
+export const LISTED_REGISTRY_ITEMS = REGISTRY_ITEMS.filter(
+  (item) => item.isListed !== false,
+)

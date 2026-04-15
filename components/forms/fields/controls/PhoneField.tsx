@@ -1,26 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { CheckIcon, ChevronsUpDown } from "lucide-react";
+import { CheckIcon, ChevronDown, SearchIcon } from "lucide-react";
 import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type PhoneInputProps = Omit<
@@ -95,16 +86,19 @@ const CountrySelect = ({
 }: CountrySelectProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState("");
-  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const viewport = scrollAreaRef.current?.querySelector(
-      "[data-slot=scroll-area-viewport]"
-    ) as HTMLElement | null;
-    if (viewport) {
-      viewport.scrollTop = 0;
-    }
-  }, [searchValue]);
+    if (!isOpen) return;
+
+    const frame = requestAnimationFrame(() => {
+      searchInputRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [isOpen]);
 
   const filteredCountries = React.useMemo(() => {
     const query = searchValue.trim().toLowerCase();
@@ -143,7 +137,7 @@ const CountrySelect = ({
             country={selectedCountry}
             countryName={selectedCountry}
           />
-          <ChevronsUpDown
+          <ChevronDown
             className={cn(
               "size-4 opacity-60",
               disabled && "pointer-events-none opacity-0"
@@ -152,35 +146,46 @@ const CountrySelect = ({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-72 p-0">
-        <Command shouldFilter={false}>
-          <CommandInput
-            value={searchValue}
-            onValueChange={setSearchValue}
-            placeholder="Search country..."
-          />
-          <CommandList>
-            <ScrollArea ref={scrollAreaRef} className="h-72">
-              {filteredCountries.length === 0 && (
-                <CommandEmpty>No country found.</CommandEmpty>
-              )}
-              <CommandGroup>
-                {filteredCountries.map((country) =>
-                  country.value ? (
-                    <CountrySelectOption
-                      key={country.value}
-                      country={country.value}
-                      countryName={country.label}
-                      selectedCountry={selectedCountry}
-                      onChange={onChange}
-                      onSelectComplete={() => setIsOpen(false)}
-                    />
-                  ) : null
-                )}
-              </CommandGroup>
-            </ScrollArea>
-          </CommandList>
-        </Command>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        sideOffset={4}
+        initialFocus={false}
+        className="z-[70] w-72 p-0"
+      >
+        <div className="bg-popover text-popover-foreground overflow-hidden rounded-md">
+          <div className="flex items-center gap-2 border-b px-3">
+            <SearchIcon className="size-4 shrink-0 opacity-50" />
+            <Input
+              ref={searchInputRef}
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              placeholder="Search country..."
+              className="h-10 rounded-none border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+            />
+          </div>
+
+          <div className="max-h-72 overflow-y-auto p-1">
+            {filteredCountries.length === 0 ? (
+              <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                No country found.
+              </div>
+            ) : (
+              filteredCountries.map((country) =>
+                country.value ? (
+                  <CountrySelectOption
+                    key={country.value}
+                    country={country.value}
+                    countryName={country.label}
+                    selectedCountry={selectedCountry}
+                    onChange={onChange}
+                    onSelectComplete={() => setIsOpen(false)}
+                  />
+                ) : null
+              )
+            )}
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );
@@ -206,17 +211,21 @@ const CountrySelectOption = React.memo(
     }, [country, onChange, onSelectComplete]);
 
     return (
-      <CommandItem
-        value={countryName}
-        onSelect={handleSelect}
-        className="flex items-center gap-2"
+      <button
+        type="button"
+        onClick={handleSelect}
+        className={cn(
+          "flex w-full items-center gap-2 rounded-sm px-2 py-2 text-left text-sm transition-colors",
+          "hover:bg-accent hover:text-accent-foreground",
+          country === selectedCountry && "bg-accent text-accent-foreground"
+        )}
       >
         <FlagComponent country={country} countryName={countryName} />
         <span className="flex-1 text-sm">{countryName}</span>
         {country === selectedCountry ? (
           <CheckIcon className="size-4 opacity-100" />
         ) : null}
-      </CommandItem>
+      </button>
     );
   }
 );

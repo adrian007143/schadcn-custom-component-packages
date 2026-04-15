@@ -1,22 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { ChevronsUpDown, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown, SearchIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ComboboxFieldProps<T extends Record<string, unknown>> {
   field: {
@@ -27,8 +21,8 @@ interface ComboboxFieldProps<T extends Record<string, unknown>> {
   label: string;
   placeholder?: string;
   disabled?: boolean;
-  labelKey: keyof T; // which key to display
-  valueKey: keyof T; // which key to store
+  labelKey: keyof T;
+  valueKey: keyof T;
   inputId?: string;
   ariaInvalid?: boolean;
   ariaDescribedBy?: string;
@@ -48,92 +42,154 @@ export function ComboboxField<T extends Record<string, unknown>>({
   ariaDescribedBy,
   className,
 }: ComboboxFieldProps<T>) {
-  const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const [popoverWidth, setPopoverWidth] = React.useState<number | undefined>(undefined);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const [query, setQuery] = React.useState("");
+  const [contentWidth, setContentWidth] = React.useState<number>();
 
-  const selectedItem = data.find((item) => item[valueKey] === field.value);
+  const selectedItem = React.useMemo(
+    () =>
+      data.find(
+        (item) => String(item[valueKey] ?? "") === String(field.value ?? ""),
+      ) ?? null,
+    [data, field.value, valueKey],
+  );
 
-  // Update popover width when trigger ref is available
-  React.useEffect(() => {
-    if (triggerRef.current) {
-      const width = triggerRef.current.offsetWidth;
-      setPopoverWidth(width);
+  const filteredItems = React.useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return data;
     }
-  }, [open]); // Re-calculate when popover opens
+
+    return data.filter((item) =>
+      String(item[labelKey] ?? "").toLowerCase().includes(normalized),
+    );
+  }, [data, labelKey, query]);
+
+  React.useLayoutEffect(() => {
+    if (!triggerRef.current) return;
+
+    const updateWidth = () => {
+      setContentWidth(triggerRef.current?.getBoundingClientRect().width);
+    };
+
+    updateWidth();
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(triggerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) {
+      setQuery("");
+      return;
+    }
+
+    const frame = requestAnimationFrame(() => {
+      inputRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [open]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (!nextOpen) {
+          setQuery("");
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           ref={triggerRef}
           id={inputId}
+          type="button"
           variant="outline"
           role="combobox"
+          aria-expanded={open}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
           disabled={disabled}
           className={cn(
-            "w-full justify-between border border-input bg-background shadow-sm hover:bg-input hover:text-accent-foreground transition-colors duration-200",
-            "text-left font-normal",
-            !field.value && "text-muted-foreground",
-            disabled && "opacity-50 cursor-not-allowed",
-            className
+            "h-full w-full justify-between border-input bg-background px-3 text-left font-normal shadow-none",
+            "hover:bg-background focus-visible:ring-0 focus-visible:ring-offset-0",
+            !selectedItem && "text-muted-foreground",
+            className,
           )}
         >
           <span className="truncate">
             {selectedItem
-              ? String(selectedItem[labelKey])
+              ? String(selectedItem[labelKey] ?? "")
               : placeholder || `Select ${label}`}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-60" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="p-0 border border-border shadow-md"
-        style={{ width: popoverWidth ? `${popoverWidth}px` : undefined }}
+        initialFocus={false}
         side="bottom"
         align="start"
         sideOffset={4}
+        className="min-w-0 p-0"
+        style={contentWidth ? { width: `${contentWidth}px` } : undefined}
       >
-        <Command className="border-0">
-          <CommandInput
-            placeholder={`Search ${label.toLowerCase()}...`}
-            className="h-full border-b border-border"
-          />
-          <CommandList className="max-h-64">
-            <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
-              No {label} found.
-            </CommandEmpty>
-            <CommandGroup className="p-1">
-              {data.map((item) => (
-                <CommandItem
-                  key={String(item[valueKey])}
-                  value={String(item[labelKey])}
-                  onSelect={() => {
-                    field.onChange(item[valueKey]);
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex items-center justify-between px-3 py-2 text-sm rounded-sm transition-colors duration-150",
-                    "aria-selected:bg-accent/20 aria-selected:text-accent-foreground",
-                    "hover:bg-accent/20 hover:text-accent-foreground cursor-pointer"
-                  )}
-                >
-                  <span className="truncate">{String(item[labelKey])}</span>
-                  <Check
+        <div className="bg-background overflow-hidden rounded-md">
+          <div className="flex items-center gap-2 border-b px-3">
+            <SearchIcon className="size-4 shrink-0 opacity-50" />
+            <Input
+              ref={inputRef}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={`Search ${label.toLowerCase()}...`}
+              className="h-10 rounded-none border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+            />
+          </div>
+
+          <div className="max-h-64 overflow-y-auto p-1">
+            {filteredItems.length === 0 ? (
+              <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                No {label.toLowerCase()} found.
+              </div>
+            ) : (
+              filteredItems.map((item) => {
+                const isSelected =
+                  String(item[valueKey] ?? "") === String(field.value ?? "");
+
+                return (
+                  <button
+                    key={String(item[valueKey] ?? item[labelKey] ?? "")}
+                    type="button"
+                    onClick={() => {
+                      field.onChange(item[valueKey]);
+                      setOpen(false);
+                    }}
                     className={cn(
-                      "ml-2 h-4 w-4 shrink-0 transition-opacity duration-200",
-                      item[valueKey] === field.value
-                        ? "opacity-100 text-primary"
-                        : "opacity-0"
+                      "flex w-full items-center justify-between rounded-sm px-3 py-2 text-left text-sm transition-colors",
+                      "hover:bg-accent hover:text-accent-foreground",
+                      isSelected && "bg-accent text-accent-foreground",
                     )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+                  >
+                    <span className="truncate">
+                      {String(item[labelKey] ?? "")}
+                    </span>
+                    <Check
+                      className={cn(
+                        "ml-2 h-4 w-4 shrink-0",
+                        isSelected ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );

@@ -11,6 +11,8 @@
       "dependencies": [
         "@base-ui/react",
         "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
         "lucide-react",
         "react-phone-number-input"
       ],
@@ -19,6 +21,7 @@
         "field",
         "button",
         "input",
+        "select",
         "command",
         "popover",
         "calendar",
@@ -26,7 +29,8 @@
         "checkbox",
         "input-group",
         "scroll-area",
-        "switch"
+        "switch",
+        "sonner"
       ],
       "files": [
         {
@@ -120,6 +124,11 @@
           "target": "components/forms/fields/controls/DateField.tsx"
         },
         {
+          "path": "components/forms/fields/controls/SelectField.tsx",
+          "type": "registry:component",
+          "target": "components/forms/fields/controls/SelectField.tsx"
+        },
+        {
           "path": "components/forms/fields/controls/ComboboxField.tsx",
           "type": "registry:component",
           "target": "components/forms/fields/controls/ComboboxField.tsx"
@@ -161,7 +170,7 @@
       "type": "registry:block",
       "title": "Form Layout",
       "description": "Composable layout primitives for building structured and responsive forms.",
-      "registryDependencies": ["field"],
+      "registryDependencies": ["field", "button", "separator"],
       "files": [
         {
           "path": "components/forms/layout/FormLayout.tsx",
@@ -379,6 +388,7 @@
       "description": "Example showing shared field renderer and layout primitives together.",
       "dependencies": ["react-hook-form", "@hookform/resolvers", "zod"],
       "registryDependencies": [
+        "field",
         "button",
         "sonner",
         "{{REGISTRY_BASE_URL}}/r/form-field.json",
@@ -395,9 +405,15 @@
     {
       "name": "form-dynamic-template",
       "type": "registry:block",
-      "title": "Schema Form",
-      "description": "Template showcasing schema-driven forms with shared field controls.",
-      "dependencies": ["react-hook-form", "@hookform/resolvers", "zod"],
+      "title": "Login Form Template",
+      "description": "A starter login form built on the shared FieldRenderer system.",
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "react-google-recaptcha",
+        "@types/react-google-recaptcha"
+      ],
       "registryDependencies": [
         "card",
         "sonner",
@@ -407,18 +423,23 @@
       ],
       "files": [
         {
-          "path": "components/examples/form-ui-dynamic-template.tsx",
+          "path": "components/examples/login-form-template.tsx",
           "type": "registry:block",
-          "target": "components/examples/form-ui-dynamic-template.tsx"
+          "target": "components/examples/login-form-template.tsx"
         },
         {
-          "path": "app/blocks/login-standard/page.tsx",
+          "path": "app/blocks/login-form-template/page.tsx",
           "type": "registry:block",
-          "target": "app/login-standard/page.tsx"
+          "target": "app/login-form-template/page.tsx"
         },
         {
           "path": "components/forms/patterns/SchemaForm.tsx",
           "target": "components/forms/patterns/SchemaForm.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/forms/patterns/ReCAPTCHAField.tsx",
+          "target": "components/forms/patterns/ReCAPTCHAField.tsx",
           "type": "registry:component"
         },
         {
@@ -517,4 +538,3 @@
     }
   ]
 }
-

@@ -3,18 +3,20 @@
 import { useState, useEffect } from "react"
 import { Check, Copy, Terminal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { buildInstallCommand } from "@/lib/site-url"
+import { buildInstallCommand, getClientBaseUrl } from "@/lib/site-url"
 
 interface InstallCmdProps {
   file: string
 }
 
 export function InstallCmd({ file }: InstallCmdProps) {
-  const [command, setCommand] = useState(`npx shadcn@latest add /r/${file}`)
+  const [command, setCommand] = useState(() =>
+    buildInstallCommand(getClientBaseUrl(), file)
+  )
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    setCommand(buildInstallCommand(window.location.origin, file))
+    setCommand(buildInstallCommand(getClientBaseUrl(), file))
   }, [file])
 
   const handleCopy = () => {

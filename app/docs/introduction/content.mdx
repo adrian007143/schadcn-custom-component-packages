@@ -16,9 +16,9 @@ FormKitCN is a **schema-driven component toolkit** for building production-ready
     </tr>
   </thead>
   <tbody className="divide-y divide-border">
-    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">DynamicFormField</td><td className="px-4 py-3 text-foreground/80">One component for all 17+ field types — input, select, date, phone, currency, file, and more</td></tr>
-    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">FormBuilderStandard</td><td className="px-4 py-3 text-foreground/80">Schema-driven form builder — define sections, fields, and buttons as a config array</td></tr>
-    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">MultiStepForm</td><td className="px-4 py-3 text-foreground/80">Multi-step forms with per-step Zod validation, progress tracking, and reCAPTCHA</td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">FieldRenderer</td><td className="px-4 py-3 text-foreground/80">One component for all 25+ field types — input, select, date, phone, currency, OTP, slider, and more</td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">SchemaForm</td><td className="px-4 py-3 text-foreground/80">Schema-driven form builder — define sections, fields, and buttons as a config array</td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">StepForm</td><td className="px-4 py-3 text-foreground/80">Multi-step forms with per-step field validation, progress tracking, and reCAPTCHA</td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">Form Layout</td><td className="px-4 py-3 text-foreground/80">Composable layout primitives — sections, column grids, rows, and action bars</td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">DynamicDataTable</td><td className="px-4 py-3 text-foreground/80">Editable TanStack Table with drag-and-drop rows/columns, filtering, and custom cells</td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 font-medium text-foreground/80">Redux Tool</td><td className="px-4 py-3 text-foreground/80">Drop-in Redux store with localStorage persistence and example slices</td></tr>
@@ -31,13 +31,13 @@ FormKitCN follows a **layered architecture**:
 
 ```
 Your App
-  └── FormBuilderStandard / MultiStepForm   ← schema-driven form builders
-        └── DynamicFormField                ← single component, 17 field types
+  └── SchemaForm / StepForm                 ← schema-driven form builders
+        └── FieldRenderer                   ← single component, 25+ field types
               └── shadcn/ui inputs          ← Button, Input, Select, Popover…
                     └── Tailwind CSS        ← utility-first styling
 ```
 
-Each layer is independently installable. You can use just `DynamicFormField` with your own `react-hook-form` setup, or use `FormBuilderStandard` to skip the boilerplate entirely.
+Each layer is independently installable. You can use just `FieldRenderer` with your own `react-hook-form` setup, or use `SchemaForm` to skip the boilerplate entirely.
 
 ## Who it's for
 
@@ -63,6 +63,6 @@ Rather than being a published npm package, FormKitCN uses the **shadcn registry 
 ## Next steps
 
 - [Installation](/docs/getting-started) — install your first block
-- [DynamicFormField](/docs/form-field) — all 17 field types
-- [FormBuilderStandard](/docs/form-builder) — schema-driven form builder
+- [FieldRenderer](/docs/form-field) — all 25+ field types
+- [SchemaForm](/docs/form-builder) — schema-driven form builder
 - [Browse all blocks](/blocks) — see live previews

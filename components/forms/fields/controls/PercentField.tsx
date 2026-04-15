@@ -5,7 +5,7 @@ import {
   FieldValues,
 } from "react-hook-form";
 
-import { Input } from "@/components/ui/input";
+import { InputGroupInput } from "@/components/ui/input-group";
 import { FieldRendererProps } from "@/components/forms/core/types";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +40,7 @@ export function PercentField<
   }, [field.value, places]);
 
   return (
-    <Input
+    <InputGroupInput
       {...props.inputProps}
       {...field}
       disabled={disabled ?? props.inputProps?.disabled}

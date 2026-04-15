@@ -13,7 +13,7 @@ interface ExamplePageShellProps {
   title: string
   description: string
   registryFile: string
-  /** Relative paths from project root, e.g. "components/examples/form-ui-dynamic-template.tsx" */
+  /** Relative paths from project root, e.g. "components/examples/login-form-template.tsx" */
   codeFiles?: string[]
   children: React.ReactNode
 }

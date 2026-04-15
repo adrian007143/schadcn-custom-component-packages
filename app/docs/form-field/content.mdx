@@ -1,41 +1,67 @@
-# DynamicFormField
+# FieldRenderer
 
-A single component that renders any of 17+ field types based on the `fieldType` prop. Built on `react-hook-form` — just pass `control` and `name` from your form.
+A single component that renders any of 25+ field types based on the `fieldType` prop. Built on `react-hook-form` — just pass `control` and `name` from your form.
 
 ## Install
 
 <InstallCmd file="form-field.json" />
 
+<Callout variant="info">
+  This single command installs all npm packages (`react-hook-form`, `@hookform/resolvers`, `zod`, `react-phone-number-input`) and all required shadcn components (`field`, `button`, `sonner`, and all field primitives) automatically.
+</Callout>
+
 ## Usage
 
-```tsx
-import { useForm } from "react-hook-form"
-import { Form } from "@/components/ui/form"
-import { DynamicFormField } from "@/components/forms/form-field/DynamicFormField"
-import { FormFieldType } from "@/components/forms/form-field/constants"
+<Callout variant="warning">
+  Form components use React hooks — add `"use client"` to any file that renders a form.
+</Callout>
 
-export function MyForm() {
-  const form = useForm({ defaultValues: { name: "" } })
+```tsx
+"use client"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
+import { FieldRenderer } from "@/components/forms/core"
+import { FormFieldType } from "@/components/forms/core"
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+})
+
+export function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { email: "", password: "" },
+  })
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(console.log)}>
-        <DynamicFormField
-          control={form.control}
-          name="name"
-          fieldType={FormFieldType.INPUT}
-          label="Full name"
-          placeholder="John Doe"
-          required
-        />
-      </form>
-    </Form>
+    <form onSubmit={form.handleSubmit(console.log)} className="space-y-4">
+      <FieldRenderer
+        control={form.control}
+        name="email"
+        fieldType={FormFieldType.INPUT}
+        label="Email"
+        placeholder="you@example.com"
+        required
+      />
+      <FieldRenderer
+        control={form.control}
+        name="password"
+        fieldType={FormFieldType.PASSWORD}
+        label="Password"
+        required
+      />
+      <Button type="submit">Sign in</Button>
+    </form>
   )
 }
 ```
 
 <Callout variant="tip">
-  Use **FormBuilderStandard** if you want to define an entire form from a config array — it uses `DynamicFormField` internally. See the [FormBuilderStandard docs](/docs/form-builder).
+  Want to skip the boilerplate? Use **SchemaForm** — it handles schema, layout, and submission automatically. See the [SchemaForm docs](/docs/form-builder).
 </Callout>
 
 ## Field types
@@ -53,27 +79,50 @@ export function MyForm() {
   { name: "description", type: "string", description: "Helper text displayed below the field" },
   { name: "required", type: "boolean", default: "false", description: "Shows a required indicator (*) on the label" },
   { name: "disabled", type: "boolean", default: "false", description: "Disables the field" },
+  { name: "show", type: "(values: T) => boolean", description: "Conditionally render based on current form values" },
   { name: "height", type: '"sm" | "md" | "lg" | "xl" | "auto"', default: '"md"', description: "Controls input height" },
+  { name: "colSpan", type: '1 | 2 | 3 | 4 | "full"', description: "Grid column span when used inside SchemaForm sections" },
   { name: "prefix", type: "ReactNode", description: "Node rendered to the left of the input" },
   { name: "suffix", type: "ReactNode", description: "Node rendered to the right of the input" },
   { name: "hideLabel", type: "boolean", default: "false", description: "Hides the label" },
   { name: "hideDescription", type: "boolean", default: "false", description: "Hides the description text" },
+  { name: "hideMessage", type: "boolean", default: "false", description: "Hides the validation error message" },
   { name: "wrapperClassName", type: "string", description: "Class applied to the field wrapper div" },
   { name: "inputClassName", type: "string", description: "Class applied to the input element" },
+  { name: "labelClassName", type: "string", description: "Class applied to the label element" },
+  { name: "descriptionClassName", type: "string", description: "Class applied to the description text" },
+  { name: "messageClassName", type: "string", description: "Class applied to the error message" },
+  { name: "type", type: "string", description: 'Native input type override (e.g. "date", "time")' },
 ]} />
 
 ## Select props
 
-Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
+`SELECT` is the recommended default for standard dropdowns. Use `COMMAND` when you need searchable single-select behavior, `SINGLE_SELECT` as the compatibility alias for that searchable pattern, and `ASYNC_SELECT` for remote data.
 
 <PropsTable items={[
   { name: "data", type: "TRow[]", required: true, description: "Array of option objects" },
   { name: "labelKey", type: "StringKeyOf<TRow>", required: true, description: "Key used for option display text" },
   { name: "valueKey", type: "StringKeyOf<TRow>", required: true, description: "Key used for the stored value" },
-  { name: "selectLabelKey", type: "SelectLabelKey<TRow>", description: "Advanced label config for multi-column display" },
+  { name: "selectLabelKey", type: "SelectLabelKey<TRow>", description: "Advanced label config for async select column display" },
+  { name: "iconSearch", type: "boolean", default: "false", description: "Show a search icon inside the async select trigger" },
   { name: "loadOptions", type: "(query: string) => Promise<TRow[]>", description: "Async data loader — ASYNC_SELECT only" },
   { name: "debounceTime", type: "number", default: "300", description: "Debounce delay in ms for ASYNC_SELECT" },
-  { name: "onAddNew", type: "() => void", description: "Callback for an 'Add new' option in the list" },
+  { name: "onAddNew", type: "() => void", description: "Callback for an 'Add new' option at the bottom of the list" },
+  { name: "maxSelected", type: "number", description: "Max selections allowed — MULTI_SELECT only" },
+]} />
+
+<Callout variant="tip">
+  Use `SELECT` for the proper dropdown experience. Use `COMMAND` only when search materially helps the user find an option.
+</Callout>
+
+## Number props
+
+Applies to `NUMBER`:
+
+<PropsTable items={[
+  { name: "numberMin", type: "number", description: "Minimum allowed value" },
+  { name: "numberMax", type: "number", description: "Maximum allowed value" },
+  { name: "numberStep", type: "number", default: "1", description: "Step increment" },
 ]} />
 
 ## Currency & percent props
@@ -82,14 +131,57 @@ Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
   { name: "currencyLocale", type: "string", default: '"en-US"', description: "Locale string for number formatting" },
   { name: "decimalPlaces", type: "number", default: "2", description: "Number of decimal places for CURRENCY" },
   { name: "thousandSeparator", type: "boolean", default: "true", description: "Show thousand separator commas" },
+  { name: "trimTrailingZeros", type: "boolean", default: "false", description: "Remove trailing zeros from CURRENCY display" },
   { name: "percentDecimalPlaces", type: "number", default: "2", description: "Decimal places for PERCENT" },
+  { name: "textAlign", type: '"left" | "right"', default: '"left"', description: "Text alignment for CURRENCY and PERCENT" },
+]} />
+
+## Slider props
+
+Applies to `SLIDER`:
+
+<PropsTable items={[
+  { name: "sliderMin", type: "number", default: "0", description: "Minimum slider value" },
+  { name: "sliderMax", type: "number", default: "100", description: "Maximum slider value" },
+  { name: "sliderStep", type: "number", default: "1", description: "Slider step increment" },
+  { name: "showSliderValue", type: "boolean", default: "true", description: "Show current value label alongside slider" },
+]} />
+
+## OTP props
+
+<PropsTable items={[
+  { name: "otpLength", type: "number", default: "6", description: "Number of OTP input boxes" },
 ]} />
 
 ## Mask props
 
+Applies to `MASKED`:
+
 <PropsTable items={[
   { name: "mask", type: "string", required: true, description: 'Mask pattern e.g. "99/99/9999" or "(999) 999-9999"' },
   { name: "maskPlaceholder", type: "string", default: '"_"', description: "Character shown for unfilled positions" },
+]} />
+
+## Radio props
+
+Applies to `RADIO_GROUP`:
+
+<PropsTable items={[
+  { name: "data", type: "TRow[]", required: true, description: "Array of option objects" },
+  { name: "labelKey", type: "StringKeyOf<TRow>", required: true, description: "Key for display label" },
+  { name: "valueKey", type: "StringKeyOf<TRow>", required: true, description: "Key for stored value" },
+  { name: "radioOrientation", type: '"horizontal" | "vertical"', default: '"vertical"', description: "Layout direction of radio options" },
+]} />
+
+## Loading skeleton props
+
+Applies to `SKELETON`:
+
+<PropsTable items={[
+  { name: "loaderMode", type: '"spinner" | "skeleton"', default: '"skeleton"', description: "Skeleton animation style" },
+  { name: "loaderSize", type: '"sm" | "md" | "lg"', default: '"md"', description: "Skeleton size" },
+  { name: "loaderRadius", type: '"none" | "sm" | "md" | "lg"', default: '"md"', description: "Skeleton border radius" },
+  { name: "renderSkeleton", type: "(field) => ReactNode", description: "Custom skeleton renderer" },
 ]} />
 
 ## Examples
@@ -97,7 +189,7 @@ Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 ### Async select
 
 ```tsx
-<DynamicFormField
+<FieldRenderer
   control={form.control}
   name="userId"
   fieldType={FormFieldType.ASYNC_SELECT}
@@ -115,7 +207,7 @@ Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 ### Currency input
 
 ```tsx
-<DynamicFormField
+<FieldRenderer
   control={form.control}
   name="price"
   fieldType={FormFieldType.CURRENCY}
@@ -129,7 +221,7 @@ Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 ### Masked input
 
 ```tsx
-<DynamicFormField
+<FieldRenderer
   control={form.control}
   name="phone"
   fieldType={FormFieldType.MASKED}
@@ -138,10 +230,37 @@ Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 />
 ```
 
+### Slider
+
+```tsx
+<FieldRenderer
+  control={form.control}
+  name="rating"
+  fieldType={FormFieldType.SLIDER}
+  label="Rating"
+  sliderMin={0}
+  sliderMax={10}
+  sliderStep={1}
+  showSliderValue
+/>
+```
+
+### Conditional field
+
+```tsx
+<FieldRenderer
+  control={form.control}
+  name="companyName"
+  fieldType={FormFieldType.INPUT}
+  label="Company name"
+  show={(values) => values.accountType === "business"}
+/>
+```
+
 ### With prefix / suffix
 
 ```tsx
-<DynamicFormField
+<FieldRenderer
   control={form.control}
   name="website"
   fieldType={FormFieldType.INPUT}
@@ -152,9 +271,9 @@ Applies to `SELECT`, `SINGLE_SELECT`, `COMMAND`, and `ASYNC_SELECT`:
 
 ## Live example
 
-See `DynamicFormField` in action in the [Login Form block](/blocks/login-standard).
+See `FieldRenderer` in action in the [Dynamic Form Field block](/blocks/dynamic-form-field).
 
 ## See also
 
-- [FormBuilderStandard](/docs/form-builder) — use a config array instead of rendering fields manually
-- [Form Layout](/docs/form-layout) — layout primitives for multi-column forms
+- [SchemaForm](/docs/form-builder) — use a config array instead of rendering fields manually
+- [StepForm](/docs/multistep-form) — multi-step variant with per-step validation

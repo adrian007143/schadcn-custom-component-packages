@@ -50,11 +50,16 @@ function PopoverContent({
 }) {
   return (
     <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Positioner align={align} sideOffset={sideOffset} side={side}>
+      <PopoverPrimitive.Positioner
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        className="z-[80]"
+      >
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 z-50 w-72 rounded-md border p-4 shadow-md outline-hidden",
+            "relative z-[80] bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 w-72 rounded-md border p-4 shadow-md outline-hidden",
             className
           )}
           {...props}

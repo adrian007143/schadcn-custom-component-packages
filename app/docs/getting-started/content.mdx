@@ -24,17 +24,16 @@ Pick a block and add it to your project with one command. Here's the most common
 
 The CLI will copy the component files into your project and install all required npm packages.
 
+<Callout variant="info">
+  Install commands use the current registry domain. If you self-host FormKitCN, set `REGISTRY_BASE_URL` and `NEXT_PUBLIC_SITE_URL` so generated commands point at your deployed registry instead of localhost.
+</Callout>
+
 ## Sonner setup
 
-Blocks that depend on `sonner` also require a toaster in your root layout. This is currently needed for:
-
-- `form-dynamic-template.json`
-- `multistep-form-template.json`
-- `form-template-01.json`
-
-Add this once in `app/layout.tsx`:
+All FormKitCN blocks that use toast notifications include `sonner` as a registry dependency — it is installed automatically with the block. The only manual step is adding the `Toaster` to your root layout once:
 
 ```tsx
+// app/layout.tsx
 import { Toaster } from "@/components/ui/sonner"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -59,9 +58,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </tr>
   </thead>
   <tbody className="divide-y divide-border">
-    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">DynamicFormField</td><td className="px-4 py-3"><code>form-field.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">FieldRenderer</td><td className="px-4 py-3"><code>form-field.json</code></td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Form Layout primitives</td><td className="px-4 py-3"><code>form-layout.json</code></td></tr>
-    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">FormBuilderStandard</td><td className="px-4 py-3"><code>form-dynamic-template.json</code></td></tr>
+    <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Login Form Template</td><td className="px-4 py-3"><code>form-dynamic-template.json</code></td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Multi-Step Form</td><td className="px-4 py-3"><code>multistep-form-template.json</code></td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Dynamic Data Table</td><td className="px-4 py-3"><code>data-table-dynamic.json</code></td></tr>
     <tr className="hover:bg-muted/40 transition-colors"><td className="px-4 py-3 text-foreground/80">Redux Store</td><td className="px-4 py-3"><code>redux-methods-tool.json</code></td></tr>
@@ -72,16 +71,76 @@ To install any block, replace the file name in the install command above.
 
 ## Quick example
 
-After installing `form-field`, here's a minimal working form using `DynamicFormField` with `react-hook-form` and Zod:
+### Step 1 — Install the registry block
+
+<InstallCmd file="form-field.json" />
+
+That single command handles everything automatically:
+
+<div className="not-prose my-4 overflow-x-auto rounded-xl border border-border">
+  <table className="w-full text-sm border-collapse">
+    <thead>
+      <tr className="border-b border-border bg-muted/60">
+        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">What gets installed</th>
+        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">How</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-border">
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">react-hook-form</td><td className="px-4 py-2.5 text-muted-foreground">npm dependency</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">@hookform/resolvers</td><td className="px-4 py-2.5 text-muted-foreground">npm dependency</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">zod</td><td className="px-4 py-2.5 text-muted-foreground">npm dependency</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">react-phone-number-input</td><td className="px-4 py-2.5 text-muted-foreground">npm dependency</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">field</td><td className="px-4 py-2.5 text-muted-foreground">shadcn component (registryDependency)</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">button</td><td className="px-4 py-2.5 text-muted-foreground">shadcn component (registryDependency)</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 font-mono text-xs text-primary">sonner</td><td className="px-4 py-2.5 text-muted-foreground">shadcn component (registryDependency)</td></tr>
+      <tr className="hover:bg-muted/40"><td className="px-4 py-2.5 text-foreground/70">All other field primitives</td><td className="px-4 py-2.5 text-muted-foreground">shadcn components (registryDependency)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+### Step 2 — Add the Toaster to your root layout
+
+`sonner` was installed in step 1. Register it once in `app/layout.tsx`:
+
+<Callout variant="warning">
+  Make sure the font variables **and** `font-sans` are applied to `<body>` — not `<html>`. Without `font-sans`, Tailwind never reads the CSS variable and the browser falls back to a serif system font.
+</Callout>
 
 ```tsx
+import { Geist, Geist_Mono } from "next/font/google"
+import { Toaster } from "@/components/ui/sonner"
+import "./globals.css"
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        {children}
+        <Toaster position="top-center" />
+      </body>
+    </html>
+  )
+}
+```
+
+### Step 3 — Use it in your component
+
+<Callout variant="warning">
+  Form components use React hooks (`useForm`, `useState`) — they must be Client Components. Add `"use client"` at the top of any file that renders a form.
+</Callout>
+
+```tsx
+"use client"
+
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import { DynamicFormField } from "@/components/forms/form-field/DynamicFormField"
-import { FormFieldType } from "@/components/forms/form-field/constants"
+import { FieldRenderer  } from "@/components/forms/core"
+import { FormFieldType } from "@/components/forms/core"
 
 const schema = z.object({
   email: z.string().email(),
@@ -95,37 +154,35 @@ export function LoginForm() {
   })
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(console.log)} className="space-y-4">
-        <DynamicFormField
-          control={form.control}
-          name="email"
-          fieldType={FormFieldType.INPUT}
-          label="Email"
-          placeholder="you@example.com"
-          required
-        />
-        <DynamicFormField
-          control={form.control}
-          name="password"
-          fieldType={FormFieldType.PASSWORD}
-          label="Password"
-          required
-        />
-        <Button type="submit">Sign in</Button>
-      </form>
-    </Form>
+    <form onSubmit={form.handleSubmit(console.log)} className="space-y-4">
+      <FieldRenderer
+        control={form.control}
+        name="email"
+        fieldType={FormFieldType.INPUT}
+        label="Email"
+        placeholder="you@example.com"
+        required
+      />
+      <FieldRenderer
+        control={form.control}
+        name="password"
+        fieldType={FormFieldType.PASSWORD}
+        label="Password"
+        required
+      />
+      <Button type="submit">Sign in</Button>
+    </form>
   )
 }
 ```
 
 <Callout variant="tip">
-  Want to skip the react-hook-form boilerplate? Use **FormBuilderStandard** instead — it handles schema, layout, and submission automatically. See the [FormBuilderStandard docs](/docs/form-builder).
+  Want to skip the react-hook-form boilerplate? Use **SchemaForm** instead — it handles schema, layout, and submission automatically. See the [SchemaForm docs](/docs/form-builder).
 </Callout>
 
 ## See also
 
 - [Introduction](/docs/introduction) — architecture overview and what's included
-- [DynamicFormField](/docs/form-field) — all 17 field types and their props
-- [FormBuilderStandard](/docs/form-builder) — schema-driven form builder
+- [FieldRenderer](/docs/form-field) — all 25+ field types and their props
+- [SchemaForm](/docs/form-builder) — schema-driven form builder
 - [Live examples](/blocks) — browse all block previews

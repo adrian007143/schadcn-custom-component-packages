@@ -7,7 +7,7 @@ import { FormKitCNLogo } from "./FormKitCNLogo"
 const NAV_LINKS = [
   { href: "/blocks", label: "Components" },
   { href: "/docs/getting-started", label: "Docs" },
-  { href: "/blocks/login-standard", label: "Examples" },
+  { href: "/blocks/dynamic-form-field", label: "Examples" },
 ]
 
 export function SiteHeader() {

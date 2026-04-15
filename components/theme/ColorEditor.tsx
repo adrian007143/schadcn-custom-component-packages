@@ -6,34 +6,23 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { ThemeCssVar, ThemeCustomOverrides } from "@/lib/theme/types";
+import { cn } from "@/lib/utils";
 import {
   buildPaletteOverridesFromSeed,
   getEffectiveTokens,
   oklchToHex,
 } from "@/lib/theme/utils";
 
-import type { ThemeCssVar, ThemeCustomOverrides } from "@/lib/theme/types";
-import { cn } from "@/lib/utils";
-
 import { ColorPickerRow } from "./ColorPickerRow";
 import { dispatchThemeAction } from "./dispatchThemeAction";
 import { useThemeBuilderState } from "./useThemeBuilderState";
 
-// ─── Token Groups ────────────────────────────────────────────────────────────
-
 const TOKEN_GROUPS: { label: string; vars: ThemeCssVar[] }[] = [
-  {
-    label: "Base",
-    vars: ["--background", "--foreground"],
-  },
+  { label: "Base", vars: ["--background", "--foreground"] },
   {
     label: "Card & Popover",
-    vars: [
-      "--card",
-      "--card-foreground",
-      "--popover",
-      "--popover-foreground",
-    ],
+    vars: ["--card", "--card-foreground", "--popover", "--popover-foreground"],
   },
   {
     label: "Brand",
@@ -71,83 +60,6 @@ const TOKEN_GROUPS: { label: string; vars: ThemeCssVar[] }[] = [
   },
 ];
 
-type TokenGroupsProps = {
-  effectiveTokens: Partial<Record<ThemeCssVar, string>>;
-  editMode: "light" | "dark";
-  customLight: ThemeCustomOverrides;
-  customDark: ThemeCustomOverrides;
-};
-
-function TokenGroups({ effectiveTokens, editMode, customLight, customDark }: TokenGroupsProps) {
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-
-  const toggleGroup = (label: string) =>
-    setCollapsed((prev) => ({ ...prev, [label]: !prev[label] }));
-
-  return (
-    <div className="space-y-2">
-      {TOKEN_GROUPS.map((group) => {
-        const isCollapsed = Boolean(collapsed[group.label]);
-        const customCount = group.vars.filter((v) =>
-          editMode === "light" ? Boolean(customLight[v]) : Boolean(customDark[v])
-        ).length;
-
-        return (
-          <div
-            key={group.label}
-            className="rounded-2xl border border-slate-800/80 bg-slate-900/60 overflow-hidden"
-          >
-            <button
-              type="button"
-              onClick={() => toggleGroup(group.label)}
-              className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-slate-800/40"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                  {group.label}
-                </span>
-                <span className="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
-                  {group.vars.length}
-                </span>
-                {customCount > 0 && (
-                  <span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
-                    {customCount} edited
-                  </span>
-                )}
-              </div>
-              <ChevronDown
-                className={cn(
-                  "h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform duration-200",
-                  isCollapsed && "-rotate-90"
-                )}
-              />
-            </button>
-
-            {!isCollapsed && (
-              <div className="px-3 pb-1">
-                {group.vars.map((varName) => (
-                  <ColorPickerRow
-                    key={varName}
-                    label={colorLabels[varName] || varName}
-                    varName={varName}
-                    mode={editMode}
-                    resolvedValue={effectiveTokens[varName] || "#000000"}
-                    isCustomized={
-                      editMode === "light"
-                        ? Boolean(customLight[varName])
-                        : Boolean(customDark[varName])
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 const colorLabels: Record<string, string> = {
   "--background": "Background",
   "--foreground": "Foreground",
@@ -181,6 +93,92 @@ const colorLabels: Record<string, string> = {
   "--sidebar-border": "Sidebar Border",
   "--sidebar-ring": "Sidebar Ring",
 };
+
+type TokenGroupsProps = {
+  effectiveTokens: Partial<Record<ThemeCssVar, string>>;
+  editMode: "light" | "dark";
+  customLight: ThemeCustomOverrides;
+  customDark: ThemeCustomOverrides;
+};
+
+function TokenGroups({
+  effectiveTokens,
+  editMode,
+  customLight,
+  customDark,
+}: TokenGroupsProps) {
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+
+  return (
+    <div className="space-y-2">
+      {TOKEN_GROUPS.map((group) => {
+        const isCollapsed = Boolean(collapsed[group.label]);
+        const customCount = group.vars.filter((variableName) =>
+          editMode === "light"
+            ? Boolean(customLight[variableName])
+            : Boolean(customDark[variableName])
+        ).length;
+
+        return (
+          <div
+            key={group.label}
+            className="overflow-hidden rounded-2xl border border-border/70 bg-card/70 shadow-sm"
+          >
+            <button
+              type="button"
+              onClick={() =>
+                setCollapsed((prev) => ({
+                  ...prev,
+                  [group.label]: !prev[group.label],
+                }))
+              }
+              className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-muted/40"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  {group.label}
+                </span>
+                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                  {group.vars.length}
+                </span>
+                {customCount > 0 ? (
+                  <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                    {customCount} edited
+                  </span>
+                ) : null}
+              </div>
+              <ChevronDown
+                className={cn(
+                  "h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-200",
+                  isCollapsed && "-rotate-90"
+                )}
+              />
+            </button>
+
+            {!isCollapsed ? (
+              <div className="px-3 pb-1">
+                {group.vars.map((variableName) => (
+                  <ColorPickerRow
+                    key={variableName}
+                    label={colorLabels[variableName] || variableName}
+                    varName={variableName}
+                    mode={editMode}
+                    resolvedValue={effectiveTokens[variableName] || "#000000"}
+                    isCustomized={
+                      editMode === "light"
+                        ? Boolean(customLight[variableName])
+                        : Boolean(customDark[variableName])
+                    }
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function normalizeHex(value: string): string | null {
   const sanitized = value.trim().replace(/^#/, "");
@@ -253,17 +251,13 @@ function createRandomPaletteSeeds() {
 
 export function ColorEditor() {
   const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const themeState = useThemeBuilderState();
   const [editMode, setEditMode] = useState<"light" | "dark">(
     resolvedTheme === "dark" ? "dark" : "light"
   );
 
-  const {
-    activePreset,
-    customLight,
-    customDark,
-    radius,
-  } = themeState;
+  const { activePreset, customLight, customDark, radius } = themeState;
 
   const lightTokens = useMemo(
     () => getEffectiveTokens(activePreset, customLight, customDark, false),
@@ -328,23 +322,30 @@ export function ColorEditor() {
   };
 
   return (
-    <div className="space-y-5 text-slate-50">
-      <div className="rounded-[1.75rem] border border-slate-800/80 bg-[linear-gradient(180deg,rgba(30,41,59,0.76),rgba(15,23,42,0.94))] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+    <div className="space-y-5 text-foreground">
+      <div
+        className={cn(
+          "rounded-[1.75rem] border p-6",
+          isDark
+            ? "border-slate-800/80 bg-[linear-gradient(180deg,rgba(30,41,59,0.76),rgba(15,23,42,0.94))] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+            : "border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.92))] shadow-sm"
+        )}
+      >
         <div className="space-y-3">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="space-y-1.5">
-              <p className="text-[1.25rem] font-semibold tracking-tight text-slate-50">
+              <p className="text-[1.25rem] font-semibold tracking-tight text-foreground">
                 Palette Builder
               </p>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                 Seeded Generator
               </p>
             </div>
-            <div className="w-fit rounded-full border border-slate-700/80 bg-slate-800/80 px-3 py-1.5 text-[11px] font-medium text-slate-300">
+            <div className="w-fit rounded-full border border-border/70 bg-muted/60 px-3 py-1.5 text-[11px] font-medium text-muted-foreground">
               Light + Dark Pair
             </div>
           </div>
-          <p className="max-w-[48ch] text-sm leading-7 text-slate-400">
+          <p className="max-w-[48ch] text-sm leading-7 text-muted-foreground">
             Pick your desired light and dark brand colors, then generate a full
             palette override automatically.
           </p>
@@ -352,18 +353,15 @@ export function ColorEditor() {
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <label className="space-y-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Light Brand Color
             </span>
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-700/70 bg-slate-950/35 p-3">
+            <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background/60 p-3">
               <input
                 type="color"
                 value={lightDraftValue}
-                onChange={(event) => {
-                  const next = event.target.value.toUpperCase();
-                  setLightDraft(next);
-                }}
-                className="h-11 w-11 cursor-pointer rounded-xl border border-slate-600 bg-transparent p-1"
+                onChange={(event) => setLightDraft(event.target.value.toUpperCase())}
+                className="h-11 w-11 cursor-pointer rounded-xl border border-border bg-transparent p-1"
                 title="Choose the light-mode brand color"
               />
               <Input
@@ -376,25 +374,22 @@ export function ColorEditor() {
                     commitLightDraft();
                   }
                 }}
-                className="h-11 rounded-xl border-slate-700 bg-slate-900/80 font-mono text-sm font-semibold uppercase tracking-[0.08em] text-slate-50"
+                className="h-11 rounded-xl border-input bg-background font-mono text-sm font-semibold uppercase tracking-[0.08em]"
                 aria-label="Light brand color"
               />
             </div>
           </label>
 
           <label className="space-y-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Dark Brand Color
             </span>
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-700/70 bg-slate-950/35 p-3">
+            <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background/60 p-3">
               <input
                 type="color"
                 value={darkDraftValue}
-                onChange={(event) => {
-                  const next = event.target.value.toUpperCase();
-                  setDarkDraft(next);
-                }}
-                className="h-11 w-11 cursor-pointer rounded-xl border border-slate-600 bg-transparent p-1"
+                onChange={(event) => setDarkDraft(event.target.value.toUpperCase())}
+                className="h-11 w-11 cursor-pointer rounded-xl border border-border bg-transparent p-1"
                 title="Choose the dark-mode brand color"
               />
               <Input
@@ -407,7 +402,7 @@ export function ColorEditor() {
                     commitDarkDraft();
                   }
                 }}
-                className="h-11 rounded-xl border-slate-700 bg-slate-900/80 font-mono text-sm font-semibold uppercase tracking-[0.08em] text-slate-50"
+                className="h-11 rounded-xl border-input bg-background font-mono text-sm font-semibold uppercase tracking-[0.08em]"
                 aria-label="Dark brand color"
               />
             </div>
@@ -426,16 +421,17 @@ export function ColorEditor() {
           <Button
             type="button"
             variant="secondary"
-            className="group h-12 w-full justify-center gap-2 rounded-2xl border border-slate-700/90 bg-slate-800/90 px-5 text-sm font-semibold text-slate-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/90 hover:shadow-[0_12px_28px_rgba(15,23,42,0.32)] active:translate-y-0 active:scale-[0.985]"
+            className="group h-12 w-full justify-center gap-2 rounded-2xl border border-border/80 bg-card/90 px-5 text-sm font-semibold text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-accent-foreground hover:shadow-[0_12px_28px_rgba(15,23,42,0.12)] active:translate-y-0 active:scale-[0.985]"
             onClick={applyRandomPalette}
           >
             <Shuffle className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12 group-active:-rotate-6" />
             Random Palette
           </Button>
         </div>
-        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/35 px-3.5 py-3">
+
+        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-border/70 bg-background/60 px-3.5 py-3">
           <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary/80" />
-          <p className="text-xs leading-6 text-slate-400">
+          <p className="text-xs leading-6 text-muted-foreground">
             This updates surfaces, accents, charts, and sidebar tokens for both
             modes.
           </p>
@@ -449,11 +445,18 @@ export function ColorEditor() {
           className={cn(
             "flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all duration-200",
             editMode === "light"
-              ? "border-amber-500/40 bg-amber-500/10 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.08)]"
-              : "border-slate-700/60 bg-slate-900/50 text-slate-500 hover:border-slate-600 hover:text-slate-300"
+              ? "border-amber-500/40 bg-amber-500/10 text-amber-600 shadow-[0_0_12px_rgba(251,191,36,0.08)] dark:text-amber-300"
+              : "border-border/70 bg-card/70 text-muted-foreground hover:border-border hover:text-foreground"
           )}
         >
-          <Sun className={cn("h-3.5 w-3.5", editMode === "light" ? "text-amber-400" : "text-slate-600")} />
+          <Sun
+            className={cn(
+              "h-3.5 w-3.5",
+              editMode === "light"
+                ? "text-amber-500 dark:text-amber-400"
+                : "text-muted-foreground"
+            )}
+          />
           Light
         </button>
         <button
@@ -462,11 +465,18 @@ export function ColorEditor() {
           className={cn(
             "flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all duration-200",
             editMode === "dark"
-              ? "border-indigo-500/40 bg-indigo-500/10 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.08)]"
-              : "border-slate-700/60 bg-slate-900/50 text-slate-500 hover:border-slate-600 hover:text-slate-300"
+              ? "border-indigo-500/40 bg-indigo-500/10 text-indigo-600 shadow-[0_0_12px_rgba(99,102,241,0.08)] dark:text-indigo-300"
+              : "border-border/70 bg-card/70 text-muted-foreground hover:border-border hover:text-foreground"
           )}
         >
-          <Moon className={cn("h-3.5 w-3.5", editMode === "dark" ? "text-indigo-400" : "text-slate-600")} />
+          <Moon
+            className={cn(
+              "h-3.5 w-3.5",
+              editMode === "dark"
+                ? "text-indigo-500 dark:text-indigo-400"
+                : "text-muted-foreground"
+            )}
+          />
           Dark
         </button>
       </div>
@@ -478,7 +488,7 @@ export function ColorEditor() {
         customDark={customDark}
       />
 
-      <p className="px-1 text-xs leading-relaxed text-slate-400">
+      <p className="px-1 text-xs leading-relaxed text-muted-foreground">
         Fine-tune any token with the swatch or hex input. Reset buttons restore
         individual values back to the active preset.
       </p>

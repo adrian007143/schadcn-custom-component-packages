@@ -28,7 +28,7 @@ import { PercentField } from "../fields/controls/PercentField";
 import { PhoneField } from "../fields/controls/PhoneField";
 import { ComboboxField } from "../fields/controls/ComboboxField";
 import { RadioGroupField } from "../fields/controls/RadioGroupField";
-import { SearchSelect } from "../fields/controls/SearchSelect";
+import { SelectField } from "../fields/controls/SelectField";
 import { SliderField } from "../fields/controls/SliderField";
 import {
   FieldControlProps,
@@ -91,16 +91,32 @@ export const FieldControlRenderer = <
     height,
     inputClassName,
   } = props;
+  const hasOverlayContent =
+    fieldType === FormFieldType.SELECT ||
+    fieldType === FormFieldType.SINGLE_SELECT ||
+    fieldType === FormFieldType.MULTI_SELECT ||
+    fieldType === FormFieldType.COMMAND ||
+    fieldType === FormFieldType.ASYNC_SELECT ||
+    fieldType === FormFieldType.PHONE_INPUT;
+  const overlayLayerClass =
+    fieldType === FormFieldType.ASYNC_SELECT
+      ? "z-30"
+      : hasOverlayContent
+        ? "z-10"
+        : undefined;
 
   const heightClass =
     HEIGHT_CLASSES[height || DEFAULT_HEIGHTS[fieldType] || "md"];
   const describedBy = invalid
     ? [descriptionId, messageId].filter(Boolean).join(" ")
     : descriptionId;
+  const hasAffixes = Boolean(prefix || suffix);
   const groupClass = cn(
-    "flex w-full items-center rounded-md border border-border bg-background transition-colors",
-    "focus-within:border-primary/70 focus-within:ring-1 focus-within:ring-primary/30",
+    "flex w-full items-center rounded-md border border-border bg-background/95 transition-colors",
+    "focus-within:border-primary/70 focus-within:ring-1 focus-within:ring-primary/25",
     "hover:border-muted-foreground/40 data-[invalid=true]:border-destructive/60",
+    hasOverlayContent && "overflow-visible",
+    overlayLayerClass,
     disabled && "cursor-not-allowed opacity-60",
     heightClass,
     className
@@ -281,9 +297,8 @@ export const FieldControlRenderer = <
       break;
 
     case FormFieldType.SELECT:
-    case FormFieldType.SINGLE_SELECT:
       controlChild = (
-        <SearchSelect
+        <SelectField
           field={field}
           data={props.data ?? []}
           label={props.label ?? ""}
@@ -294,13 +309,37 @@ export const FieldControlRenderer = <
           inputId={fieldId}
           ariaInvalid={invalid}
           ariaDescribedBy={describedBy || undefined}
-          className={inputClasses}
+          className={cn(
+            inputClasses,
+            hasAffixes &&
+              "h-full rounded-none border-0 bg-transparent px-3 shadow-none hover:bg-transparent focus-visible:ring-0"
+          )}
         />
       );
       break;
 
+    case FormFieldType.SINGLE_SELECT:
     case FormFieldType.MULTI_SELECT:
       controlChild = (
+        fieldType === FormFieldType.SINGLE_SELECT ? (
+          <ComboboxField
+            field={field}
+            data={props.data ?? []}
+            label={props.label ?? ""}
+            placeholder={props.placeholder}
+            disabled={disabled}
+            labelKey={props.labelKey ?? "label"}
+            valueKey={props.valueKey ?? "value"}
+            inputId={fieldId}
+            ariaInvalid={invalid}
+            ariaDescribedBy={describedBy || undefined}
+            className={cn(
+              inputClasses,
+              hasAffixes &&
+                "h-full rounded-none border-0 bg-transparent px-3 shadow-none hover:bg-transparent focus-visible:ring-0"
+            )}
+          />
+        ) : (
         <MultiSelectField
           field={field}
           fieldId={fieldId}
@@ -309,6 +348,7 @@ export const FieldControlRenderer = <
           invalid={invalid}
           props={props}
         />
+        )
       );
       break;
 
@@ -325,7 +365,11 @@ export const FieldControlRenderer = <
           inputId={fieldId}
           ariaInvalid={invalid}
           ariaDescribedBy={describedBy || undefined}
-          className={inputClasses}
+          className={cn(
+            inputClasses,
+            hasAffixes &&
+              "h-full rounded-none border-0 bg-transparent px-3 shadow-none hover:bg-transparent focus-visible:ring-0"
+          )}
         />
       );
       break;
@@ -453,7 +497,7 @@ export const FieldControlRenderer = <
   return (
     <InputGroup data-invalid={invalid || undefined} className={groupClass}>
       {prefix && (
-        <InputGroupText className="bg-muted/30 px-2 text-xs text-muted-foreground/70">
+        <InputGroupText className="min-w-11 justify-center bg-muted/25 px-3 text-muted-foreground">
           {prefix}
         </InputGroupText>
       )}
@@ -461,7 +505,7 @@ export const FieldControlRenderer = <
       <div className="h-full flex-1">{controlChild}</div>
 
       {suffix && (
-        <InputGroupText className="px-2 text-xs text-muted-foreground">
+        <InputGroupText className="min-w-11 justify-center bg-muted/15 px-3 text-muted-foreground">
           {suffix}
         </InputGroupText>
       )}

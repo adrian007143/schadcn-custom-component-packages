@@ -3,7 +3,10 @@
 import { useState } from "react"
 import { Check, Copy, ArrowRight, Search } from "lucide-react"
 import Link from "next/link"
-import { REGISTRY_ITEMS, type RegistryItem } from "@/lib/registry-manifest"
+import {
+  LISTED_REGISTRY_ITEMS,
+  type RegistryItem,
+} from "@/lib/registry-manifest"
 import { getClientBaseUrl, buildInstallCommand } from "@/lib/site-url"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -104,7 +107,7 @@ export default function BlocksPage() {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("all")
 
-  const filtered = REGISTRY_ITEMS.filter((item) => {
+  const filtered = LISTED_REGISTRY_ITEMS.filter((item) => {
     const matchesSearch =
       search.trim() === "" ||
       item.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -121,7 +124,7 @@ export default function BlocksPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Registry Blocks</h1>
         <p className="mt-2 text-muted-foreground">
-          {REGISTRY_ITEMS.length} blocks available. Install any block with one
+          {LISTED_REGISTRY_ITEMS.length} blocks available. Install any block with one
           command using the shadcn CLI.
         </p>
       </div>

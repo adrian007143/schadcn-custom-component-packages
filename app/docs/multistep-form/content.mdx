@@ -1,22 +1,30 @@
-# MultiStepForm
+# StepForm
 
-A multi-step form with per-step Zod validation, progress tracking, flexible layouts, and optional reCAPTCHA. Each step validates independently — the user can't advance until the current step is valid.
+A multi-step form with per-step field validation, progress tracking, flexible layouts, and optional reCAPTCHA. Clicking "Next" validates only the current step's fields - users can't advance until the current step is valid.
 
 ## Install
 
 <InstallCmd file="multistep-form-template.json" />
 
-<Callout variant="warning">
-  This block installs `sonner`. After running the CLI, add the toaster once in your root layout:
+<Callout variant="tip">
+  The registry install handles everything automatically - npm packages (`react-hook-form`, `@hookform/resolvers`, `zod`, `react-google-recaptcha`), shared registry blocks (`form-field`, `form-layout`), and shadcn components (`field`, `button`, `sonner`, `progress`). No manual installs needed.
 </Callout>
 
+After installing, add the `Toaster` once in your root layout. Make sure `font-sans` is on `<body>` or your app will render with a serif system font:
+
 ```tsx
+// app/layout.tsx
+import { Geist, Geist_Mono } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
+import "./globals.css"
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
         {children}
         <Toaster position="top-center" />
       </body>
@@ -27,29 +35,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ## Usage
 
+<Callout variant="warning">
+  `StepForm` uses React hooks internally - add `"use client"` to any file that renders it.
+</Callout>
+
 ```tsx
-import { MultiStepForm } from "@/components/forms/form-ui/multistep-form/MultiStepForm"
-import { FormFieldType } from "@/components/forms/form-field/constants"
+"use client"
+
+import { StepForm } from "@/components/forms/form-ui/multistep-form"
+import { FormFieldType } from "@/components/forms/core"
 import { z } from "zod"
 
-const step1 = z.object({
+const schema = z.object({
   orgName: z.string().min(1, "Required"),
   industry: z.string().min(1, "Required"),
-})
-
-const step2 = z.object({
   adminEmail: z.string().email(),
   adminName: z.string().min(1, "Required"),
 })
 
+type FormValues = z.infer<typeof schema>
+
 export function CreateOrgForm() {
   return (
-    <MultiStepForm
+    <StepForm<FormValues>
+      schema={schema}
       defaultValues={{ orgName: "", industry: "", adminEmail: "", adminName: "" }}
       steps={[
         {
           title: "Organization",
-          schema: step1,
+          description: "Tell us about your organization",
           fields: [
             { name: "orgName", fieldType: FormFieldType.INPUT, label: "Organization name" },
             { name: "industry", fieldType: FormFieldType.SELECT, label: "Industry",
@@ -58,14 +72,15 @@ export function CreateOrgForm() {
         },
         {
           title: "Admin Account",
-          schema: step2,
+          description: "Who will manage this organization?",
+          layout: "grid-2",
           fields: [
             { name: "adminName", fieldType: FormFieldType.INPUT, label: "Full name" },
             { name: "adminEmail", fieldType: FormFieldType.INPUT, label: "Email address" },
           ],
         },
       ]}
-      onSubmit={async (values) => {
+      onSubmit={async (values, form) => {
         await createOrg(values)
       }}
     />
@@ -76,78 +91,141 @@ export function CreateOrgForm() {
 ## Props
 
 <PropsTable items={[
-  { name: "steps", type: "MultiStepFormStep<T>[]", required: true, description: "Array of step definitions — each with its own schema and fields" },
+  { name: "schema", type: "ZodType<T>", required: true, description: "Full Zod schema covering all fields across all steps" },
   { name: "defaultValues", type: "DefaultValues<T>", required: true, description: "Combined initial values for all steps" },
-  { name: "onSubmit", type: "(values: T) => void | Promise<void>", required: true, description: "Called when the last step is submitted successfully" },
-  { name: "layout", type: '"auto" | "horizontal" | "vertical"', default: '"auto"', description: "Progress indicator orientation" },
+  { name: "steps", type: "StepFormStep<T>[]", required: true, description: "Array of step definitions" },
+  { name: "onSubmit", type: "(values: T, form: UseFormReturn<T>) => void | Promise<void>", required: true, description: "Called when the last step is submitted successfully" },
+  { name: "mode", type: '"CREATE" | "UPDATE"', default: '"CREATE"', description: "CREATE resets the form after submit; UPDATE does not" },
+  { name: "layoutMode", type: '"auto" | "horizontal" | "vertical"', default: '"auto"', description: "Step indicator orientation" },
   { name: "variant", type: '"card" | "outline" | "ghost"', default: '"card"', description: "Visual style of the step container" },
-  { name: "recaptcha", type: "boolean", default: "false", description: "Enable reCAPTCHA verification on the final step" },
-  { name: "siteKey", type: "string", description: "Google reCAPTCHA v2 site key — required when recaptcha={true}" },
+  { name: "showProgressBar", type: "boolean", default: "true", description: "Show the step progress bar" },
+  { name: "stickyFooter", type: "boolean", default: "false", description: "Pin the navigation buttons to the bottom of the viewport" },
+  { name: "recaptcha", type: "boolean", default: "false", description: "Show reCAPTCHA on the final step before submit" },
+  { name: "onCancel", type: "() => void", description: "Show a Cancel button - calls this handler when clicked" },
+  { name: "FormLayout", type: "FormSectionLayout", description: "Default layout for all steps (overridden per-step)" },
+  { name: "FormColumns", type: "number", description: "Default column count when FormLayout is grid (1-6)" },
+  { name: "className", type: "string", description: "Class applied to the form element" },
 ]} />
+
+<Callout variant="warning">
+  reCAPTCHA requires `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` in your `.env.local`. The widget reads this env var automatically - no prop needed.
+</Callout>
 
 ## Step config
 
 ```ts
-interface MultiStepFormStep<T> {
-  title: string               // Shown in the progress indicator
-  description?: string        // Optional sub-title for the step
-  schema: ZodType             // Validated when "Next" is clicked
-  fields: FormBuilderField<T>[]
-  sections?: FormBuilderSection<T>[]  // Use sections for multi-column layouts
-  layout?: SectionLayout      // Grid layout for this step's fields
+interface StepFormStep<T> {
+  id?: string                    // Optional key (defaults to index)
+  title: string                  // Shown in the step indicator
+  description?: string           // Optional sub-title for the step
+  fields?: StepFieldConfig<T>[]  // Flat list of fields for this step
+  sections?: FormSection<T>[]    // Use sections for multi-column layouts within a step
+  layout?: FormSectionLayout     // Grid layout when using fields (not sections)
+  columns?: number               // Column count when layout is "grid"
 }
 ```
 
 <Callout variant="info">
-  Each step's `schema` should only include the fields present in that step. The combined values of all steps are passed to `onSubmit`.
-</Callout>
-
-## Layout modes
-
-```tsx
-// Auto — horizontal on desktop, vertical on mobile
-<MultiStepForm layout="auto" ... />
-
-// Always horizontal (steps shown left-to-right)
-<MultiStepForm layout="horizontal" ... />
-
-// Always vertical (steps shown top-to-bottom)
-<MultiStepForm layout="vertical" ... />
-```
-
-## reCAPTCHA
-
-Set `recaptcha={true}` with your site key. The reCAPTCHA appears on the final step before the submit button. `onSubmit` is only called after a valid reCAPTCHA token is obtained.
-
-```tsx
-<MultiStepForm
-  recaptcha
-  siteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-  ...
-/>
-```
-
-<Callout variant="warning">
-  reCAPTCHA requires a valid Google site key. Use `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` in your `.env.local` file. The component will not render the reCAPTCHA widget if no `siteKey` is provided.
+  Use `fields` for a simple flat list. Use `sections` when you need multiple layout groups within a single step. You can't use both at the same time.
 </Callout>
 
 ## Per-step validation
 
-Clicking "Next" triggers validation for only the fields in the current step's `schema`. The user cannot advance until all fields in the current step are valid. This means:
-
-1. Each step's `schema` keys must match the field `name` values in that step
-2. The combined type `T` spans all steps — use `z.object({...step1, ...step2})` for the full schema type
+The full schema is provided once at the top level. When "Next" is clicked, `StepForm` triggers validation only for the field names present in the current step - users cannot advance until those fields are valid.
 
 ```ts
-// Full schema type for type safety
-type FormValues = z.infer<typeof step1> & z.infer<typeof step2>
+// Define the complete schema upfront
+const schema = z.object({
+  // step 1 fields
+  orgName: z.string().min(1, "Required"),
+  industry: z.string().min(1, "Required"),
+  // step 2 fields
+  adminEmail: z.string().email(),
+  adminName: z.string().min(1, "Required"),
+})
+```
+
+Each step's `fields[].name` values must match keys in that schema object.
+
+## Layout modes
+
+```tsx
+// Auto - sidebar on desktop, top bar on mobile (default)
+<StepForm layoutMode="auto" ... />
+
+// Always sidebar (steps shown left of the form)
+<StepForm layoutMode="horizontal" ... />
+
+// Always top bar (steps shown above the form)
+<StepForm layoutMode="vertical" ... />
+```
+
+## Sections within a step
+
+Use `sections` instead of `fields` when you need multiple layout groups in one step:
+
+```tsx
+{
+  title: "Company Details",
+  sections: [
+    {
+      title: "Basic info",
+      layout: "grid-2",
+      fields: [
+        { name: "companyName", fieldType: FormFieldType.INPUT, label: "Name" },
+        { name: "companySize", fieldType: FormFieldType.SELECT, label: "Size",
+          data: sizes, labelKey: "label", valueKey: "value" },
+      ],
+    },
+    {
+      title: "Address",
+      layout: "grid-3",
+      fields: [
+        { name: "city", fieldType: FormFieldType.INPUT, label: "City" },
+        { name: "state", fieldType: FormFieldType.INPUT, label: "State" },
+        { name: "zip", fieldType: FormFieldType.INPUT, label: "ZIP" },
+      ],
+    },
+  ],
+}
+```
+
+## reCAPTCHA
+
+Set `recaptcha={true}` - the widget appears on the final step above the Submit button. Submission is blocked until the user verifies.
+
+```tsx
+<StepForm
+  recaptcha
+  schema={schema}
+  defaultValues={defaults}
+  steps={steps}
+  onSubmit={handleSubmit}
+/>
+```
+
+Add your site key to `.env.local`:
+
+```bash
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_site_key_here
+```
+
+## Cancel button
+
+Pass `onCancel` to show a Cancel button on every step:
+
+```tsx
+<StepForm
+  onCancel={() => router.back()}
+  ...
+/>
 ```
 
 ## Live example
 
-See `MultiStepForm` in the [Multi-Step Form block](/blocks/multistep).
+See `StepForm` in the [Multi-Step Form block](/blocks/multistep).
 
 ## See also
 
-- [FormBuilderStandard](/docs/form-builder) — single-step schema-driven form
-- [DynamicFormField](/docs/form-field) — individual field types reference
+- [SchemaForm](/docs/form-builder) - single-step schema-driven form
+- [FieldRenderer](/docs/form-field) - individual field types reference

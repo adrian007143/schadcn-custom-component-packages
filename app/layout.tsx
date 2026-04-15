@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "next-themes";
 
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { SiteHeader } from "@/components/site/SiteHeader";
+import { AppShell } from "@/components/site/AppShell";
 import { ThemeBuilder } from "@/components/theme/ThemeBuilder";
 import { ThemeManager } from "@/components/theme/ThemeManager";
 import { Toaster } from "@/components/ui/sonner";
@@ -114,11 +113,7 @@ export default function RootLayout({
           <StoreProvider>
             <ThemeManager />
             <ThemeBuilder />
-            <div className="flex min-h-screen flex-col">
-              <SiteHeader />
-              <main className="flex-1">{children}</main>
-              <SiteFooter />
-            </div>
+            <AppShell>{children}</AppShell>
             <Toaster position="top-center" />
           </StoreProvider>
         </ThemeProvider>

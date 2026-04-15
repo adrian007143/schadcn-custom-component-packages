@@ -19,8 +19,6 @@ function SelectGroup({
 }
 
 function SelectValue({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  placeholder,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Value> & {
   placeholder?: React.ReactNode
@@ -60,6 +58,7 @@ function SelectContent({
   align = "center",
   side,
   sideOffset = 4,
+  alignItemWithTrigger = false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   position,
   ...props
@@ -67,15 +66,21 @@ function SelectContent({
   align?: "start" | "center" | "end"
   side?: "top" | "right" | "bottom" | "left"
   sideOffset?: number
+  alignItemWithTrigger?: boolean
   position?: string
 }) {
   return (
     <SelectPrimitive.Portal>
-      <SelectPrimitive.Positioner align={align} sideOffset={sideOffset} side={side}>
+      <SelectPrimitive.Positioner
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        alignItemWithTrigger={alignItemWithTrigger}
+      >
         <SelectPrimitive.Popup
           data-slot="select-content"
           className={cn(
-            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 relative z-50 min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md",
+            "bg-background text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 relative z-50 min-w-[8rem] overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md",
             className
           )}
           {...props}

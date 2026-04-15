@@ -9,6 +9,7 @@
     "zod"
   ],
   "registryDependencies": [
+    "field",
     "button",
     "sonner",
     "http://localhost:3000/r/form-field.json",
