@@ -11,7 +11,6 @@ import {
   Layers3Icon,
   MailIcon,
   MapPinIcon,
-  PhoneIcon,
   ShieldCheckIcon,
   SparklesIcon,
   UserIcon,
