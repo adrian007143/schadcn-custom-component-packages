@@ -54,11 +54,11 @@ function DropdownMenuContent({
 }) {
   return (
     <MenuPrimitive.Portal>
-      <MenuPrimitive.Positioner sideOffset={sideOffset} align={align}>
+      <MenuPrimitive.Positioner sideOffset={sideOffset} align={align} className="z-50">
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-content"
           className={cn(
-            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 z-50 min-w-32 overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md",
+            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 min-w-32 overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md",
             className
           )}
           {...props}
@@ -245,11 +245,11 @@ function DropdownMenuSubContent({
 }: React.ComponentProps<typeof MenuPrimitive.Popup>) {
   return (
     <MenuPrimitive.Portal>
-      <MenuPrimitive.Positioner>
+      <MenuPrimitive.Positioner className="z-50">
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-sub-content"
           className={cn(
-            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 z-50 min-w-32 overflow-hidden rounded-md border p-1 shadow-lg",
+            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 min-w-32 overflow-hidden rounded-md border p-1 shadow-lg",
             className
           )}
           {...props}

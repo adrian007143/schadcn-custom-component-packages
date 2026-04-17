@@ -3,8 +3,7 @@
 import * as React from "react";
 import { SearchIcon, XIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string;
@@ -17,31 +16,57 @@ export function SearchInput({
   onChange,
   onClear,
   className,
+  placeholder = "Search...",
   ...props
 }: SearchInputProps) {
   return (
-    <div className="relative max-w-sm">
-      <div className="group relative flex h-10 w-full items-center rounded-md border border-border bg-background pl-10 pr-10 shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary/30 sm:w-72">
-        <SearchIcon className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
-        <Input
-          value={value}
-          onChange={onChange}
-          placeholder="Search..."
-          className={`h-full w-full border-0 bg-transparent p-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 ${className ?? ""}`}
-          {...props}
-        />
-        {value && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClear}
-            aria-label="Clear search"
-            className="absolute right-1.5 h-7 w-7 rounded-full text-muted-foreground transition-all hover:bg-muted/40"
-          >
-            <XIcon className="size-3" />
-          </Button>
+    <div
+      className={cn(
+        "group relative flex h-9 w-full items-center sm:w-64",
+        "rounded-lg border border-border/70 bg-background",
+        "shadow-sm transition-all duration-200",
+        "hover:border-border",
+        "focus-within:border-primary/50 focus-within:ring-3 focus-within:ring-primary/15",
+        "dark:bg-muted/20 dark:hover:bg-muted/30",
+        className
+      )}
+    >
+      {/* Search icon */}
+      <SearchIcon
+        aria-hidden
+        className="pointer-events-none absolute left-3 h-3.5 w-3.5 shrink-0 text-muted-foreground/70 transition-colors duration-150 group-focus-within:text-primary"
+      />
+
+      {/* Input */}
+      <input
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={cn(
+          "h-full w-full bg-transparent pl-9 text-sm text-foreground outline-none",
+          "placeholder:text-muted-foreground/60",
+          value ? "pr-8" : "pr-3"
         )}
-      </div>
+        {...props}
+      />
+
+      {/* Clear button */}
+      {value && (
+        <button
+          type="button"
+          onClick={onClear}
+          aria-label="Clear search"
+          className={cn(
+            "absolute right-2 flex h-5 w-5 shrink-0 items-center justify-center",
+            "rounded-full text-muted-foreground/60",
+            "transition-all duration-150",
+            "hover:bg-muted hover:text-foreground",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          )}
+        >
+          <XIcon className="h-3 w-3" />
+        </button>
+      )}
     </div>
   );
 }

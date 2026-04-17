@@ -1,15 +1,18 @@
-# DynamicDataTable
+# DataGrid
 
-A fully featured, editable data table built on TanStack Table v8. Supports inline cell editing, drag-and-drop row/column reordering, faceted filtering, column visibility toggles, and custom cell renderers.
+A fully featured, editable data grid built on TanStack Table v8. Supports inline cell editing, drag-and-drop row reordering, faceted column filtering, global search, column visibility, CSV export, and custom cell renderers — all in one installable block.
 
 ## Install
 
 <InstallCmd file="data-table-dynamic.json" />
 
-## Usage
+---
+
+## Basic usage
 
 ```tsx
-import { DynamicDataTable } from "@/components/data-table/data-table-dynamic/core"
+import { DataGrid } from "@/components/data-grid/core/DataGrid"
+import type { DataGridColumn } from "@/components/data-grid/types/columns"
 
 type User = {
   id: string
@@ -17,103 +20,248 @@ type User = {
   email: string
   role: string
   status: string
-  joinedAt: string
+  joinedAt: Date
 }
 
-const columns: DynamicColumnDef<User>[] = [
-  { accessorKey: "name", header: "Name", cellType: "editable" },
-  { accessorKey: "email", header: "Email", cellType: "editable" },
-  { accessorKey: "role", header: "Role", cellType: "select",
-    selectOptions: ["admin", "user", "viewer"] },
-  { accessorKey: "status", header: "Status", cellType: "badge" },
-  { accessorKey: "joinedAt", header: "Joined", cellType: "datepicker" },
+const columns: DataGridColumn<User, unknown>[] = [
+  { accessorKey: "name",     header: "Full Name",  editable: true, inputType: "text" },
+  { accessorKey: "email",    header: "Email",      editable: true, inputType: "text" },
+  { accessorKey: "role",     header: "Role",       editable: true, inputType: "select",
+    selectOptions: [{ label: "Admin", value: "admin" }, { label: "User", value: "user" }, { label: "Manager", value: "manager" }],
+    filterOptions: [{ label: "Admin", value: "admin" }, { label: "User", value: "user" }, { label: "Manager", value: "manager" }],
+  },
+  { accessorKey: "status",   header: "Status",     inputType: "badge" },
+  { accessorKey: "joinedAt", header: "Joined",     editable: true, inputType: "datepicker" },
 ]
 
 export function UsersTable({ data }: { data: User[] }) {
   return (
-    <DynamicDataTable
+    <DataGrid
       data={data}
       columnConfig={columns}
       rowIdKey="id"
+      toolbarTitle="User Management"
+      toolbarSubtitle="View and manage system access and permissions."
       enableRowSelection
       enableRowDrag
-      enableColumnDrag
       enableGlobalFilter
       enableColumnVisibility
-      onDataChange={(updated) => console.log("Updated rows:", updated)}
+      onDataChange={(updated) => console.log("Updated:", updated)}
+      onSave={(saved) => saveToServer(saved)}
       onDeleteRow={(row) => deleteUser(row.id)}
+      onDeleteSelected={(rows) => bulkDelete(rows)}
+      onAddRow={() => openAddUserDialog()}
     />
   )
 }
 ```
 
+<Callout variant="tip">
+  The deprecated alias `DynamicDataTable` still works. New code should use `DataGrid` from `@/components/data-grid/core/DataGrid`.
+</Callout>
+
+---
+
 ## Props
 
 <PropsTable items={[
   { name: "data", type: "TData[]", required: true, description: "Array of row objects" },
-  { name: "columnConfig", type: "DynamicColumnDef<TData>[]", required: true, description: "Column definitions" },
+  { name: "columnConfig", type: "DataGridColumn<TData>[]", required: true, description: "Column definitions (see below)" },
   { name: "rowIdKey", type: "keyof TData", required: true, description: "Key that uniquely identifies each row" },
+  { name: "toolbarTitle", type: "string", description: "Heading shown above the toolbar controls" },
+  { name: "toolbarSubtitle", type: "string", description: "Subtitle shown below the heading" },
   { name: "enableRowSelection", type: "boolean", default: "false", description: "Show row checkboxes for bulk selection" },
-  { name: "enableRowDrag", type: "boolean", default: "false", description: "Allow rows to be reordered by drag-and-drop" },
-  { name: "enableColumnDrag", type: "boolean", default: "false", description: "Allow columns to be reordered by drag-and-drop" },
-  { name: "enableColumnVisibility", type: "boolean", default: "false", description: "Show column visibility toggle menu" },
-  { name: "enableGlobalFilter", type: "boolean", default: "false", description: "Show global search input above the table" },
-  { name: "viewMode", type: '"compact" | "comfortable" | "spacious"', default: '"comfortable"', description: "Row height / density" },
-  { name: "onDataChange", type: "(rows: TData[]) => void", description: "Called whenever row data changes (edit, reorder)" },
-  { name: "onViewRow", type: "(row: TData) => void", description: "Callback for the View action on a row" },
-  { name: "onEditRow", type: "(row: TData) => void", description: "Callback for the Edit action on a row" },
-  { name: "onDeleteRow", type: "(row: TData) => void", description: "Callback for the Delete action on a row" },
+  { name: "enableRowDrag", type: "boolean", default: "false", description: "Enable drag handles for row reordering" },
+  { name: "enableColumnVisibility", type: "boolean", default: "true", description: "Show column visibility toggle in the toolbar" },
+  { name: "enableGlobalFilter", type: "boolean", default: "true", description: "Show global search input in the toolbar" },
+  { name: "viewMode", type: '"compact" | "comfortable" | "spacious"', default: '"comfortable"', description: "Initial row height / density" },
+  { name: "isLoading", type: "boolean", default: "false", description: "Show skeleton rows instead of data" },
+  { name: "onDataChange", type: "(rows: TData[]) => void", description: "Fires on every cell edit or row reorder with the full updated array" },
+  { name: "onSave", type: "(rows: TData[]) => void", description: "Shows a Save button in the toolbar when there are unsaved edits" },
+  { name: "onAddRow", type: "() => void", description: "Shows an Add button in the toolbar" },
+  { name: "onViewRow", type: "(row: TData) => void", description: "Adds a View action to the row actions menu" },
+  { name: "onEditRow", type: "(row: TData) => void", description: "Adds an Edit action to the row actions menu" },
+  { name: "onDeleteRow", type: "(row: TData) => void", description: "Adds a Delete action to the row actions menu (with confirmation dialog)" },
+  { name: "onDeleteSelected", type: "(rows: TData[]) => void", description: "Enables bulk delete — shows Delete (N) button when rows are selected" },
+  { name: "onExport", type: "() => void", description: "Custom export handler — omit to use the built-in CSV export" },
 ]} />
+
+---
 
 ## Column definition
 
 ```ts
-interface DynamicColumnDef<TData> {
-  accessorKey: keyof TData & string  // Maps to a data field
-  header: string                     // Column heading text
-  cellType?: CellType                // How to render the cell
-  selectOptions?: string[]           // Options for cellType "select"
-  width?: number                     // Fixed column width in px
-  enableSorting?: boolean            // Allow column sorting
-  enableHiding?: boolean             // Allow column to be hidden
+import type { DataGridColumn } from "@/components/data-grid/types/columns"
+
+const col: DataGridColumn<MyRow, unknown> = {
+  accessorKey: "role",           // Maps to a field in your data type
+  header: "Role",                // Column header label
+  editable: true,                // Enable inline editing
+  inputType: "select",           // Cell editor type (see below)
+  selectOptions: [               // Required when inputType is "select"
+    { label: "Admin",   value: "admin" },
+    { label: "User",    value: "user" },
+    { label: "Manager", value: "manager" },
+  ],
+  filterOptions: [               // Enables a faceted filter chip in the toolbar
+    { label: "Admin",   value: "admin" },
+    { label: "User",    value: "user" },
+    { label: "Manager", value: "manager" },
+  ],
+  size: 140,                     // Fixed column width in px (optional)
+  enableSorting: true,           // Allow sorting by this column
+  enableHiding: true,            // Allow hiding this column
 }
 ```
 
-## Cell types
+---
+
+## Cell input types
 
 <PropsTable items={[
-  { name: "text", type: "cellType", description: "Read-only text display (default)" },
-  { name: "editable", type: "cellType", description: "Click to edit inline text cell" },
-  { name: "badge", type: "cellType", description: "Colored badge — color based on value" },
-  { name: "select", type: "cellType", description: "Inline dropdown — requires selectOptions" },
-  { name: "datepicker", type: "cellType", description: "Inline date picker popover" },
-  { name: "image", type: "cellType", description: "Renders a small avatar / image" },
+  { name: "text", type: "inputType", description: "Editable plain text. Click-to-edit with an inline input." },
+  { name: "number", type: "inputType", description: "Editable number field." },
+  { name: "select", type: "inputType", description: "Dropdown selector — requires selectOptions array." },
+  { name: "datepicker", type: "inputType", description: "Popover calendar date picker." },
+  { name: "badge", type: "inputType", description: "Read-only colored badge based on the cell value." },
+  { name: "none", type: "inputType", description: "Read-only plain text display (default)." },
 ]} />
+
+---
+
+## Faceted filters
+
+Add `filterOptions` to any column to enable a multi-select filter chip in the toolbar. Multiple values use OR logic. Combine with `enableGlobalFilter` for a full search + filter experience.
+
+```ts
+{
+  accessorKey: "role",
+  header: "Role",
+  filterOptions: [
+    { label: "Admin",   value: "admin" },
+    { label: "User",    value: "user" },
+    { label: "Manager", value: "manager" },
+  ],
+}
+```
+
+<Callout variant="info">
+  The filter chip shows how many rows match each value. A **Reset** button appears in the toolbar whenever any filter or search is active.
+</Callout>
+
+---
+
+## Avatar / image column
+
+Display an image or avatar without enabling editing:
+
+```ts
+{
+  accessorKey: "avatar",
+  header: "Avatar",
+  displayMode: "avatar",   // "avatar" | "rounded" | "square"
+  imageSize: "md",         // "sm" | "md" | "lg" | "xl"
+  imageAltKey: "name",     // key in your row data to use as alt text
+}
+```
+
+---
 
 ## Drag and drop
 
-Row and column drag-and-drop uses `@dnd-kit`. Enable with `enableRowDrag` and/or `enableColumnDrag`.
+Enable drag handles for row reordering with `enableRowDrag`. Dragging a row fires `onDataChange` with the updated array immediately — no extra wiring needed.
 
-- **Row drag**: Dragging a row to a new position triggers `onDataChange` with the reordered array
-- **Column drag**: Dragging a column header reorders the visible columns in-place
+```tsx
+<DataGrid
+  data={data}
+  columnConfig={columns}
+  rowIdKey="id"
+  enableRowDrag
+  onDataChange={(rows) => setData(rows)}
+/>
+```
 
 <Callout variant="info">
-  Drag handles are shown automatically when `enableRowDrag` is true. No extra configuration needed.
+  Drag handles appear automatically in the first column when `enableRowDrag` is true.
 </Callout>
 
-## Faceted filtering
+---
 
-The table includes built-in faceted filter support for columns with a finite set of values (e.g. status, role). Filters appear as multi-select dropdowns in the toolbar.
+## Inline editing + Save flow
 
-<Callout variant="tip">
-  Combine `enableGlobalFilter` (full-text search) with faceted filters for a full search experience with no extra code.
-</Callout>
+When `onSave` is provided, the toolbar shows a **Save changes** button only when unsaved edits exist:
+
+```tsx
+const [data, setData] = React.useState(initialData)
+
+<DataGrid
+  data={data}
+  columnConfig={columns}
+  rowIdKey="id"
+  onDataChange={setData}
+  onSave={async (updated) => {
+    await api.patch("/users", updated)
+    toast.success("Saved")
+  }}
+/>
+```
+
+---
+
+## Loading skeleton
+
+Pass `isLoading` to show skeleton rows while data is being fetched:
+
+```tsx
+const { data, isLoading } = useSWR("/api/users", fetcher)
+
+<DataGrid
+  data={data ?? []}
+  columnConfig={columns}
+  rowIdKey="id"
+  isLoading={isLoading}
+/>
+```
+
+---
+
+## Row actions menu
+
+Pass any combination of `onViewRow`, `onEditRow`, `onDeleteRow` to get a `⋮` actions menu on each row. `onDeleteRow` automatically shows a confirmation dialog before firing.
+
+```tsx
+<DataGrid
+  data={data}
+  columnConfig={columns}
+  rowIdKey="id"
+  onViewRow={(row) => router.push(`/users/${row.id}`)}
+  onEditRow={(row) => openEditModal(row)}
+  onDeleteRow={(row) => deleteUser(row.id)}
+/>
+```
+
+---
+
+## CSV export
+
+The built-in export button writes all visible, filtered rows to a `.csv` file. To handle export yourself (e.g. server-side), pass `onExport`:
+
+```tsx
+<DataGrid
+  data={data}
+  columnConfig={columns}
+  rowIdKey="id"
+  onExport={() => downloadServerCSV()}
+/>
+```
+
+---
 
 ## Live example
 
-See the table in action at the [Dynamic Data Table block](/blocks/data-table-dynamic).
+See the full table in action at the [Dynamic Data Table block](/blocks/data-table-dynamic).
 
 ## See also
 
-- [FormBuilderStandard](/docs/form-builder) — pair with a form for inline add/edit workflows
-- [Redux Setup](/docs/redux) — persist table state (selection, filters) in Redux
+- [SchemaForm](/docs/form-builder) — pair with a form for add/edit workflows
+- [Redux Setup](/docs/redux) — persist filter and selection state

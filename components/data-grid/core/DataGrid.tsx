@@ -62,7 +62,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { ArrowDownIcon, ArrowUpIcon, ArrowUpDownIcon, EllipsisVerticalIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowUpIcon, ArrowUpDownIcon, EllipsisVerticalIcon, InboxIcon } from "lucide-react"
 
 import type { DataGridProps, ViewMode } from "../types/table"
 import type { DataGridColumn } from "../types/columns"
@@ -345,7 +345,7 @@ export function DataGrid<TData extends Record<string, unknown>>(
       />
 
       <TabsContent value="table" className="relative flex flex-col gap-3 px-2 pb-2 sm:px-4">
-        <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-xl border border-border/70 bg-background shadow-sm">
           <DndContext
             collisionDetection={closestCenter}
             modifiers={enableRowDrag ? [restrictToVerticalAxis] : []}
@@ -353,32 +353,30 @@ export function DataGrid<TData extends Record<string, unknown>>(
             sensors={sensors}
           >
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-muted">
+              <TableHeader className="sticky top-0 z-10 border-b border-border/70 bg-muted/60 backdrop-blur-sm">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className={densityClass}>
+                  <TableRow key={headerGroup.id} className={cn(densityClass, "hover:bg-transparent border-0")}>
                     {headerGroup.headers.map((header) => {
-                      // Check if this is a utility column
                       const isUtility = utilityCols.includes(header.column.id)
-                      
                       return (
                         <TableHead
                           key={header.id}
                           colSpan={header.colSpan}
-                          // FIX: Apply px-0 if it's a utility column to ensure perfect center alignment
                           className={cn(
-                            "whitespace-nowrap font-medium",
+                            "whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground",
                             densityClass,
-                            isUtility && "px-0 text-center" 
+                            isUtility && "px-0 text-center"
                           )}
                           style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}
                         >
                           {header.isPlaceholder ? null : (
                             <div
                               className={cn(
-                                "flex items-center space-x-2",
-                                // If it's a utility column, force center justification
+                                "flex items-center gap-1.5",
                                 isUtility ? "justify-center" : "",
-                                header.column.getCanSort() ? "cursor-pointer select-none" : ""
+                                header.column.getCanSort()
+                                  ? "cursor-pointer select-none rounded px-1 -ml-1 hover:text-foreground transition-colors"
+                                  : ""
                               )}
                               onClick={header.column.getToggleSortingHandler()}
                             >
@@ -386,12 +384,12 @@ export function DataGrid<TData extends Record<string, unknown>>(
                                 {flexRender(header.column.columnDef.header, header.getContext())}
                               </span>
                               {header.column.getCanSort() && (
-                                <span className="ml-1">
+                                <span className="text-muted-foreground/50">
                                   {{
-                                    asc: <ArrowUpIcon className="h-3.5 w-3.5" />,
-                                    desc: <ArrowDownIcon className="h-3.5 w-3.5" />,
+                                    asc: <ArrowUpIcon className="h-3 w-3 text-primary" />,
+                                    desc: <ArrowDownIcon className="h-3 w-3 text-primary" />,
                                   }[header.column.getIsSorted() as string] ?? (
-                                    <ArrowUpDownIcon className="h-3.5 w-3.5 opacity-50" />
+                                    <ArrowUpDownIcon className="h-3 w-3" />
                                   )}
                                 </span>
                               )}
@@ -406,24 +404,31 @@ export function DataGrid<TData extends Record<string, unknown>>(
               <TableBody>
                 {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className={densityClass}>
-                       {table.getVisibleFlatColumns().map((col) => (
-                         <TableCell key={col.id}>
-                            <div className="h-4 w-full animate-pulse rounded bg-muted/50" />
-                         </TableCell>
-                       ))}
+                    <TableRow key={i} className={cn(densityClass, "border-border/50")}>
+                      {table.getVisibleFlatColumns().map((col) => (
+                        <TableCell key={col.id} className="py-3">
+                          <div className="h-4 w-full animate-pulse rounded-md bg-muted/60" />
+                        </TableCell>
+                      ))}
                     </TableRow>
                   ))
                 ) : table.getRowModel().rows.length > 0 ? (
                   <SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
                     {table.getRowModel().rows.map((row) => (
-                      <SortableRow key={row.id} row={row} densityClass={densityClass} />
+                      <SortableRow key={row.id} row={row} densityClass={cn(densityClass, "border-border/50 transition-colors hover:bg-muted/30")} />
                     ))}
                   </SortableContext>
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={table.getAllLeafColumns().length} className="h-24 text-center text-sm text-muted-foreground">
-                      No results found.
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell
+                      colSpan={table.getAllLeafColumns().length}
+                      className="h-36 text-center"
+                    >
+                      <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                        <InboxIcon className="h-8 w-8 opacity-30" />
+                        <p className="text-sm">No results found.</p>
+                        <p className="text-xs opacity-60">Try adjusting your search or filters.</p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}

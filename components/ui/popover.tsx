@@ -41,12 +41,16 @@ function PopoverContent({
   sideOffset = 4,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   position,
+  // Radix-compat prop — not supported by @base-ui/react, strip before passing to DOM
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onCloseAutoFocus: _onCloseAutoFocus,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Popup> & {
   align?: "start" | "center" | "end"
   side?: "top" | "right" | "bottom" | "left"
   sideOffset?: number
   position?: string
+  onCloseAutoFocus?: (e: Event) => void
 }) {
   return (
     <PopoverPrimitive.Portal>
@@ -59,7 +63,7 @@ function PopoverContent({
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            "relative z-[80] bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 w-72 rounded-md border p-4 shadow-md outline-hidden",
+            "bg-popover text-popover-foreground data-[open]:animate-in data-[ending-style]:animate-out data-[ending-style]:fade-out-0 data-[open]:fade-in-0 data-[ending-style]:zoom-out-95 data-[open]:zoom-in-95 w-72 rounded-md border p-4 shadow-md outline-hidden",
             className
           )}
           {...props}
