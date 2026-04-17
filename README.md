@@ -2,7 +2,7 @@
 
 > **Schema-driven component toolkit for building production-ready forms, tables, and UI systems in React — powered by shadcn/ui.**
 
-📖 **[Documentation](https://formkitcn.pro)** · 🧩 **[Components](https://formkitcn.pro/components)** · 🎨 **[Examples](https://formkitcn.pro/blocks)** · ⭐ **[GitHub](https://github.com/adrian007143/schadcn-custom-component-packages)**
+📖 **[Documentation](https://formkitcn.pro)** · 🧩 **[Components](https://formkitcn.pro/blocks)** · 🎨 **[Examples](https://formkitcn.pro/blocks)** · ⭐ **[GitHub](https://github.com/adrian007143/schadcn-custom-component-packages)**
 
 ---
 
