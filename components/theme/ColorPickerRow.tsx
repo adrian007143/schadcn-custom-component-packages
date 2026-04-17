@@ -9,14 +9,15 @@ import {
   useState,
 } from "react";
 import { RotateCcw } from "lucide-react";
-import { useTheme } from "next-themes";
 
+import { useAppTheme } from "@/components/theme/app-theme-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ThemeCssVar } from "@/lib/theme/types";
 import {
   extractAlpha,
   hexToOklch,
+  normalizeHex,
   oklchToHex,
   oklchToString,
   reapplyAlpha,
@@ -32,15 +33,6 @@ export type ColorPickerRowProps = {
   isCustomized: boolean;
 };
 
-function normalizeHex(value: string): string | null {
-  const sanitized = value.trim().replace(/^#/, "");
-  if (!/^[\da-fA-F]{6}$/.test(sanitized)) {
-    return null;
-  }
-
-  return `#${sanitized.toUpperCase()}`;
-}
-
 function ColorPickerRowComponent({
   label,
   varName,
@@ -48,7 +40,7 @@ function ColorPickerRowComponent({
   resolvedValue,
   isCustomized,
 }: ColorPickerRowProps) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useAppTheme();
   const inputId = useId();
   const colorInputRef = useRef<HTMLInputElement>(null);
   const alpha = extractAlpha(resolvedValue);
@@ -157,15 +149,15 @@ function ColorPickerRowComponent({
   };
 
   return (
-    <div className="flex items-center gap-3 border-b border-slate-800/50 py-2.5 text-slate-50 last:border-b-0">
+    <div className="flex items-center gap-3 border-b border-border/50 py-2.5 last:border-b-0">
       {/* Color swatch trigger */}
       <label
         htmlFor={inputId}
-        className="relative shrink-0 flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-slate-700 bg-slate-950/70 transition-transform hover:scale-[1.05]"
+        className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-border bg-muted/60 transition-transform hover:scale-[1.05]"
         title={`Pick ${label}`}
       >
         <span
-          className="h-7 w-7 rounded-lg border border-white/10"
+          className="h-7 w-7 rounded-lg border border-border/40 shadow-sm"
           style={{ backgroundColor: hexValue }}
         />
         {isCustomized ? (
@@ -173,7 +165,7 @@ function ColorPickerRowComponent({
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute -top-1.5 -left-1.5 size-5 rounded-full border border-slate-700 bg-slate-900/95 text-slate-300 shadow-sm hover:bg-slate-800 hover:text-slate-50"
+            className="absolute -left-1.5 -top-1.5 size-5 rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground"
             onClick={(event) => {
               event.preventDefault();
               handleReset();
@@ -207,11 +199,11 @@ function ColorPickerRowComponent({
       <div className="min-w-0 flex-1">
         <label
           htmlFor={inputId}
-          className="block cursor-pointer text-sm font-medium leading-none text-slate-50"
+          className="block cursor-pointer text-sm font-medium leading-none text-foreground"
         >
           {label}
         </label>
-        <code className="mt-0.5 block truncate font-mono text-[10px] text-slate-500">
+        <code className="mt-0.5 block truncate font-mono text-[10px] text-muted-foreground">
           {varName}
         </code>
       </div>
@@ -227,7 +219,7 @@ function ColorPickerRowComponent({
             handleHexCommit();
           }
         }}
-        className="h-9 w-[108px] shrink-0 rounded-xl border-slate-700 bg-slate-800/90 font-mono text-xs font-semibold uppercase tracking-[0.06em] text-slate-50"
+        className="h-9 w-[108px] shrink-0 rounded-xl font-mono text-xs font-semibold uppercase tracking-[0.06em]"
         placeholder="#4F46E5"
         aria-label={`${label} hex color`}
       />
@@ -235,11 +227,11 @@ function ColorPickerRowComponent({
       {/* Apply */}
       <Button
         type="button"
-        variant="secondary"
-        className="h-9 w-12 shrink-0 rounded-xl border border-slate-700 bg-slate-800/90 px-0 text-xs font-semibold text-slate-100 hover:bg-slate-700/90"
+        variant="outline"
+        className="h-9 w-12 shrink-0 rounded-xl px-0 text-xs font-semibold"
         onClick={handleHexCommit}
       >
-        Apply
+        Set
       </Button>
     </div>
   );

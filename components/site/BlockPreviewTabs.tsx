@@ -11,6 +11,11 @@ interface FileTab {
   rawCode: string
 }
 
+/** Extract the last segment (basename) from a path for use as a short tab label */
+function basename(filePath: string) {
+  return filePath.split("/").pop() ?? filePath
+}
+
 interface BlockPreviewTabsProps {
   files: FileTab[]
   children: React.ReactNode
@@ -65,15 +70,15 @@ function CodePanel({ file }: { file: FileTab }) {
 function MultiFileCode({ files }: { files: FileTab[] }) {
   return (
     <Tabs defaultValue={files[0]?.filename}>
-      <div className="mb-2 flex items-center gap-2 border-b border-zinc-700/40 bg-[#1c2128] px-4 rounded-t-xl">
-        <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
+      <div className="mb-2 flex items-center gap-2 border-b border-zinc-700/40 bg-[#1c2128] px-4 rounded-t-xl overflow-x-auto">
+        <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0 flex-shrink-0">
           {files.map((f) => (
             <TabsTrigger
               key={f.filename}
               value={f.filename}
-              className="rounded-none border-b-2 border-transparent px-4 py-2.5 text-xs font-mono text-zinc-500 data-[state=active]:border-blue-400 data-[state=active]:text-zinc-100 data-[state=active]:bg-transparent"
+              className="rounded-none border-b-2 border-transparent px-4 py-2.5 text-xs font-mono text-zinc-500 data-[state=active]:border-blue-400 data-[state=active]:text-zinc-100 data-[state=active]:bg-transparent whitespace-nowrap"
             >
-              {f.filename}
+              {basename(f.filename)}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -82,7 +87,7 @@ function MultiFileCode({ files }: { files: FileTab[] }) {
         <TabsContent key={f.filename} value={f.filename} className="mt-0">
           <div className="overflow-hidden rounded-b-xl border border-t-0 border-zinc-700/60 bg-[#22272e]">
             <div className="flex items-center justify-between border-b border-zinc-700/50 bg-zinc-900/50 px-4 py-2">
-              <span className="text-xs font-mono text-zinc-400 select-none">{f.lang}</span>
+              <span className="text-xs font-mono text-zinc-400 select-none">{f.filename}</span>
               <CopyButton code={f.rawCode} />
             </div>
             <div

@@ -23,12 +23,14 @@ const CATEGORIES = [
   { value: "forms", label: "Forms" },
   { value: "data-table", label: "Data Table" },
   { value: "redux", label: "Redux" },
+  { value: "theme", label: "Theme" },
 ]
 
 const CATEGORY_LABELS: Record<string, string> = {
   forms: "Forms",
   "data-table": "Data Table",
   redux: "Redux",
+  theme: "Theme",
 }
 
 function CopyInstallButton({ registryFile }: { registryFile: string }) {

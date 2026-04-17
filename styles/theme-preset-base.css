@@ -1,0 +1,43 @@
+/**
+ * theme-preset-base.css
+ * Base layout styles for the Theme Preset Tool.
+ *
+ * ─── When to import this ────────────────────────────────────────────────────
+ *
+ *  • If your layout.tsx does NOT already have `h-full` on <html> and
+ *    `flex flex-col` on <body>, import this file in your globals.css:
+ *
+ *      @import "./styles/theme-preset-base.css";
+ *
+ *  • If you initialised shadcn with the "nova" preset (Next.js 16 recommended
+ *    defaults), your layout.tsx already includes:
+ *
+ *      <html className="h-full ...">
+ *      <body className="min-h-full flex flex-col">
+ *
+ *    You can skip this import — those classes already cover the requirement.
+ *    Importing it anyway is safe (the rules are redundant, not conflicting).
+ *
+ * ────────────────────────────────────────────────────────────────────────────
+ */
+
+@layer base {
+  /**
+   * Make html and body fill the full viewport height.
+   * Required for AppShell's flex-1 to grow correctly inside any parent layout.
+   */
+  html,
+  body {
+    height: 100%;
+  }
+
+  /**
+   * Make body a vertical flex container so AppShell stretches edge-to-edge.
+   * AppShell uses flex-1 to fill available space — this ensures it works
+   * regardless of what the parent wraps it in.
+   */
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+}

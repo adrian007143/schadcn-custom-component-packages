@@ -124,7 +124,10 @@ export type ThemeExportJSON = {
 };
 
 /**
- * Theme builder UI state (local component state, not Redux)
+ * Theme panel tabs — "export" was removed from the panel UI.
+ * ExportPanel.tsx is still available as a standalone component for custom usage.
  */
-export type ThemeBuilderTab = "presets" | "colors" | "radius" | "export";
+export type ThemeBuilderTab = "presets" | "colors" | "radius";
+
+/** Used by ExportPanel when mounted independently */
 export type ExportFormat = "css" | "json";

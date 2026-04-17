@@ -2,7 +2,7 @@ export interface RegistryItem {
   name: string
   title: string
   description: string
-  category: "forms" | "data-table" | "redux"
+  category: "forms" | "data-table" | "redux" | "theme"
   dependencies: string[]
   registryFile: string
   previewPath?: string
@@ -109,6 +109,18 @@ export const REGISTRY_ITEMS: RegistryItem[] = [
     registryFile: "redux-methods-tool.json",
     previewPath: "/blocks/redux-usage",
     docsPath: "/docs/redux",
+    isListed: true,
+  },
+  {
+    name: "theme-preset-tool",
+    title: "Theme Preset Tool",
+    description:
+      "Interactive theme builder with 12 OKLCH presets, palette seed generator, random palette, per-token color editor, radius control, and CSS/JSON export. Standalone — no Redux required.",
+    category: "theme",
+    dependencies: ["lucide-react"],
+    registryFile: "theme-preset-tool.json",
+    previewPath: "/blocks/theme-builder",
+    docsPath: "/docs/theme-builder",
     isListed: true,
   },
 ]

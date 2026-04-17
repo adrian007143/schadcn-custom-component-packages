@@ -31,7 +31,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 ml-auto">
           <Button variant="ghost" size="sm" asChild>
             <a
-              href="https://github.com"
+              href="https://github.com/adrian007143/schadcn-custom-component-packages"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground hover:text-foreground"

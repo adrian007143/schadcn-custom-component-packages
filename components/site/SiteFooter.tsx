@@ -22,7 +22,7 @@ export function SiteFooter() {
           </a>
           . Open source on{" "}
           <a
-            href="https://github.com"
+            href="https://github.com/adrian007143/schadcn-custom-component-packages"
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4 hover:text-foreground"

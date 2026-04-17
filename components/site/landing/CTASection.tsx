@@ -35,7 +35,7 @@ export function CTASection() {
               </Button>
               <Button size="lg" variant="ghost" asChild className="h-11 px-6 gap-2">
                 <a
-                  href="https://github.com"
+                  href="https://github.com/adrian007143/schadcn-custom-component-packages"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

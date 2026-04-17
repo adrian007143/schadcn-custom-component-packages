@@ -1,39 +1,45 @@
-# Redux Setup
+# Redux Methods Tool
 
-A complete Redux configuration using `react-redux-methods` — a zero-boilerplate wrapper around Redux that auto-generates actions, selectors, and typed hooks from a single `createReduxMethods` call. Includes localStorage persistence and Redux DevTools support.
+The Redux package installs a lightweight persisted store scaffold built around `react-redux-methods`.
 
 ## Install
 
 <InstallCmd file="redux-methods-tool.json" />
 
-## What's installed
+## What Gets Installed
 
-```
+```bash
 redux/
-├── store.ts              Redux store with DevTools + localStorage persistence
-├── StoreProvider.tsx     React context wrapper — wrap your app root with this
-├── connections.ts        Typed dispatch / selector hooks
+├── store.ts
+├── StoreProvider.tsx
+├── connections.ts
 └── reducers/
-    ├── index.ts          Root reducer combining all slices
-    ├── notification.ts   Show/hide notification state
-    ├── sidebar.ts        Sidebar open/close state
-    ├── todo.ts           Todo list with add/toggle/delete
-    └── theme.ts          Theme preference state
+    ├── index.ts
+    ├── notification.ts
+    ├── sidebar.ts
+    ├── todo.ts
+    └── theme.ts
 
-lib/helper/storageLocal.ts  localStorage read/write helpers
+lib/
+├── helper/storageLocal.ts
+└── theme/types.ts
 ```
 
-## Setup
+## Redux-Only Root Setup
 
-Wrap your app root with `StoreProvider`:
+If Redux is the only package you installed, wrap the app with `StoreProvider`.
 
 ```tsx
 // app/layout.tsx
 import StoreProvider from "@/redux/StoreProvider"
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html>
+    <html lang="en">
       <body>
         <StoreProvider>{children}</StoreProvider>
       </body>
@@ -42,186 +48,82 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
+## Redux Plus Theme Builder
+
+If your app also installs `theme-preset-tool`, keep the providers explicit:
+
+```tsx
+import StoreProvider from "@/redux/StoreProvider"
+import { AppProviders } from "@/components/providers/AppProviders"
+import { AppHeader } from "@/components/site/AppHeader"
+import { AppShell } from "@/components/site/AppShell"
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <StoreProvider>
+          <AppProviders>
+            <AppShell header={<AppHeader />}>{children}</AppShell>
+          </AppProviders>
+        </StoreProvider>
+      </body>
+    </html>
+  )
+}
+```
+
 <Callout variant="info">
-  `StoreProvider` is a `"use client"` component. It is safe to use inside the root layout — it only hydrates on the client side and does not break server rendering.
+  `AppProviders` belongs to the theme package and manages theme UI only. `StoreProvider` remains the Redux root for state slices installed by `redux-methods-tool`.
 </Callout>
 
-## Reading state
+## Reading State
 
-Use `useGetState` — a typed hook object where each selector is a method. Import it from `@/redux/connections`:
+Use `useGetState` inside client components:
 
 ```tsx
 "use client"
 
 import { useGetState } from "@/redux/connections"
 
-export function StatusBar() {
-  const todos        = useGetState.getTodos()
-  const count        = useGetState.getTodoCount()
-  const completed    = useGetState.getCompletedCount()
-  const notifOpen    = useGetState.getNotificationStatus()
-  const notifMessage = useGetState.getNotificationMessage()
-  const sidebarOpen  = useGetState.getSidebarStatus()
+export function TodoCount() {
+  const count = useGetState.getTodoCount()
 
-  return (
-    <div>
-      {count} todos ({completed} done) ·{" "}
-      {notifOpen ? `Notif: ${notifMessage}` : "No notification"}
-    </div>
-  )
+  return <span>{count}</span>
 }
 ```
 
-<Callout variant="tip">
-  `useGetState` is fully typed — TypeScript will autocomplete all selector names and infer return types automatically.
-</Callout>
+## Dispatching Actions
 
-## Dispatching actions
-
-Use `dispatch` — a typed object where each action is a direct method call:
+Use `dispatch` for action creators exported from the generated reducers:
 
 ```tsx
 "use client"
 
 import { dispatch } from "@/redux/connections"
 
-export function TodoActions() {
+export function AddTodoButton() {
   return (
-    <div className="flex gap-2">
-      <button onClick={() => dispatch.addTodo("New task")}>
-        Add Todo
-      </button>
-      <button onClick={() => dispatch.toggleTodo("todo-id-123")}>
-        Toggle
-      </button>
-      <button onClick={() => dispatch.deleteTodo("todo-id-123")}>
-        Delete
-      </button>
-      <button onClick={() => dispatch.clearTodos()}>
-        Clear All
-      </button>
-    </div>
+    <button onClick={() => dispatch.addTodo("Ship docs")}>
+      Add Todo
+    </button>
   )
 }
 ```
 
-### All available actions
+## Persistence
 
-| Action | Payload | Description |
-|--------|---------|-------------|
-| `dispatch.addTodo(text)` | `string` | Add a new todo item |
-| `dispatch.toggleTodo(id)` | `string` | Toggle completed state |
-| `dispatch.deleteTodo(id)` | `string` | Remove a todo by id |
-| `dispatch.clearTodos()` | — | Reset the todo list |
-| `dispatch.setNotificationShow(message)` | `string` | Show a notification |
-| `dispatch.setNotificationHide()` | — | Hide the notification |
-| `dispatch.updateNotification(message)` | `string` | Update notification text |
-| `dispatch.setSidebarShow()` | — | Open the sidebar |
-| `dispatch.setSidebarHide()` | — | Close the sidebar |
+The generated store persists selected slices through `persistKeys` in `redux/store.ts`.
 
-## Non-reactive state access
+Default persisted slices:
 
-Use `getState` when you need the current value outside a React component (e.g. in an event handler or utility function):
+- `notifications`
+- `sidebar`
+- `todo`
+- `theme`
 
-```ts
-import { getState } from "@/redux/connections"
-
-// Read current state without subscribing to updates
-const todos = getState.getTodos()
-const isOpen = getState.getSidebarStatus()
-```
-
-## localStorage persistence
-
-Selected slices are automatically saved to localStorage and restored on page load (SSR-safe — only runs in the browser). Saves are debounced at 120ms to avoid excessive writes.
-
-Default persisted slices: `notifications`, `sidebar`, `todo`, `theme`.
-
-To add a new slice to persistence, update `persistKeys` in `redux/store.ts`:
-
-```ts
-// redux/store.ts
-export const persistKeys: StateKey[] = [
-  "notifications",
-  "sidebar",
-  "todo",
-  "theme",
-  "myFeature", // ← add your slice key here
-]
-```
-
-## Adding a new slice
-
-Use `createReduxMethods` to define a slice — it returns a `[reducer, actions, selectors]` tuple with zero boilerplate:
-
-```ts
-// redux/reducers/myFeature.ts
-import { createReduxMethods, ComposePayload } from "react-redux-methods"
-
-type MyFeatureState = {
-  value: string
-  count: number
-}
-
-const initialState: MyFeatureState = { value: "", count: 0 }
-
-const [myFeatureReducer, myFeatureActions, myFeatureSelectors] = createReduxMethods({
-  initialState,
-  reducers: {
-    setValue: (state, action: ComposePayload<string>) => ({
-      ...state,
-      value: action.payload,
-    }),
-    increment: (state) => ({ ...state, count: state.count + 1 }),
-    reset: () => initialState,
-  },
-  selectionNode: "myFeature",  // must match the key in rootReducer
-  selectors: {
-    getMyValue: (s) => s.value,
-    getMyCount: (s) => s.count,
-  },
-})
-
-export { myFeatureReducer, myFeatureActions, myFeatureSelectors }
-```
-
-Then register it in `redux/reducers/index.ts`:
-
-```ts
-import { myFeatureReducer, myFeatureActions, myFeatureSelectors } from "./myFeature"
-
-export const rootReducer = combineReducers({
-  // ...existing reducers
-  myFeature: myFeatureReducer,
-})
-
-export const actions = {
-  // ...existing actions
-  ...myFeatureActions,
-}
-
-export const selectors = {
-  // ...existing selectors
-  ...myFeatureSelectors,
-}
-
-export const initialState = {
-  // ...existing state
-  myFeature: { value: "", count: 0 },
-}
-```
-
-After registration, `dispatch.setValue("hello")` and `useGetState.getMyValue()` are immediately available — no extra wiring needed.
-
-<Callout variant="tip">
-  The `selectionNode` value must exactly match the key used in `combineReducers`. This is how `react-redux-methods` knows which slice of state to pass to each selector.
-</Callout>
-
-## Live example
-
-See the Redux store in action at the [Redux Usage block](/blocks/redux-usage).
-
-## See also
-
-- [Installation](/docs/getting-started) — install the block
-- [DynamicDataTable](/docs/data-table) — combine with Redux to persist table filters and selection state
+Update `persistKeys` if your app should persist fewer or additional slices.

@@ -1,19 +1,20 @@
-import type { Metadata } from "next"
-import Content from "./content.mdx"
+import type { Metadata } from "next";
+
+import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Redux Setup — Store with localStorage Persistence",
+  title: "Redux Setup - Store, Persistence, and AppProviders Integration",
   description:
-    "Drop-in Redux store configuration using react-redux-methods. Includes localStorage persistence helpers, Redux DevTools support, and ready-to-use notification and todo slice examples.",
+    "Typed Redux setup for FormKitCN with persistence helpers, generated selectors and actions, and guidance for using AppProviders when the theme package is installed.",
   alternates: { canonical: "https://formkitcn.pro/docs/redux" },
   openGraph: {
-    title: "Redux Setup — FormKitCN Docs",
+    title: "Redux Setup - FormKitCN Docs",
     description:
-      "Drop-in Redux store with localStorage persistence, DevTools support, and pre-built slices.",
+      "Typed Redux store with persistence, generated selectors, and AppProviders integration guidance.",
     url: "https://formkitcn.pro/docs/redux",
   },
-}
+};
 
 export default function ReduxPage() {
-  return <Content />
+  return <Content />;
 }

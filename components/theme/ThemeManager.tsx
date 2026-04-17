@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTheme } from "next-themes";
 
+import { useAppTheme } from "@/components/theme/app-theme-provider";
 import { ALL_CSS_VARS, getEffectiveTokens } from "@/lib/theme/utils";
 import { useThemeBuilderState } from "./useThemeBuilderState";
 
 export function ThemeManager(): null {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useAppTheme();
   const themeState = useThemeBuilderState();
 
   useEffect(() => {

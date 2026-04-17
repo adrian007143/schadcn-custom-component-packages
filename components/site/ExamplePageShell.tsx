@@ -19,34 +19,29 @@ interface ExamplePageShellProps {
 }
 
 async function highlightFile(relPath: string) {
-  const examplesRoot = path.join(process.cwd(), "components", "examples")
+  const projectRoot = process.cwd()
   const normalizedPath = relPath.replaceAll("\\", "/")
-  const relativeExamplePath = normalizedPath.startsWith("components/examples/")
-    ? normalizedPath.slice("components/examples/".length)
-    : null
+
+  // Resolve against project root and guard against path traversal
+  const absPath = path.resolve(projectRoot, normalizedPath)
+  const relative = path.relative(projectRoot, absPath)
 
   let rawCode = ""
 
-  if (!relativeExamplePath) {
-    rawCode = `// Unsupported source path: ${relPath}`
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    rawCode = `// Invalid source path: ${relPath}`
   } else {
-    const absPath = path.join(examplesRoot, relativeExamplePath)
-    const relativeResolved = path.relative(examplesRoot, absPath)
-
-    if (relativeResolved.startsWith("..") || path.isAbsolute(relativeResolved)) {
-      rawCode = `// Invalid source path: ${relPath}`
-    } else {
-      try {
-        rawCode = fs.readFileSync(absPath, "utf-8")
-      } catch {
-        rawCode = `// Could not load source: ${relPath}`
-      }
+    try {
+      rawCode = fs.readFileSync(absPath, "utf-8")
+    } catch {
+      rawCode = `// Could not load source: ${relPath}`
     }
   }
 
   const ext = path.extname(relPath).replace(".", "")
   const lang = ext === "tsx" || ext === "ts" ? "tsx" : ext || "text"
-  const filename = path.basename(relPath)
+  // Show the full relative path as the tab label so users know exactly where the file lives
+  const filename = normalizedPath
 
   let highlightedHtml = ""
   try {

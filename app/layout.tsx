@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { ThemeProvider } from "next-themes";
 
+import { AppProviders } from "@/components/providers/AppProviders";
 import { AppShell } from "@/components/site/AppShell";
-import { ThemeBuilder } from "@/components/theme/ThemeBuilder";
-import { ThemeManager } from "@/components/theme/ThemeManager";
-import { Toaster } from "@/components/ui/sonner";
 import StoreProvider from "@/redux/StoreProvider";
 
 import "./globals.css";
@@ -103,20 +100,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          storageKey="formkitcn-theme"
-          disableTransitionOnChange
-        >
-          <StoreProvider>
-            <ThemeManager />
-            <ThemeBuilder />
+        <StoreProvider>
+          <AppProviders>
             <AppShell>{children}</AppShell>
-            <Toaster position="top-center" />
-          </StoreProvider>
-        </ThemeProvider>
+          </AppProviders>
+        </StoreProvider>
         <SpeedInsights />
       </body>
     </html>

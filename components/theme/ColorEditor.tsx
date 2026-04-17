@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { ChevronDown, Moon, Shuffle, Sun, WandSparkles } from "lucide-react";
-import { useTheme } from "next-themes";
 
+import { useAppTheme } from "@/components/theme/app-theme-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ThemeCssVar, ThemeCustomOverrides } from "@/lib/theme/types";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import {
   buildPaletteOverridesFromSeed,
   getEffectiveTokens,
+  normalizeHex,
   oklchToHex,
 } from "@/lib/theme/utils";
 
@@ -180,15 +181,6 @@ function TokenGroups({
   );
 }
 
-function normalizeHex(value: string): string | null {
-  const sanitized = value.trim().replace(/^#/, "");
-  if (!/^[\da-fA-F]{6}$/.test(sanitized)) {
-    return null;
-  }
-
-  return `#${sanitized.toUpperCase()}`;
-}
-
 function hslToHex(hue: number, saturation: number, lightness: number) {
   const normalizedHue = ((hue % 360) + 360) % 360;
   const s = saturation / 100;
@@ -250,7 +242,7 @@ function createRandomPaletteSeeds() {
 }
 
 export function ColorEditor() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useAppTheme();
   const isDark = resolvedTheme === "dark";
   const themeState = useThemeBuilderState();
   const [editMode, setEditMode] = useState<"light" | "dark">(

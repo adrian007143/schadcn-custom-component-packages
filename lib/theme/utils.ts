@@ -3,6 +3,16 @@
  * Color conversion, CSS export, and theme management helpers
  */
 
+/**
+ * Normalize a hex color string to uppercase #RRGGBB format.
+ * Returns null if the input is not a valid 6-digit hex color.
+ */
+export function normalizeHex(value: string): string | null {
+  const sanitized = value.trim().replace(/^#/, "");
+  if (!/^[\da-fA-F]{6}$/.test(sanitized)) return null;
+  return `#${sanitized.toUpperCase()}`;
+}
+
 import type {
   OklchComponents,
   ThemePresetId,

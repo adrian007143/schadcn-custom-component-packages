@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import {
-  Download,
   LayoutGrid,
   Paintbrush,
   RotateCcw,
   Sliders,
   X,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 
+import { useAppTheme } from "@/components/theme/app-theme-provider";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { THEME_PRESETS } from "@/lib/theme/presets";
@@ -19,7 +18,6 @@ import { cn } from "@/lib/utils";
 
 import { ColorEditor } from "./ColorEditor";
 import { dispatchThemeAction } from "./dispatchThemeAction";
-import { ExportPanel } from "./ExportPanel";
 import { PresetSelector } from "./PresetSelector";
 import { PreviewPanel } from "./PreviewPanel";
 import { RadiusControl } from "./RadiusControl";
@@ -27,9 +25,8 @@ import { useThemeBuilderState } from "./useThemeBuilderState";
 
 export function ThemeBuilder() {
   const { isBuilderOpen, activePreset } = useThemeBuilderState();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useAppTheme();
   const [activeTab, setActiveTab] = useState<ThemeBuilderTab>("presets");
-  const isDark = resolvedTheme === "dark";
 
   const presetLabel =
     activePreset === "default"
@@ -40,187 +37,115 @@ export function ThemeBuilder() {
     { value: "presets", label: "Presets", icon: LayoutGrid },
     { value: "colors", label: "Colors", icon: Paintbrush },
     { value: "radius", label: "Radius", icon: Sliders },
-    { value: "export", label: "Export", icon: Download },
   ] as const;
 
   return (
-    <div
-      aria-hidden={!isBuilderOpen}
-      className={cn(
-        "fixed inset-x-0 top-14 bottom-0 z-[60]",
-        !isBuilderOpen && "pointer-events-none"
-      )}
-    >
-      <button
-        type="button"
-        aria-label="Close theme builder overlay"
+    <>
+      <div
+        aria-hidden
         onClick={() => dispatchThemeAction("setThemeBuilderOpen", false)}
         className={cn(
-          "absolute inset-0 transition-opacity duration-300 lg:hidden",
-          isDark
-            ? "bg-slate-950/45 backdrop-blur-[2px]"
-            : "bg-slate-900/10 backdrop-blur-[2px]",
-          isBuilderOpen ? "pointer-events-auto opacity-100" : "opacity-0"
+          "fixed inset-0 z-59 bg-background/45 backdrop-blur-[3px] transition-opacity duration-300 lg:hidden",
+          isBuilderOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
         )}
       />
 
       <aside
+        aria-label="Theme preset panel"
+        aria-hidden={!isBuilderOpen}
         className={cn(
-          "absolute top-0 right-0 bottom-0 h-full w-full border-l transition-transform duration-300 ease-out sm:max-w-[446px] lg:w-[446px]",
-          "pointer-events-auto isolate",
-          isDark
-            ? "border-slate-800/90 bg-[linear-gradient(180deg,#020617_0%,#050b1c_100%)] text-slate-50 shadow-[0_18px_60px_rgba(2,6,23,0.55)]"
-            : "border-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,250,252,0.98)_100%)] text-foreground shadow-[0_18px_48px_rgba(15,23,42,0.12)]",
-          isBuilderOpen ? "translate-x-0" : "translate-x-full"
+          "fixed inset-y-0 right-0 z-60 flex w-full flex-col sm:w-111.5 sm:max-w-111.5",
+          "border-l border-border/80 bg-background/95 text-foreground shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl",
+          "transition-transform duration-300 ease-out",
+          isBuilderOpen ? "translate-x-0" : "translate-x-full",
+          !isBuilderOpen && "pointer-events-none"
         )}
       >
         <div
-          className={cn(
-            "flex h-full min-h-0 flex-col",
-            isDark ? "bg-slate-950/96" : "bg-white/85 backdrop-blur-xl"
-          )}
-        >
-          <header
-            className={cn(
-              "flex items-center justify-between border-b px-5 py-4",
-              isDark
-                ? "border-slate-800/80 bg-slate-950/95"
-                : "border-border/70 bg-white/92"
-            )}
-          >
-            <div className="space-y-1">
-              <div
-                className={cn(
-                  "inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
-                  isDark
-                    ? "border-slate-800 bg-slate-900/90 text-slate-400"
-                    : "border-border bg-muted/60 text-muted-foreground"
-                )}
-              >
-                Theme Lab
-              </div>
-              <h2
-                className={cn(
-                  "text-base font-semibold tracking-tight",
-                  isDark ? "text-slate-50" : "text-foreground"
-                )}
-              >
-                Theme Builder
-              </h2>
-              <p
-                className={cn(
-                  "text-[11px]",
-                  isDark ? "text-slate-500" : "text-muted-foreground"
-                )}
-              >
-                {presetLabel} · {resolvedTheme === "dark" ? "dark" : "light"} mode
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "size-8 rounded-full border transition-colors",
-                  isDark
-                    ? "border-slate-800 bg-slate-900/70 text-slate-200 hover:bg-slate-800 hover:text-slate-50"
-                    : "border-border bg-background/80 text-foreground hover:bg-muted hover:text-foreground"
-                )}
-                onClick={() => dispatchThemeAction("resetTheme")}
-                title="Reset to default theme"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "size-8 rounded-full border transition-colors",
-                  isDark
-                    ? "border-slate-800 bg-slate-900/70 text-slate-200 hover:bg-slate-800 hover:text-slate-50"
-                    : "border-border bg-background/80 text-foreground hover:bg-muted hover:text-foreground"
-                )}
-                onClick={() => dispatchThemeAction("setThemeBuilderOpen", false)}
-                title="Close theme builder"
-              >
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </header>
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.14),transparent_68%)]"
+        />
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <div className="space-y-6 px-5 py-5">
-              <Tabs
-                value={activeTab}
-                onValueChange={(value) => setActiveTab(value as ThemeBuilderTab)}
-                className="w-full gap-5"
-              >
-                <TabsList
-                  className={cn(
-                    "grid h-14 w-full grid-cols-4 rounded-2xl border p-1.5",
-                    isDark
-                      ? "border-slate-800/80 bg-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
-                      : "border-border/80 bg-muted/50"
-                  )}
-                >
+        <header className="relative flex shrink-0 items-start justify-between border-b border-border/70 px-6 py-5">
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              Theme Preset
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {presetLabel} - {resolvedTheme === "dark" ? "dark" : "light"} mode
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9 rounded-full border border-border/70 bg-background/70 text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground"
+              onClick={() => dispatchThemeAction("resetTheme")}
+              title="Reset to default theme"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9 rounded-full border border-border/70 bg-background/70 text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground"
+              onClick={() => dispatchThemeAction("setThemeBuilderOpen", false)}
+              title="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </header>
+
+        <div className="scrollbar-themed min-h-0 flex-1 overflow-y-auto">
+          <div className="space-y-6 px-6 py-6">
+            <Tabs
+              value={activeTab}
+              onValueChange={(value) => setActiveTab(value as ThemeBuilderTab)}
+              className="w-full gap-4"
+            >
+              <section className="space-y-4 rounded-[1.75rem] border border-border/70 bg-card/35 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                <TabsList className="grid h-auto min-h-14 w-full grid-cols-3 items-stretch gap-1.5 overflow-hidden rounded-[1.35rem] border border-border/70 bg-muted/40 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
-
                     return (
                       <TabsTrigger
                         key={tab.value}
-                        className={cn(
-                          "flex flex-col items-center gap-0.5 rounded-xl border border-transparent text-[11px] font-semibold transition-all duration-200",
-                          isDark
-                            ? "text-slate-400 hover:text-slate-200 data-[selected]:border-slate-700 data-[selected]:bg-slate-800 data-[selected]:text-slate-50 data-[selected]:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-                            : "text-muted-foreground hover:text-foreground data-[selected]:border-border data-[selected]:bg-background data-[selected]:text-foreground data-[selected]:shadow-sm"
-                        )}
                         value={tab.value}
+                        className="relative h-11 min-h-11 w-full flex-none rounded-3xl border border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-[background-color,border-color,color,box-shadow] duration-200 hover:text-foreground data-active:z-10 data-active:border-border/70 data-active:bg-background/95 data-active:text-foreground data-active:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.14)]"
                       >
-                        <Icon className="h-3.5 w-3.5" />
-                        {tab.label}
+                        <Icon className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{tab.label}</span>
                       </TabsTrigger>
                     );
                   })}
                 </TabsList>
 
-                <TabsContent value="presets" className="mt-0 space-y-4">
+                <TabsContent value="presets" className="mt-0 space-y-4 px-1 pb-1">
                   <PresetSelector />
                 </TabsContent>
 
-                <TabsContent value="colors" className="mt-0 space-y-4">
+                <TabsContent value="colors" className="mt-0 space-y-4 px-1 pb-1">
                   <ColorEditor />
                 </TabsContent>
 
-                <TabsContent value="radius" className="mt-0 space-y-4">
+                <TabsContent value="radius" className="mt-0 space-y-4 px-1 pb-1">
                   <RadiusControl />
                 </TabsContent>
-
-                <TabsContent value="export" className="mt-0 space-y-4">
-                  <ExportPanel />
-                </TabsContent>
-              </Tabs>
-
-              <section
-                className={cn(
-                  "space-y-3 border-t pt-5",
-                  isDark ? "border-slate-800/80" : "border-border/70"
-                )}
-              >
-                <p
-                  className={cn(
-                    "text-sm font-semibold tracking-tight",
-                    isDark ? "text-slate-50" : "text-foreground"
-                  )}
-                >
-                  Live Preview
-                </p>
-                <PreviewPanel />
               </section>
-            </div>
+            </Tabs>
+
+            <section className="space-y-3 border-t border-border/70 pt-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Live Preview
+              </p>
+              <PreviewPanel />
+            </section>
           </div>
         </div>
       </aside>
-    </div>
+    </>
   );
 }

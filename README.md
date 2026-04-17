@@ -1,58 +1,253 @@
 # FormKitCN
 
-A schema-driven component toolkit for building production-ready forms, tables, and UI systems in React — powered by shadcn/ui.
+> **Schema-driven component toolkit for building production-ready forms, tables, and UI systems in React — powered by shadcn/ui.**
 
-## Features
+📖 **[Documentation](https://formkitcn.pro)** · 🧩 **[Components](https://formkitcn.pro/components)** · 🎨 **[Examples](https://formkitcn.pro/blocks)** · ⭐ **[GitHub](https://github.com/adrian007143/schadcn-custom-component-packages)**
 
-| Feature | Description |
-|---|---|
-| **17+ Field Types** | Input, password, textarea, date picker, select, async-select, phone, currency, percent, masked, file upload, switch, checkbox, and more |
-| **FormBuilderStandard** | Schema-driven form builder with Zod validation, CREATE/UPDATE/VIEW modes |
-| **Multi-Step Forms** | Per-step validation, progress tracking, reCAPTCHA, flexible layouts |
-| **Form Layout Primitives** | `FormSection`, `FormColumns`, `FormRow`, `FormActions`, `FormFieldWrapper` |
-| **Dynamic Data Table** | Inline editing, drag-and-drop rows/columns, faceted filtering, column visibility |
-| **Redux Toolkit** | Store, reducers, StoreProvider, localStorage persistence |
-| **Registry-Based** | Every block installs directly into your project via the shadcn CLI |
+---
+
+## What is FormKitCN?
+
+FormKitCN is a developer-first toolkit that lets you install production-ready blocks into any Next.js project with a single command. Every block is schema-driven, type-safe, and standalone — no vendor lock-in.
+
+```bash
+npx shadcn@latest add https://formkitcn.pro/r/form-field.json
+```
+
+---
+
+## Available Packages
+
+| Package | Install Key | Description |
+|---|---|---|
+| **FieldRenderer** | `form-field.json` | 25+ field types — input, select, date, file, OTP, masked, currency, and more |
+| **SchemaForm** | `form-dynamic-template.json` | Schema-driven form with Zod validation and CREATE / UPDATE / VIEW modes |
+| **StepForm** | `multistep-form-template.json` | Multi-step form with per-step validation, progress bar, and reCAPTCHA |
+| **Form Layout** | `form-layout.json` | `FormSection`, `FormColumns`, `FormRow`, `FormActions`, `FormFieldWrapper` |
+| **Data Table** | `data-table-dynamic.json` | Inline editing, drag-and-drop rows/columns, faceted filtering, column visibility |
+| **Redux Tool** | `redux-methods-tool.json` | Store, reducers, StoreProvider, localStorage persistence |
+| **Theme Preset Tool** | `theme-preset-tool.json` | 12 OKLCH presets, palette generator, per-token editor, radius control, CSS/JSON export |
+
+---
 
 ## Quick Install
 
-Install any block with one command:
-
 ```bash
-# Dynamic form field system (17+ field types)
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-field.json
+# Field renderer — 25+ field types
+npx shadcn@latest add https://formkitcn.pro/r/form-field.json
 
-# Form layout primitives
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/form-layout.json
+# Schema-driven complete form
+npx shadcn@latest add https://formkitcn.pro/r/form-dynamic-template.json
 
 # Multi-step form
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/multistep-form-template.json
+npx shadcn@latest add https://formkitcn.pro/r/multistep-form-template.json
+
+# Form layout primitives
+npx shadcn@latest add https://formkitcn.pro/r/form-layout.json
 
 # Dynamic data table
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/data-table-dynamic.json
+npx shadcn@latest add https://formkitcn.pro/r/data-table-dynamic.json
 
-# Redux setup
-npx shadcn@latest add https://schadcn-custom-component-packages.vercel.app/r/redux-methods-tool.json
+# Redux store scaffold
+npx shadcn@latest add https://formkitcn.pro/r/redux-methods-tool.json
+
+# Theme preset tool (standalone — no Redux required)
+npx shadcn@latest add https://formkitcn.pro/r/theme-preset-tool.json
 ```
 
-## Dev Setup
+---
+
+## Usage Examples
+
+### FieldRenderer — render any field type
+
+```tsx
+import { FieldRenderer } from "@/components/forms/core"
+import { useForm } from "react-hook-form"
+
+const { control } = useForm()
+
+<FieldRenderer
+  field={{ name: "email", type: "EMAIL", label: "Email address", required: true }}
+  control={control}
+/>
+```
+
+**Supported types:** `TEXT` `EMAIL` `PASSWORD` `PHONE` `NUMBER` `TEXTAREA` `SELECT` `COMMAND` `ASYNC_SELECT` `CHECKBOX` `SWITCH` `RADIO` `DATE` `DATETIME` `DATERANGE` `FILE` `CURRENCY` `SLIDER` `OTP` `MASKED` `HIDDEN` `RECAPTCHA`
+
+---
+
+### SchemaForm — schema-driven complete form
+
+```tsx
+import { SchemaForm } from "@/components/forms/form-ui/standard-form"
+import { z } from "zod"
+
+const schema = [
+  { name: "name",  type: "TEXT",  label: "Full name",  required: true },
+  { name: "email", type: "EMAIL", label: "Email",       required: true },
+]
+
+const zodSchema = z.object({
+  name:  z.string().min(2),
+  email: z.string().email(),
+})
+
+<SchemaForm
+  schema={schema}
+  zodSchema={zodSchema}
+  onSubmit={(values) => console.log(values)}
+  submitLabel="Send"
+/>
+```
+
+---
+
+### StepForm — multi-step form
+
+```tsx
+import { StepForm } from "@/components/forms/form-ui/multistep-form"
+
+const schema = [
+  { name: "name",    type: "TEXT",  label: "Full name" },
+  { name: "email",   type: "EMAIL", label: "Email" },
+  { name: "plan",    type: "SELECT", label: "Plan", options: [...] },
+  { name: "payment", type: "TEXT",  label: "Card number" },
+]
+
+const steps = [
+  { title: "Account",  fields: ["name", "email"] },
+  { title: "Plan",     fields: ["plan"] },
+  { title: "Billing",  fields: ["payment"] },
+]
+
+<StepForm
+  schema={schema}
+  steps={steps}
+  onSubmit={(values) => console.log(values)}
+  showProgressBar
+/>
+```
+
+---
+
+### Theme Preset Tool — live theme switching
+
+```tsx
+// app/layout.tsx
+import { AppProviders } from "@/components/providers/AppProviders"
+import { AppShell }     from "@/components/site/AppShell"
+import { AppHeader }    from "@/components/site/AppHeader"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" suppressHydrationWarning className="h-full">
+      <body className="flex min-h-dvh flex-col bg-background font-sans text-foreground antialiased">
+        <AppProviders defaultTheme="dark">
+          <AppShell header={<AppHeader brand="My App" />}>
+            {children}
+          </AppShell>
+        </AppProviders>
+      </body>
+    </html>
+  )
+}
+```
+
+```tsx
+// Anywhere in your app
+import { dispatchThemeAction } from "@/components/theme/dispatchThemeAction"
+
+dispatchThemeAction("setThemePreset", "midnight")
+dispatchThemeAction("setRadius", 0.5)
+dispatchThemeAction("setThemeBuilderOpen", true)
+```
+
+**Available presets:** `default` `midnight` `forest` `ocean` `sunset` `nordic` `rosewood` `lavender` `graphite` `aurora` `copper` `jade`
+
+---
+
+## Tech Stack
+
+| Layer | Library |
+|---|---|
+| Framework | Next.js 15+ (App Router) + TypeScript |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Forms | React Hook Form + Zod |
+| Tables | TanStack Table v8 + dnd-kit |
+| State | Redux (`react-redux-methods`) |
+| Theme | OKLCH color system (standalone store) |
+
+---
+
+## Project Structure
 
 ```bash
+app/
+├── docs/          # MDX documentation pages
+└── blocks/        # Interactive block previews
+
+components/
+├── forms/
+│   ├── core/              # FieldRenderer (25+ field types)
+│   └── form-ui/           # SchemaForm, StepForm
+├── theme/                 # ThemeBuilder, ThemeManager, presets
+├── providers/             # AppProviders
+└── site/                  # AppShell, AppHeader, ThemeToggle
+
+lib/
+├── theme/                 # types, presets, utils, theme-store
+└── registry-manifest.ts   # all registry items
+
+redux/
+└── reducers/              # notification, sidebar, todo, theme
+
+registry.template.json     # registry source of truth
+public/r/                  # built registry JSON files
+```
+
+---
+
+## Local Development
+
+```bash
+git clone https://github.com/adrian007143/schadcn-custom-component-packages
+cd schadcn-custom-component-packages
 npm install
 npm run dev
 ```
 
-The app runs at [http://localhost:3000](http://localhost:3000).
+App runs at [http://localhost:3000](http://localhost:3000).
 
-## Stack
+### Rebuild the registry
 
-- Next.js (App Router) + TypeScript
-- Tailwind CSS v4 + shadcn/ui
-- React Hook Form + Zod
-- TanStack Table v8
-- dnd-kit
-- Redux (`react-redux-methods`)
+After modifying any component source file:
 
-## Registry
+```bash
+npm run registry:build
+```
 
-Browse all available blocks at `/blocks` or install directly from the registry URLs above.
+Output goes to `public/r/*.json`.
+
+---
+
+## Documentation
+
+Full documentation, live examples, and install guides at **[formkitcn.pro](https://formkitcn.pro)**.
+
+| Page | URL |
+|---|---|
+| Getting Started | [formkitcn.pro/docs/getting-started](https://formkitcn.pro/docs/getting-started) |
+| FieldRenderer | [formkitcn.pro/docs/form-field](https://formkitcn.pro/docs/form-field) |
+| SchemaForm | [formkitcn.pro/docs/form-builder](https://formkitcn.pro/docs/form-builder) |
+| StepForm | [formkitcn.pro/docs/multistep-form](https://formkitcn.pro/docs/multistep-form) |
+| Form Layout | [formkitcn.pro/docs/form-layout](https://formkitcn.pro/docs/form-layout) |
+| Data Table | [formkitcn.pro/docs/data-table](https://formkitcn.pro/docs/data-table) |
+| Redux Tool | [formkitcn.pro/docs/redux](https://formkitcn.pro/docs/redux) |
+| Theme Preset Tool | [formkitcn.pro/docs/theme-builder](https://formkitcn.pro/docs/theme-builder) |
+
+---
+
+## License
+
+MIT — free for personal and commercial use.

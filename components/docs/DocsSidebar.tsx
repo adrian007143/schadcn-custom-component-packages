@@ -38,6 +38,12 @@ const NAV_GROUPS = [
     ],
   },
   {
+    label: "Theme",
+    items: [
+      { href: "/docs/theme-builder", label: "Theme Builder" },
+    ],
+  },
+  {
     label: "Data Table",
     items: [
       { href: "/docs/data-table", label: "DynamicDataTable" },
@@ -64,7 +70,7 @@ export function DocsSidebar() {
       <SidebarHeader className="border-b px-4 py-3">
         <span className="text-sm font-semibold text-foreground">Docs</span>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="scrollbar-themed">
         {NAV_GROUPS.map((group) => (
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>

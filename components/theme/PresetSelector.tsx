@@ -1,15 +1,15 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useTheme } from "next-themes";
 
+import { useAppTheme } from "@/components/theme/app-theme-provider";
 import { PRESET_IDS, THEME_PRESETS } from "@/lib/theme/presets";
 import { oklchToHex } from "@/lib/theme/utils";
 import { dispatchThemeAction } from "./dispatchThemeAction";
 import { useThemeBuilderState } from "./useThemeBuilderState";
 
 export function PresetSelector() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useAppTheme();
   const { activePreset } = useThemeBuilderState();
 
   return (

@@ -515,24 +515,152 @@
           "type": "registry:lib"
         },
         {
-          "path": "lib/helper/storageLocal.ts",
-          "target": "lib/helper/storageLocal.ts",
+          "path": "redux/reducers/theme.ts",
+          "target": "redux/reducers/theme.ts",
           "type": "registry:lib"
         },
         {
-          "path": "components/examples/redux-tool-todo.tsx",
-          "target": "components/examples/redux-tool-todo.tsx",
-          "type": "registry:block"
+          "path": "lib/theme/types.ts",
+          "target": "lib/theme/types.ts",
+          "type": "registry:lib"
         },
         {
-          "path": "components/examples/redux-tool-notification.tsx",
-          "target": "components/examples/redux-tool-notification.tsx",
-          "type": "registry:block"
+          "path": "lib/helper/storageLocal.ts",
+          "target": "lib/helper/storageLocal.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "theme-preset-tool",
+      "type": "registry:block",
+      "title": "Theme Preset Tool",
+      "description": "Interactive theme builder with 12 OKLCH presets, random palette generator, per-token color editor, radius control, and CSS/JSON export. Standalone — no Redux required.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "button",
+        "tabs",
+        "input",
+        "textarea",
+        "badge",
+        "checkbox",
+        "label",
+        "alert",
+        "progress",
+        "switch",
+        "sonner",
+        "{{REGISTRY_BASE_URL}}/r/redux-methods-tool.json"
+      ],
+      "files": [
+        {
+          "path": "styles/theme-preset-base.css",
+          "target": "styles/theme-preset-base.css",
+          "type": "registry:style"
         },
         {
-          "path": "app/blocks/redux-usage/page.tsx",
-          "target": "app/redux-usage/page.tsx",
-          "type": "registry:block"
+          "path": "components/theme/app-theme-provider.tsx",
+          "target": "components/theme/app-theme-provider.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "lib/theme/types.ts",
+          "target": "lib/theme/types.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "lib/theme/presets.ts",
+          "target": "lib/theme/presets.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "lib/theme/utils.ts",
+          "target": "lib/theme/utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "lib/theme/theme-store.ts",
+          "target": "lib/theme/theme-store.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "components/theme/useThemeBuilderState.standalone.ts",
+          "target": "components/theme/useThemeBuilderState.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/dispatchThemeAction.standalone.ts",
+          "target": "components/theme/dispatchThemeAction.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ThemeBuilder.tsx",
+          "target": "components/theme/ThemeBuilder.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ThemeBuilderTrigger.tsx",
+          "target": "components/theme/ThemeBuilderTrigger.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ThemeManager.tsx",
+          "target": "components/theme/ThemeManager.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/providers/AppProviders.tsx",
+          "target": "components/providers/AppProviders.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ThemePresetProvider.tsx",
+          "target": "components/theme/ThemePresetProvider.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/PresetSelector.tsx",
+          "target": "components/theme/PresetSelector.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ColorEditor.tsx",
+          "target": "components/theme/ColorEditor.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ColorPickerRow.tsx",
+          "target": "components/theme/ColorPickerRow.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/RadiusControl.tsx",
+          "target": "components/theme/RadiusControl.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/ExportPanel.tsx",
+          "target": "components/theme/ExportPanel.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/theme/PreviewPanel.tsx",
+          "target": "components/theme/PreviewPanel.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/site/AppHeader.standalone.tsx",
+          "target": "components/site/AppHeader.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/site/AppShell.standalone.tsx",
+          "target": "components/site/AppShell.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/site/ThemeToggle.tsx",
+          "target": "components/site/ThemeToggle.tsx",
+          "type": "registry:component"
         }
       ]
     }
