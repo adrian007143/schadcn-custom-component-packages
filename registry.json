@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "shadcn-customs-ui",
-  "homepage": "https://formkitcn.pro",
+  "homepage": "http://localhost:3000",
   "items": [
     {
       "name": "form-field",
@@ -349,8 +349,8 @@
         "button",
         "sonner",
         "progress",
-        "https://formkitcn.pro/r/form-field.json",
-        "https://formkitcn.pro/r/form-layout.json"
+        "http://localhost:3000/r/form-field.json",
+        "http://localhost:3000/r/form-layout.json"
       ],
       "files": [
         {
@@ -399,8 +399,8 @@
         "field",
         "button",
         "sonner",
-        "https://formkitcn.pro/r/form-field.json",
-        "https://formkitcn.pro/r/form-layout.json"
+        "http://localhost:3000/r/form-field.json",
+        "http://localhost:3000/r/form-layout.json"
       ],
       "files": [
         {
@@ -427,7 +427,7 @@
         "sonner",
         "button",
         "field",
-        "https://formkitcn.pro/r/form-field.json"
+        "http://localhost:3000/r/form-field.json"
       ],
       "files": [
         {
@@ -562,7 +562,7 @@
         "progress",
         "switch",
         "sonner",
-        "https://formkitcn.pro/r/redux-methods-tool.json"
+        "http://localhost:3000/r/redux-methods-tool.json"
       ],
       "files": [
         {
