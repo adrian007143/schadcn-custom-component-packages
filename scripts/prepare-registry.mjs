@@ -24,6 +24,10 @@ function resolveRegistryBaseUrl(templateJson) {
     process.env.NEXT_PUBLIC_APP_URL,
     process.env.NEXT_PUBLIC_SITE_URL,
     process.env.SITE_URL,
+    process.env.COOLIFY_URL,
+    process.env.COOLIFY_FQDN
+      ? `https://${process.env.COOLIFY_FQDN}`
+      : undefined,
     process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : undefined,
