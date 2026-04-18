@@ -14,10 +14,20 @@ function isLocalhostUrl(value) {
 }
 
 function resolveRegistryBaseUrl(templateJson) {
+  const productionDefault =
+    process.env.NODE_ENV === "production"
+      ? "https://formkitcn.pro"
+      : undefined
+
   const candidates = [
     process.env.REGISTRY_BASE_URL,
     process.env.NEXT_PUBLIC_APP_URL,
     process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : undefined,
+    productionDefault,
     templateJson.homepage,
     "http://localhost:3000",
   ].filter(

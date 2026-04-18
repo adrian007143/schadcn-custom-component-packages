@@ -16,8 +16,8 @@
     "button",
     "sonner",
     "progress",
-    "http://localhost:3000/r/form-field.json",
-    "http://localhost:3000/r/form-layout.json"
+    "https://formkitcn.pro/r/form-field.json",
+    "https://formkitcn.pro/r/form-layout.json"
   ],
   "files": [
     {
